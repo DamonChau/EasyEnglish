@@ -1,5 +1,11 @@
 #node
 node_modules/
+*.suo
+*.user
+_ReSharper.*
+bin
+obj
+packages
 
 #OS junk files
 [Tt]humbs.db
