@@ -12,7 +12,7 @@ var entries = [
 	'webpack/hot/dev-server'
 ];
 
-var loaders = [
+var rules = [
     {
         test: /\.scss$/,
         loader: 'style!css?modules!sass',
@@ -42,7 +42,7 @@ module.exports = {
         },
         plugins: plugins,
         module: {
-		    loaders: loaders
+		    rules: rules
         },
        devServer: {
 		    contentBase: './dist',
