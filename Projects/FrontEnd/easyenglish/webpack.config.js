@@ -1,51 +1,32 @@
-/* eslint-disable no-mixed-spaces-and-tabs */
 /* eslint-disable @typescript-eslint/no-var-requires */
-var path = require('path');
-var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-
-var APP_ROOT = 'app';
-
-var entries = [
-    './' + APP_ROOT + '/client',
-	'webpack-dev-server/client?http://localhost:3000',
-	'webpack/hot/dev-server'
-];
-
-var rules = [
-    {
-        test: /\.scss$/,
-        loader: 'style!css?modules!sass',
-        include: path.join(__dirname, APP_ROOT)
-    },
-    {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        include: path.join(__dirname, APP_ROOT)
-    }
-];
-
-var plugins = [
-     new webpack.HotModuleReplacementPlugin(),
-     new HtmlWebpackPlugin({
-		template: './' + APP_ROOT + '/index.html',
-        favicon: './' + APP_ROOT + '/favicon.png'
-	})
-];
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-        devtool: 'source-map',
-        entry: entries,
-        output: {
-            path: path.join(__dirname, 'dist'),
-      	    filename: 'bundle.js'
-        },
-        plugins: plugins,
-        module: {
-		    rules: rules
-        },
-       devServer: {
-		    contentBase: './dist',
-		    hot: true
-        }
+  entry: './src/index.tsx',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'bundle.js',
+  },
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js'],
+  },
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
+      },
+    ],
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './public/index.html',
+    }),
+  ],
 };
