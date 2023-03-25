@@ -2,7 +2,6 @@
   "name": "easyenglish",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "dependencies": {
     "@babel/plugin-syntax-flow": "^7.14.5",
     "@babel/plugin-transform-react-jsx": "^7.14.9",
