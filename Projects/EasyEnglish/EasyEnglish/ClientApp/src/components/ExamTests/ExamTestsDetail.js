@@ -145,34 +145,19 @@ var ExamTestsDetail = function () {
             return (__assign(__assign({}, prev), (_a = {}, _a[e.target.name] = e.target.value, _a)));
         });
     };
-    var uploadFiletoApi = function (file) {
-        return new Promise(function (resolve, reject) {
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', contants_1.config.url.API_URL + '/api/FilesUpload/upload');
-            xhr.setRequestHeader('Authorization', 'Client-ID ##clientid##');
-            var data = new FormData();
-            data.append('image', file);
-            xhr.send(data);
-            xhr.addEventListener('load', function () {
-                resolve(JSON.parse(xhr.responseText));
-            });
-        });
-    };
     var uploadImageCallBack = function (file) { return __awaiter(void 0, void 0, void 0, function () {
-        var reponse;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    console.log("1");
-                    return [4 /*yield*/, uploadFiletoApi(file)];
-                case 1:
-                    reponse = _a.sent();
-                    console.log("2");
-                    return [2 /*return*/, new Promise(function (resolve, reject) {
-                            console.log("3");
-                            resolve(reponse);
-                        })];
-            }
+            return [2 /*return*/, new Promise(function (resolve, reject) {
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('POST', contants_1.config.url.API_URL + '/api/FilesUpload/upload');
+                    xhr.setRequestHeader('Authorization', 'Client-ID ##clientid##');
+                    var data = new FormData();
+                    data.append('image', file);
+                    xhr.send(data);
+                    xhr.addEventListener('load', function () {
+                        resolve(JSON.parse(xhr.responseText));
+                    });
+                })];
         });
     }); };
     var renderEditForm = function () {

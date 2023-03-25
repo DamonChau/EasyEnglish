@@ -111,7 +111,9 @@ const ExamTestsDetail = () => {
         }))
     }
 
-    const uploadFiletoApi = (file: any) => {
+   
+    const uploadImageCallBack = async (file: any) => {
+          
         return new Promise(
             (resolve, reject) => {
                 const xhr = new XMLHttpRequest();
@@ -123,18 +125,6 @@ const ExamTestsDetail = () => {
                 xhr.addEventListener('load', () => {
                     resolve(JSON.parse(xhr.responseText))
                 })
-            }
-        )
-    }
-
-    const uploadImageCallBack = async (file: any) => {
-        console.log("1")
-        const reponse = await uploadFiletoApi(file)
-        console.log("2")
-        return new Promise(
-            (resolve, reject) => {
-                console.log("3")
-                resolve(reponse)
             }
         )
     }
