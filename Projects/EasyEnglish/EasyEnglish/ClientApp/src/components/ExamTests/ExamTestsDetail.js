@@ -147,17 +147,7 @@ var ExamTestsDetail = function () {
     };
     var uploadImageCallBack = function (file) { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            return [2 /*return*/, new Promise(function (resolve, reject) {
-                    var xhr = new XMLHttpRequest();
-                    xhr.open('POST', contants_1.config.url.API_URL + '/api/FilesUpload/upload');
-                    xhr.setRequestHeader('Authorization', 'Client-ID ##clientid##');
-                    var data = new FormData();
-                    data.append('image', file);
-                    xhr.send(data);
-                    xhr.addEventListener('load', function () {
-                        resolve(JSON.parse(xhr.responseText));
-                    });
-                })];
+            return [2 /*return*/];
         });
     }); };
     var renderEditForm = function () {

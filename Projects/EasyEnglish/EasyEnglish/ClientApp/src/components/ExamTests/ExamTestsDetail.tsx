@@ -114,19 +114,19 @@ const ExamTestsDetail = () => {
    
     const uploadImageCallBack = async (file: any) => {
           
-        return new Promise(
-            (resolve, reject) => {
-                const xhr = new XMLHttpRequest();
-                xhr.open('POST', config.url.API_URL + '/api/FilesUpload/upload')
-                xhr.setRequestHeader('Authorization', 'Client-ID ##clientid##')
-                const data = new FormData()
-                data.append('image', file)
-                xhr.send(data)
-                xhr.addEventListener('load', () => {
-                    resolve(JSON.parse(xhr.responseText))
-                })
-            }
-        )
+        //return new Promise(
+        //    (resolve, reject) => {
+        //        const xhr = new XMLHttpRequest();
+        //        xhr.open('POST', config.url.API_URL + '/api/FilesUpload/upload')
+        //        xhr.setRequestHeader('Authorization', 'Client-ID ##clientid##')
+        //        const data = new FormData()
+        //        data.append('image', file)
+        //        xhr.send(data)
+        //        xhr.addEventListener('load', () => {
+        //            resolve(JSON.parse(xhr.responseText))
+        //        })
+        //    }
+        //)
     }
 
     const renderEditForm = () => {
