@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -27,6 +28,11 @@ namespace EasyEnglish
             {
                 configuration.RootPath = "ClientApp/build";
             });
+
+            services.AddDbContext<Models.EasyEnglishContext>(options => options.UseSqlServer(Configuration.GetConnectionString("EEDatabase")));
+            services.AddMvc()
+                    .AddNewtonsoftJson(options =>
+                    { options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore; });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
