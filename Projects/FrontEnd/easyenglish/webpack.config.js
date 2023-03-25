@@ -1,6 +1,8 @@
-import { join } from 'path';
-import { HotModuleReplacementPlugin } from 'webpack';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
+/* eslint-disable no-mixed-spaces-and-tabs */
+/* eslint-disable @typescript-eslint/no-var-requires */
+var path = require('path');
+var webpack = require('webpack');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 var APP_ROOT = 'app';
 
@@ -14,34 +16,36 @@ var loaders = [
     {
         test: /\.scss$/,
         loader: 'style!css?modules!sass',
-        include: join(__dirname, APP_ROOT)
+        include: path.join(__dirname, APP_ROOT)
     },
     {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: join(__dirname, APP_ROOT)
+        include: path.join(__dirname, APP_ROOT)
     }
 ];
 
 var plugins = [
-    new HotModuleReplacementPlugin(),
-    new HtmlWebpackPlugin({
-	template: './' + APP_ROOT + '/index.html',
-    favicon: './' + APP_ROOT + '/favicon.png'
+     new webpack.HotModuleReplacementPlugin(),
+     new HtmlWebpackPlugin({
+		template: './' + APP_ROOT + '/index.html',
+        favicon: './' + APP_ROOT + '/favicon.png'
 	})
 ];
 
-export const devtool = 'source-map';
-export const entry = entries;
-export const output = {
-    path: join(__dirname, 'dist'),
-    filename: 'bundle.js'
-};
-
-export const module = {
-    loaders: loaders
-};
-export const devServer = {
-    contentBase: './dist',
-    hot: true
+module.exports = {
+        devtool: 'source-map',
+        entry: entries,
+        output: {
+            path: path.join(__dirname, 'dist'),
+      	    filename: 'bundle.js'
+        },
+        plugins: plugins,
+        module: {
+		    loaders: loaders
+        },
+       devServer: {
+		    contentBase: './dist',
+		    hot: true
+        }
 };
