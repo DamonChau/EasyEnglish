@@ -8,6 +8,14 @@ module.exports = {
     path: path.resolve(__dirname, 'build'),
     filename: 'bundle.js',
   },
+  devServer: {
+    static: {
+        directory: path.join(__dirname, "build")
+      },
+  
+      compress: true,
+      port: 3000, // default 8000
+  },
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
   },
