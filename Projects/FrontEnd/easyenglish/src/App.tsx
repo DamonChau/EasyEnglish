@@ -1,26 +1,49 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React, { Fragment, useState, useEffect } from 'react'
+import { BrowserRouter as Router, Route, Routes, BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux'
+import { persistor, store } from './features/services'
+import Header from './features/common/Header'
+import Footer from './features/common/Footer'
+import Home from './features/common/Home'
+import PrivateRoute from './features/common/PrivateRoute'
+import { PersistGate } from 'redux-persist/integration/react'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Hello world 12123
-        </a>
-      </header>
-    </div>
-  );
+const App = (props: any) => {
+
+
+    const onBeforeLift = () => {
+
+    }
+
+    useEffect(() => {
+    }, []);
+
+    return (
+
+        <Provider store={store}>
+            <PersistGate
+                loading={null}
+                onBeforeLift={onBeforeLift}
+                persistor={persistor}>
+                <BrowserRouter>
+                    <Header />
+                    <Routes >
+                        <Route path='/admin' element={<PrivateRoute />}>
+                        
+                        </Route>
+
+                        <Route path="/" element={<Home />} />
+                        
+                    </Routes >
+                    <Footer />
+                </BrowserRouter>
+            </PersistGate>
+        </Provider>
+
+    );
 }
 
-export default App;
+export default App

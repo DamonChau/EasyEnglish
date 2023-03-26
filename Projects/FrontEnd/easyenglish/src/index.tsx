@@ -3,7 +3,12 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-
+import 'bootstrap';
+import './assests/css/style.css'
+import './assests/css/icomoon.css'
+import './assests/images/image_1.jpg'
+import './assests/images/image_2.jpg'
+import './assests/css/ionicons.min.css'
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
