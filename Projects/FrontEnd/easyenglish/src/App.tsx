@@ -8,6 +8,7 @@ import { persistor, store } from './features/services'
 import Header from './features/common/Header'
 import Footer from './features/common/Footer'
 import Home from './features/common/Home'
+import Login from './features/common/Login'
 import PrivateRoute from './features/common/PrivateRoute'
 import { PersistGate } from 'redux-persist/integration/react'
 
@@ -36,7 +37,7 @@ const App = (props: any) => {
                         </Route>
 
                         <Route path="/" element={<Home />} />
-                        
+                        <Route path="/login" element={<Login />} />
                     </Routes >
                     <Footer />
                 </BrowserRouter>

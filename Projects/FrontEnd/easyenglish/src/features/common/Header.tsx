@@ -66,7 +66,7 @@ const Header = () => {
                             <li className="nav-item"><Link className="nav-link" to={config.url.API_URL_FOLDER + "/pricing"}>Pricing</Link></li>
                             <li className="nav-item"><Link className="nav-link" to={config.url.API_URL_FOLDER + "/tests"}>Tests</Link></li>
                             <li className="nav-item"><Link className="nav-link" to={config.url.API_URL_FOLDER + "/contact"}>Contact</Link></li>
-                            {!isAuthenticated && <li className="nav-item"><a href="/login" className="nav-link">Login</a></li>}
+                            {!isAuthenticated && <li className="nav-item"><Link className="nav-link" to={config.url.API_URL_FOLDER + "/login"}>Login</Link></li>}
                             {
                                 isAuthenticated &&
                                 <li className="nav-item dropdown">
