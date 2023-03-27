@@ -9,6 +9,7 @@ import './assests/css/icomoon.css'
 import './assests/images/image_1.jpg'
 import './assests/images/image_2.jpg'
 import './assests/css/ionicons.min.css'
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
