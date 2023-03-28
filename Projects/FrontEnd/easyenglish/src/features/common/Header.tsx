@@ -60,8 +60,6 @@ const Header = () => {
                             <li className="nav-item">
                                 <Link className="nav-link" to={config.url.API_URL_FOLDER + "/"}>Home</Link>
                             </li>
-                            <li className="nav-item"><Link className="nav-link" to={config.url.API_URL_FOLDER + "/about"}>About</Link></li>
-                            <li className="nav-item"><Link className="nav-link" to={config.url.API_URL_FOLDER + "/lessons"}>Lessons</Link></li>
                             <li className="nav-item"><Link className="nav-link" to={config.url.API_URL_FOLDER + "/teachers"}>Teachers</Link></li>
                             <li className="nav-item"><Link className="nav-link" to={config.url.API_URL_FOLDER + "/pricing"}>Pricing</Link></li>
                             <li className="nav-item"><Link className="nav-link" to={config.url.API_URL_FOLDER + "/tests"}>Tests</Link></li>
@@ -75,8 +73,9 @@ const Header = () => {
                                     </a>
                                     <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <li className="nav-item"><Link className="nav-link" to={config.url.API_URL_FOLDER + "/admin/examTestsManager"}>Exam Tests Manager</Link></li>
+                                        <li className="nav-item"><Link className="nav-link" to={config.url.API_URL_FOLDER + "/admin/examTestsDetail/add"}>Exam Tests Detail</Link></li>
                                         <li role="separator" className="divider"></li>
-                                            <li className="nav-item"><a role="button" className="nav-link" onClick={() => clickLogout()}>Logout</a></li>
+                                        <li className="nav-item"><a role="button" className="nav-link" onClick={() => clickLogout()}>Logout</a></li>
                                     </ul>
                                 </li>
                             }

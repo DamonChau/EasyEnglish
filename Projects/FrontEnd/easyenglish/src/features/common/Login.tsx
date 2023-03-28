@@ -8,8 +8,6 @@ import { useSelector } from 'react-redux'
 import { selectIsAuthenticated, logout } from '../services/slices/authSlice'
 import { Users } from '../interfaces/interfaces'
 import { config } from '../helpers/contants'
-import bgImage1 from '../../assests/images/bg_1.jpg'
-
 
 const Login = () => {
 
@@ -42,7 +40,7 @@ const Login = () => {
 
     return (
         <div>
-            <section className="hero-wrap hero-wrap-2" style={{ backgroundImage: `url(${bgImage1})` }} data-stellar-background-ratio="0.5">
+            <section className="hero-wrap hero-wrap-2" style={{ backgroundImage: 'url("images/bg_1.jpg")'  }} data-stellar-background-ratio="0.5">
                 <div className="overlay" />
                 <div className="container">
                     <div className="row no-gutters slider-text align-items-center justify-content-center">

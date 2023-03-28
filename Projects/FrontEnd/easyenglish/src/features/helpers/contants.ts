@@ -12,14 +12,14 @@ export const messageDuplication = 'Duplicate date!!!'
 
 const prod = {
     url: {
-        API_URL_FOLDER: '/EasyEnglish',
+        API_URL_FOLDER: '',
         API_URL: 'https://gchweb.azurewebsites.net/'
     }
 };
 const dev = {
     url: {
         API_URL_FOLDER: '',
-        API_URL: 'http://localhost:3000'
+        API_URL: 'http://localhost:5097'
     }
 };
 export const config = process.env.NODE_ENV === 'development' ? dev : prod

@@ -1,8 +1,7 @@
 ﻿/* eslint-disable @typescript-eslint/no-empty-function */
 import * as React from 'react';
 import { useEffect } from 'react';
-import image1 from '../../assests/images/image_1.jpg'
-import image2 from '../../assests/images/image_2.jpg'
+
 const Footer = () => {
 
     useEffect(() => {
@@ -61,7 +60,7 @@ const Footer = () => {
                         <div className="ftco-footer-widget mb-5">
                             <h2 className="ftco-heading-2">Recent Blog</h2>
                             <div className="block-21 mb-4 d-flex">
-                                <a className="blog-img mr-4" style={{ backgroundImage: `url(${image1})` }} />
+                                <a className="blog-img mr-4" style={{ backgroundImage: 'url("images/image_1.jpg")'  }} />
                                 <div className="text">
                                     <h3 className="heading"><a href="#">Even the all-powerful Pointing has no control about</a></h3>
                                     <div className="meta">
@@ -72,7 +71,7 @@ const Footer = () => {
                                 </div>
                             </div>
                             <div className="block-21 mb-5 d-flex">
-                                <a className="blog-img mr-4" style={{ backgroundImage: `url(${image2})`  }} />
+                                <a className="blog-img mr-4" style={{ backgroundImage: 'url("images/image_2.jpg")'   }} />
                                 <div className="text">
                                     <h3 className="heading"><a href="#">Even the all-powerful Pointing has no control about</a></h3>
                                     <div className="meta">

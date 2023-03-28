@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: './src/index.tsx',
   output: {
     path: path.resolve(__dirname, 'build'),
     filename: 'bundle.js',
+    sourceMapFilename: '[name].[hash].map',
     assetModuleFilename: 'static/[hash][ext]'
   },
   devServer: {
@@ -17,6 +19,7 @@ module.exports = {
       compress: true,
       port: 3000, // default 8000
   },
+  devtool: 'source-map',
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
   },
@@ -68,5 +71,12 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './public/index.html',
     }),
+    new CopyWebpackPlugin({
+      patterns: [{
+          noErrorOnMissing: true,
+          from: path.resolve(__dirname, 'src/assests'),
+          to: path.resolve(__dirname, 'build'),
+        }]
+  })
   ],
 };

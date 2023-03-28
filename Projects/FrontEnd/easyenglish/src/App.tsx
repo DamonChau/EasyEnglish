@@ -9,6 +9,8 @@ import Header from './features/common/Header'
 import Footer from './features/common/Footer'
 import Home from './features/common/Home'
 import Login from './features/common/Login'
+import ExamTestsDetail from './features/examTests/ExamTestsDetail'
+import ExamTestsManager from './features/examTests/ExamTestsManager'
 import PrivateRoute from './features/common/PrivateRoute'
 import { PersistGate } from 'redux-persist/integration/react'
 
@@ -33,7 +35,9 @@ const App = (props: any) => {
                     <Header />
                     <Routes >
                         <Route path='/admin' element={<PrivateRoute />}>
-                        
+                            <Route path='/admin/examTestsManager' element={<ExamTestsManager />} />
+                            <Route path='/admin/examTestsDetail/:id/' element={<ExamTestsDetail />} />
+                            <Route path='/admin/examTestsDetail/add/' element={<ExamTestsDetail />} />
                         </Route>
 
                         <Route path="/" element={<Home />} />
