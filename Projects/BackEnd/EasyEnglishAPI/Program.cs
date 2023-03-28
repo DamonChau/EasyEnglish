@@ -43,6 +43,7 @@ else
 
 app.UseAuthorization();
 
+app.MapGet("/api/hello", () => "Hello World!");
 app.MapControllers();
 
 app.Run();

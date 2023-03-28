@@ -8,6 +8,7 @@ using System.Collections.Generic;
 
 namespace EasyEnglishAPI.Controllers
 {
+    [ApiController]
     public class ExamTestsController : Controller
     {
         private readonly ExamTestsDAL _object;
