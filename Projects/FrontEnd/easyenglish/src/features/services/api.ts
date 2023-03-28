@@ -9,7 +9,6 @@ const baseQuery = fetchBaseQuery({
         const token = (getState() as RootState).auth.token
         if (token) {
             headers.set('authentication', `${token}`)
-            headers.set('Content-Type', 'application/json')
         }
         return headers
     },
