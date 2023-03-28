@@ -14,9 +14,14 @@ builder.Services.AddDbContext<EasyEnglishContext>(opt =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
+builder.Services.AddCors(p => p.AddPolicy("corsappDev", builder =>
 {
     builder.WithOrigins("http://localhost:3000", "https://easyenglish.azurewebsites.net").AllowAnyMethod().AllowAnyHeader();
+}));
+
+builder.Services.AddCors(p => p.AddPolicy("corsappPrd", builder =>
+{
+    builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
 }));
 
 
@@ -27,9 +32,14 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseCors("corsappDev");
+}
+else
+{
+    app.UseCors("corsappPrd");
 }
 
-app.UseCors("corsapp");
+
 
 app.UseAuthorization();
 

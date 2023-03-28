@@ -4,16 +4,12 @@ import { RootState } from '../services'
 
 const baseQuery = fetchBaseQuery({
     baseUrl: config.url.API_URL,
-    credentials: "same-origin",
-    mode: "cors",
     prepareHeaders: (headers, { getState }) => {
         
         const token = (getState() as RootState).auth.token
         if (token) {
             headers.set('authentication', `${token}`)
             headers.set('Content-Type', 'application/json')
-            headers.set('Accept', 'application/json')
-            headers.set('Origin', config.url.API_URL)
         }
         return headers
     },
