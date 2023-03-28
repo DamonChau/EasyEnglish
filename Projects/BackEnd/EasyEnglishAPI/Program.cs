@@ -16,12 +16,12 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(p => p.AddPolicy("corsappDev", builder =>
 {
-    builder.WithOrigins("http://localhost:3000", "https://easyenglish.azurewebsites.net").AllowAnyMethod().AllowAnyHeader();
+    builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader();
 }));
 
 builder.Services.AddCors(p => p.AddPolicy("corsappPrd", builder =>
 {
-    builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+    builder.WithOrigins("https://easyenglish.azurewebsites.net").AllowAnyMethod().AllowAnyHeader();
 }));
 
 
@@ -43,7 +43,7 @@ else
 
 app.UseAuthorization();
 
-app.MapGet("/api/hello", () => "Hello World!");
+
 app.MapControllers();
 
 app.Run();

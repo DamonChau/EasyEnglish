@@ -13,7 +13,7 @@ export const messageDuplication = 'Duplicate date!!!'
 const prod = {
     url: {
         API_URL_FOLDER: '',
-        API_URL: 'https://easyenglish.azurewebsites.net/'
+        API_URL: 'https://easyenglishapi.azurewebsites.net/'
     }
 };
 const dev = {
