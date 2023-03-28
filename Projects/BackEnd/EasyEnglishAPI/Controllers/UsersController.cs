@@ -22,11 +22,19 @@ namespace EasyEnglishAPI.Controllers
         [Route("api/Users/login")]
         public IActionResult Login([FromBody] User u)
         {
-            User r = _objectuser.Login(u);
-            
-            if (r != null)
-                return Ok(new { token = GenerateJSONWebToken(r), user = r });
-            return Ok(new { error = "The username or password provided were incorrect!" });
+            try
+            {
+                User r = _objectuser.Login(u);
+
+                if (r != null)
+                    return Ok(new { token = GenerateJSONWebToken(r), user = r });
+                return Ok(new { error = "The username or password provided were incorrect!" });
+            }
+            catch (Exception ex)
+            {
+                return this.Content(ex.Message);
+            }
+
         }
 
         private string GenerateJSONWebToken(User userInfo)
