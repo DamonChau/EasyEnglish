@@ -12,6 +12,7 @@ const baseQuery = fetchBaseQuery({
         }
         return headers
     },
+    responseHandler: (response) => response.text(),
 })
 
 const baseQueryWithRetry = retry(baseQuery, { maxRetries: 3 })
