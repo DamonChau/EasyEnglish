@@ -20,7 +20,7 @@ builder.Services.AddCors(p => p.AddPolicy("corsappDev", builder =>
 
 builder.Services.AddCors(p => p.AddPolicy("corsappPrd", builder =>
 {
-    builder.WithOrigins("https://easyenglish.azurewebsites.net/").AllowAnyMethod().AllowAnyHeader();
+    builder.WithOrigins("https://easyenglish.azurewebsites.net").AllowAnyMethod().AllowAnyHeader();
 }));
 
 
