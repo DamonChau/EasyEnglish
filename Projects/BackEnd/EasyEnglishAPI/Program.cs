@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using EasyEnglishAPI.Models;
-using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,28 +20,25 @@ builder.Services.AddCors(p => p.AddPolicy("corsappDev", builder =>
 
 builder.Services.AddCors(p => p.AddPolicy("corsappPrd", builder =>
 {
-    builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+    builder.WithOrigins("https://easyenglish.azurewebsites.net/").AllowAnyMethod().AllowAnyHeader();
 }));
 
 
 var app = builder.Build();
+app.UseSwagger();
 
 // Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
+if (app.Environment.IsDevelopment())
+{   
     app.UseSwaggerUI();
     app.UseCors("corsappDev");
 }
-//else
-//{
-//    app.UseCors("corsappPrd");
-//}
-
-
+else
+{
+    app.UseCors("corsappPrd");
+}
 
 app.UseAuthorization();
-
 
 app.MapControllers();
 
