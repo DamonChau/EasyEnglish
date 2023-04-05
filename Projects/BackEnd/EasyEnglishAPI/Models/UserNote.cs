@@ -1,24 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 
-#nullable disable
+namespace EasyEnglishAPI.Models;
 
-namespace EasyEnglishAPI.Models
+public partial class UserNote
 {
-    public partial class UserNote
-    {
-        public UserNote()
-        {
-            UserAnswerNotes = new HashSet<UserAnswerNote>();
-        }
+    public Guid Id { get; set; }
 
-        public Guid Id { get; set; }
-        public string Content { get; set; }
-        public int? Status { get; set; }
-        public DateTime? CreatedDate { get; set; }
-        public Guid? CreatedBy { get; set; }
+    public string? Content { get; set; }
 
-        public virtual User CreatedByNavigation { get; set; }
-        public virtual ICollection<UserAnswerNote> UserAnswerNotes { get; set; }
-    }
+    public int? Status { get; set; }
+
+    public DateTime? CreatedDate { get; set; }
+
+    public Guid? CreatedBy { get; set; }
+
+    public Guid? UserAnswerId { get; set; }
+
+    public virtual User? CreatedByNavigation { get; set; }
+
+    public virtual UserAnswer? UserAnswer { get; set; }
 }

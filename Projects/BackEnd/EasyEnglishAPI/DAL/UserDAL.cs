@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using EasyEnglishAPI.Models;
+﻿using EasyEnglishAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace EasyEnglishAPI.DAL
@@ -14,39 +11,11 @@ namespace EasyEnglishAPI.DAL
         {
             _context = context;
         }
-        public IEnumerable<User> GetAllUsers()
+        public async Task<IEnumerable<User>> GetAllUsers()
         {
             try
             {
-                return _context.Users.ToList();
-            }
-            catch
-            {
-                throw;
-            }
-        }
-        
-        public int AddUser(User u)
-        {
-            try
-            {
-                _context.Users.Add(u);
-                _context.SaveChanges();
-                return 1;
-            }
-            catch
-            {
-                throw;
-            }
-        }
-        
-        public int UpdateUser(User u)
-        {
-            try
-            {
-                _context.Entry(u).State = EntityState.Modified;
-                _context.SaveChanges();
-                return 1;
+                return await _context.Users.ToListAsync();
             }
             catch
             {
@@ -54,21 +23,52 @@ namespace EasyEnglishAPI.DAL
             }
         }
 
-        public int UpdateUserM(User u)
+        public async Task<User> AddUser(User u)
+        {
+            try
+            {
+                _context.Users.Add(u);
+                await _context.SaveChangesAsync();
+                return u;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<User> UpdateUser(User u)
+        {
+            try
+            {
+                _context.Entry(u).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return u;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<User> UpdateUserM(User u)
         {
             try
             {
                 using (var context = _context)
                 {
-                    var user = context.Users.Find(u.Id);
+                    var user = await context.Users.FindAsync(u.Id);
+                    if (user != null)
+                    {
 
-                    user.UserName = u.UserName;
-                    user.Status = u.Status;
-                    user.CreatedDate = DateTime.Now;
+                        user.UserName = u.UserName;
+                        user.Status = u.Status;
+                        user.CreatedDate = DateTime.Now;
 
-                    context.SaveChanges();
+                        await context.SaveChangesAsync();
+                    }
                 }
-                return 1;
+                return u;
             }
             catch
             {
@@ -77,16 +77,23 @@ namespace EasyEnglishAPI.DAL
             }
         }
 
-        
-        public User Login(User u)
+        public async Task<User?> Login(User u)
         {
             try
             {
-                User r = _context.Users.SingleOrDefault(user => user.UserName == u.UserName);
-                if (r != null && r.Password == u.Password)
+                if (u != null)
                 {
-                    return r;
-
+                    using (var context = _context)
+                    {
+                        User? r = await _context.Users.SingleOrDefaultAsync(user => user.UserName == u.UserName);
+                        if (r != null && r.Password == u.Password)
+                        {
+                            r.LoginDate = DateTime.Now;
+                            await context.SaveChangesAsync();
+                            return r;
+                        }
+                        return null;
+                    }
                 }
                 return null;
             }
@@ -96,28 +103,29 @@ namespace EasyEnglishAPI.DAL
             }
         }
 
-        
-        public User GetUserData(Guid id)
+        public async Task<User?> GetUserData(Guid id)
         {
             try
             {
-                User u = _context.Users.Find(id);
-                return u;
+               return await _context.Users.FindAsync(id);
             }
             catch
             {
                 throw;
             }
         }
-        
-        public int DeleteUser(Guid id)
+
+        public async Task<User?> DeleteUser(Guid id)
         {
             try
             {
-                User u = _context.Users.Find(id);
-                _context.Users.Remove(u);
-                _context.SaveChanges();
-                return 1;
+                User? u = await _context.Users.FindAsync(id);
+                if (u != null)
+                {
+                    _context.Users.Remove(u);
+                    await _context.SaveChangesAsync();
+                }
+                return null;
             }
             catch
             {

@@ -8,16 +8,19 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'build'),
     filename: 'bundle.js',
-    sourceMapFilename: '[name].[hash].map',
-    assetModuleFilename: 'static/[hash][ext]'
+    sourceMapFilename: '[file].[hash:8].map[query]',
+    assetModuleFilename: 'static/[name].[hash:8].[ext]'
   },
   devServer: {
     static: {
-        directory: path.join(__dirname, "build")
+        directory: path.join(__dirname, "build"),
       },
   
-      compress: true,
-      port: 3000, // default 8000
+    compress: true,
+    port: 3000, // default 8000
+    historyApiFallback: true,
+   
+    hot: true
   },
   devtool: 'source-map',
   resolve: {

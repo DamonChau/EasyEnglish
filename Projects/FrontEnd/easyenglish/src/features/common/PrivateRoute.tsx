@@ -1,8 +1,8 @@
 ﻿/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as  React from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { useTypedSelector } from '../../features/services';
-import { selectIsAuthenticated, selectLoggedUser } from '../../features/services/slices/authSlice'
+import { useTypedSelector } from '../../services';
+import { selectIsAuthenticated, selectLoggedUser } from '../../services/slices/authSlice'
 
 const PrivateRoute = () => {
     const isAuthenticated = useTypedSelector(selectIsAuthenticated)

@@ -1,10 +1,8 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using EasyEnglishAPI.Models;
 using EasyEnglishAPI.DAL;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
-using System.Collections.Generic;
 
 namespace EasyEnglishAPI.Controllers
 {
@@ -20,19 +18,23 @@ namespace EasyEnglishAPI.Controllers
 
         [HttpPost]
         [Route("api/Users/login")]
-        public IActionResult Login([FromBody] User u)
+        public async Task<ActionResult<User>> Login([FromBody] User u)
         {
             try
             {
-                User r = _objectuser.Login(u);
+                if (_objectuser is not null)
+                {
+                    User? r = await _objectuser.Login(u);
 
-                if (r != null)
-                    return Ok(new { token = GenerateJSONWebToken(r), user = r });
-                return Ok(new { error = "The username or password provided were incorrect!" });
+                    if (r != null)
+                        return Ok(new { token = GenerateJSONWebToken(r), user = r });
+                    return Ok(new { error = "The username or password provided were incorrect!" });
+                }
+                return NotFound();
             }
             catch (Exception ex)
             {
-                return this.Content(ex.Message);
+                return BadRequest(ex.Message);
             }
 
         }
@@ -80,36 +82,37 @@ namespace EasyEnglishAPI.Controllers
 
         [HttpGet]
         [Route("api/Users/GetAll")]
-        public IEnumerable<User> GetAll()
+        public async Task<ActionResult<IEnumerable<User>>> GetAll()
         {
-            return _objectuser.GetAllUsers();
+            return Ok(await _objectuser.GetAllUsers());
         }
 
         [HttpPost]
         [Route("api/Users/Create")]
-        public int Create(User u)
+        public async Task<ActionResult<User>> Create(User u)
         {
-            return _objectuser.AddUser(u);
+            return Ok(await _objectuser.AddUser(u));
         }
 
         [HttpGet]
         [Route("api/Users/Details/{id}")]
-        public User Details(Guid id)
+        public async Task<ActionResult<User>> Details(Guid id)
         {
-            return _objectuser.GetUserData(id);
+            return Ok(await _objectuser.GetUserData(id));
         }
 
         [HttpPut]
         [Route("api/Users/Edit")]
-        public int Edit(User u)
+        public async Task<ActionResult<User>> Edit(User u)
         {
-            return _objectuser.UpdateUserM(u);
+            return Ok(await _objectuser.UpdateUserM(u));
         }
+
         [HttpDelete]
         [Route("api/Users/Delete/{id}")]
-        public int Delete(Guid id)
+        public async Task<ActionResult<User>> Delete(Guid id)
         {
-            return _objectuser.DeleteUser(id);
+            return Ok(await _objectuser.DeleteUser(id));
         }
     }
 }

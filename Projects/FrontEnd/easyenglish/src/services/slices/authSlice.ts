@@ -1,5 +1,6 @@
-﻿import { createSlice } from '@reduxjs/toolkit'
-import { examTestsApi } from '../../examTests/examTests'
+﻿/* eslint-disable @typescript-eslint/no-unused-vars */
+import { createSlice } from '@reduxjs/toolkit'
+import { examTestsApi } from '../../features/examTests/examTestsApi'
 import type { Users } from '../../interfaces/interfaces'
 import type { RootState } from '../'
 
@@ -18,16 +19,16 @@ const slice = createSlice({
     extraReducers: (builder) => {
         builder
             .addMatcher(examTestsApi.endpoints.login.matchPending, (state, action) => {
-                console.log('pending', action)
+                //console.log('pending', action)
             })
             .addMatcher(examTestsApi.endpoints.login.matchFulfilled, (state, action) => {
-                console.log('fulfilled', action)
+                //console.log('fulfilled', action)
                 state.user = action.payload.user
                 state.token = action.payload.token
                 state.isAuthenticated = true
             })
             .addMatcher(examTestsApi.endpoints.login.matchRejected, (state, action) => {
-                console.log('rejected', action)
+                //console.log('rejected', action)
             })
     },
 })

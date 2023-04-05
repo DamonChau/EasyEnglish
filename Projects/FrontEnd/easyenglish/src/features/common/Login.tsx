@@ -3,11 +3,11 @@
 import * as React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { useLoginMutation } from '../examTests/examTests'
+import { useLoginMutation } from '../examTests/examTestsApi'
 import { useSelector } from 'react-redux'
-import { selectIsAuthenticated, logout } from '../services/slices/authSlice'
-import { Users } from '../interfaces/interfaces'
-import { config } from '../helpers/contants'
+import { selectIsAuthenticated, logout } from '../../services/slices/authSlice'
+import { Users } from '../../interfaces/interfaces'
+import { config } from '../../helpers/contants'
 
 const Login = () => {
 

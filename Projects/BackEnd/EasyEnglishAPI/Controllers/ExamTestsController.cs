@@ -20,37 +20,37 @@ namespace EasyEnglishAPI.Controllers
 
         [HttpGet]
         [Route("api/ExamTests/GetAll")]
-        public IEnumerable<ExamTest> GetAll()
+        public async Task<ActionResult<IEnumerable<ExamTest>>> GetAll()
         {
-            return _object.GetAllExamTests();
+            return  Ok(await _object.GetAllExamTests());
         }
 
         [HttpPost]
         [Route("api/ExamTests/Create")]
-        public int Create([FromBody]ExamTest u)
+        public async Task<ActionResult<ExamTest>> Create([FromBody]ExamTest u)
         {
-            return _object.AddExamTests(u);
+            return Ok(await _object.AddExamTests(u));
         }
 
         [HttpGet]
         [Route("api/ExamTests/Details/{id}")]
-        public ExamTest Details(Guid id)
+        public async Task<ActionResult<ExamTest>> Details(Guid id)
         {
-            return _object.GetExamTests(id);
+            return Ok(await _object.GetExamTests(id));
         }
 
         [HttpPut]
-        [Route("api/ExamTests/Edit/{id}")]
-        public int Edit([FromBody]ExamTest u)
+        [Route("api/ExamTests/Edit")]
+        public async Task<ActionResult<ExamTest>> Edit([FromBody]ExamTest u)
         {
-            return _object.UpdateExamTests(u);
+            return Ok(await _object.UpdateExamTests(u));
         }
 
         [HttpDelete]
         [Route("api/ExamTests/Delete/{id}")]
-        public int Delete(Guid id)
+        public async Task<ActionResult<ExamTest>> Delete(Guid id)
         {
-            return _object.Delete(id);
+            return Ok(await _object.Delete(id));
         }
     }
 }

@@ -1,12 +1,13 @@
 ﻿export interface ExamTests {
     id: string
-    testName: string
+    testname: string
     title: string
     content: string
     description: string
     testType: number
+    sectionType: number
     status: number
-    createdDate: Date
+    createdDate: string
     createdBy: string
 }
 
@@ -22,7 +23,8 @@ export interface Users {
     description: string
     token: number
     status: number
-    createdDate: Date
+    createdDate: string
+    loginDate: string
 }
 
 export interface Questions {
@@ -33,7 +35,7 @@ export interface Questions {
     description: string
     questionType: number
     status: number
-    createdDate: Date
+    createdDate: string
     createdBy: string
 
 }
@@ -47,7 +49,7 @@ export interface Lessons {
     lessonType: number
     hashTag: string
     status: number
-    createdDate: Date
+    createdDate: string
     createdBy: string
     lessonCategory: string
 }
@@ -57,7 +59,7 @@ export interface Improvements {
     title: string
     description: string
     content: string
-    createdDate: Date
+    createdDate: string
     createdBy: string
 }
 
@@ -65,7 +67,7 @@ export interface Feedbacks {
     id: string
     content: string
     status: number
-    createdDate: Date
+    createdDate: string
     createdBy: string
 }
 
@@ -75,6 +77,25 @@ export interface ActionLogs {
     actionType: number
     description: string
     value: string
-    createdDate: Date
+    createdDate: string
     createdBy: string
 }
+
+export const ExamTestType = [
+    { id: 1, name: 'IELTS'},
+    { id: 2, name: 'PTE'},
+    { id: 3, name: 'GE'},
+]
+
+export const ExamTestSectionType = [
+    { id: 1, name: 'Reading'},
+    { id: 2, name: 'Writing'},
+    { id: 3, name: 'Speaking'},
+    { id: 4, name: 'Listening'},
+]
+
+export const Status = [
+    { id: 1, name: 'Active'},
+    { id: 2, name: 'Inactive'},
+    { id: 3, name: 'Delete'},
+]

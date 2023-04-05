@@ -1,10 +1,10 @@
 ﻿/* eslint-disable @typescript-eslint/no-empty-function */
 import * as React from 'react';
 import { useEffect } from 'react';
-import { config } from '../../features/helpers/contants'
+import { config } from '../../helpers/contants'
 import { Link, useNavigate } from 'react-router-dom';
-import { useTypedSelector, useAppDispatch } from '../../features/services';
-import { selectIsAuthenticated, logout } from '../../features/services/slices/authSlice'
+import { useTypedSelector, useAppDispatch } from '../../services';
+import { selectIsAuthenticated, logout } from '../../services/slices/authSlice'
 
 const Header = () => {
     const isAuthenticated = useTypedSelector(selectIsAuthenticated)
@@ -72,10 +72,10 @@ const Header = () => {
                                         Admin
                                     </a>
                                     <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <li className="nav-item"><Link className="nav-link" to={config.url.API_URL_FOLDER + "/admin/examTestsManager"}>Exam Tests Manager</Link></li>
-                                        <li className="nav-item"><Link className="nav-link" to={config.url.API_URL_FOLDER + "/admin/examTestsDetail/add"}>Exam Tests Detail</Link></li>
-                                        <li role="separator" className="divider"></li>
                                         <li className="nav-item"><a role="button" className="nav-link" onClick={() => clickLogout()}>Logout</a></li>
+                                        <li role="separator" className="dropdown-divider"></li>
+                                        <li className="nav-item"><Link className="nav-link" to={config.url.API_URL_FOLDER + "/admin/examTestsManager"}>Exam Tests Manager</Link></li>
+                                        <li className="nav-item"><Link className="nav-link" to={config.url.API_URL_FOLDER + "/admin/examTestsDetail/add"}>Exam Tests Detail</Link></li>   
                                     </ul>
                                 </li>
                             }

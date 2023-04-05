@@ -1,24 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using EasyEnglishAPI.Models;
+﻿using EasyEnglishAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace EasyEnglishAPI.DAL
 {
-    public class ExamTestsDAL
+    public class QuestionDAL
     {
         private readonly EasyEnglishContext _context;
 
-        public ExamTestsDAL(EasyEnglishContext context)
+        public QuestionDAL(EasyEnglishContext context)
         {
             _context = context;
         }
-        public async Task<IEnumerable<ExamTest>> GetAllExamTests()
+
+        public async Task<IEnumerable<Question>> GetAllQuestions()
         {
             try
             {
-                return await _context.ExamTests.ToListAsync();
+                return await _context.Questions.ToListAsync();
             }
             catch
             {
@@ -26,14 +24,11 @@ namespace EasyEnglishAPI.DAL
             }
         }
 
-        public async Task<ExamTest> AddExamTests(ExamTest u)
+        public async Task<Question> AddQuestion(Question u)
         {
             try
             {
-
-                u.Id = Guid.NewGuid();
-                u.CreatedDate = DateTime.Now;
-                await _context.ExamTests.AddAsync(u);
+                _context.Questions.Add(u);
                 await _context.SaveChangesAsync();
                 return u;
             }
@@ -43,11 +38,10 @@ namespace EasyEnglishAPI.DAL
             }
         }
 
-        public async Task<ExamTest> UpdateExamTests(ExamTest u)
+        public async Task<Question> UpdateQuestion(Question u)
         {
             try
             {
-                u.CreatedDate = DateTime.Now;
                 _context.Entry(u).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
                 return u;
@@ -58,31 +52,27 @@ namespace EasyEnglishAPI.DAL
             }
         }
 
-
-        public async Task<ExamTest?> GetExamTests(Guid id)
+        public async Task<Question?> GetQuestion(Guid id)
         {
             try
             {
-                return  await _context.ExamTests.FindAsync(id);
-                
+                return await _context.Questions.FindAsync(id);
             }
             catch
             {
                 throw;
-
             }
         }
 
-        public async Task<ExamTest?> Delete(Guid id)
+        public async Task<Question?> Delete(Guid id)
         {
             try
             {
-                ExamTest? u = await _context.ExamTests.FindAsync(id);
+                Question? u = await _context.Questions.FindAsync(id);
                 if (u != null)
                 {
-                     _context.ExamTests.Remove(u);
+                    _context.Questions.Remove(u);
                     await _context.SaveChangesAsync();
-                    
                 }
                 return null;
             }

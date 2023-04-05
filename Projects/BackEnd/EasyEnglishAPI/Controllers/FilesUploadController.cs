@@ -25,7 +25,7 @@ namespace EasyEnglishAPI.Controllers
             string requestUrl = Request.Scheme + "://" + Request.Host + Request.PathBase;
             string filename = "";
             string uploadFolder = "";
-            string tmp = @"https://i.natgeofe.com/n/4f5aaece-3300-41a4-b2a8-ed2708a0a27c/domestic-dog_thumb_square.jpg";
+            
             try
             {
                 var file = colForm.Files[0];
@@ -33,9 +33,9 @@ namespace EasyEnglishAPI.Controllers
                 if (file.Length > 0)
                 {
                     if (_hostingEnvironment.EnvironmentName.ToLower().Contains("dev"))
-                        uploadFolder = @"\public\uploadFiles";
+                        uploadFolder = @"\uploadFiles";
                     else
-                        uploadFolder = @"\build\uploadFiles";
+                        uploadFolder = @"\uploadFiles";
 
                     string path = Path.Combine(_hostingEnvironment.ContentRootPath, uploadFolder);
                     filename = file.FileName.Replace(".plain", "").Replace(".msword", "").Replace(".vnd", "");
@@ -45,7 +45,7 @@ namespace EasyEnglishAPI.Controllers
                         await file.CopyToAsync(fs);
                     }
                 }
-                //return Ok(new { success = "true", data = new { link = tmp } });
+                
                 return Ok(new { success = "true", data = new { link = requestUrl + "/uploadFiles/" + filename } });
             }
             catch (Exception e)

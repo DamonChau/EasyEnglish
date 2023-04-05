@@ -1,10 +1,11 @@
 ﻿/* eslint-disable @typescript-eslint/no-explicit-any */
-import { api } from '../services/api'
-import { ExamTests, Users } from '../interfaces/interfaces'
-type ExamTestsResponse = ExamTests[]
+import { api } from '../../services/api'
+import { ExamTests, Users } from '../../interfaces/interfaces'
+export type ExamTestsResponse = ExamTests[]
 
 export const examTestsApi = api.injectEndpoints({
     endpoints: (build) => ({
+        //params: first is the respone - toke&user, sendcond one is the params - any
         login: build.mutation<{ token: string; user: Users }, any>({
             query: (credentials: any) => ({
                 url: '/api/Users/login',
@@ -32,10 +33,9 @@ export const examTestsApi = api.injectEndpoints({
             invalidatesTags: [{ type: 'examTests', id: 'LIST' }],
         }),
         updateExamTest: build.mutation<ExamTests, Partial<ExamTests>>({
-            query(data) {
-                const { id, ...body } = data
+            query(body) {
                 return {
-                    url: `api/ExamTests/Edit/${id}`,
+                    url: `api/ExamTests/Edit`,
                     method: 'PUT',
                     body,
                 }
