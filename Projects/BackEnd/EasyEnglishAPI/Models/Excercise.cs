@@ -29,8 +29,6 @@ public partial class Excercise
 
     public virtual ExcerciseCategory? Cat { get; set; }
 
-    public virtual User? CreatedByNavigation { get; set; }
-
     public virtual Lesson? Lesson { get; set; }
 
     public virtual ICollection<Question> Questions { get; } = new List<Question>();

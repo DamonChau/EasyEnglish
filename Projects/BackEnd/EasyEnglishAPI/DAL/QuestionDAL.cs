@@ -12,6 +12,34 @@ namespace EasyEnglishAPI.DAL
             _context = context;
         }
 
+
+        public async Task<IEnumerable<Question>> GetAllQuestionsByExamTest(Guid examTestId)
+        {
+            try
+            {
+                return await _context.Questions.Where(q => q.ExamTestId == examTestId).OrderBy(q => q.Order).ToListAsync();
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<Question>> GetAllQuestionsByExamTestWithQD(Guid examTestId)
+        {
+            try
+            {
+                return await _context.Questions
+                    .Include(q => q.QuestionDetails.OrderBy(qd => qd.Order))
+                    .Where(q => q.ExamTestId == examTestId)
+                    .OrderBy(q => q.Order).ToListAsync();
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
         public async Task<IEnumerable<Question>> GetAllQuestions()
         {
             try
@@ -28,6 +56,8 @@ namespace EasyEnglishAPI.DAL
         {
             try
             {
+                u.Id = Guid.NewGuid();
+                u.CreatedDate = DateTime.Now;
                 _context.Questions.Add(u);
                 await _context.SaveChangesAsync();
                 return u;

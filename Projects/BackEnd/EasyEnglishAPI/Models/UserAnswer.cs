@@ -21,6 +21,10 @@ public partial class UserAnswer
 
     public int? Status { get; set; }
 
+    public Guid? ExamResultId { get; set; }
+
+    public virtual ExamResult? ExamResult { get; set; }
+
     public virtual ICollection<Feedback> Feedbacks { get; } = new List<Feedback>();
 
     public virtual QuestionDetail? QuestionDetail { get; set; }

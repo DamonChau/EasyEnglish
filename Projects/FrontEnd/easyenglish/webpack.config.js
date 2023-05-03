@@ -2,6 +2,8 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const CompressionPlugin = require("compression-webpack-plugin");
 
 module.exports = {
   entry: './src/index.tsx',
@@ -25,6 +27,7 @@ module.exports = {
   devtool: 'source-map',
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
+    fallback: { crypto: false },
   },
   mode: 'production',
   performance: {
@@ -80,6 +83,13 @@ module.exports = {
           from: path.resolve(__dirname, 'src/assests'),
           to: path.resolve(__dirname, 'build'),
         }]
-  })
+    }),
+    new BundleAnalyzerPlugin(),
+    new CompressionPlugin({
+      algorithm: "gzip",
+      test: /\.js$|\.css$|\.html$/,
+      threshold: 10240,
+      minRatio: 0.8
+    })
   ],
 };

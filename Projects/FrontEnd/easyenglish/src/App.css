@@ -28,6 +28,24 @@
   color: #61dafb;
 }
 
+.question-answer-speaking-audio{
+  width: 100%;
+}
+
+.rounded{
+  border-radius: 9px!important;
+}
+
+.stop-watch-timer{
+  position: fixed;
+  z-index: 9999;
+  width: 250px;
+}
+
+.examview-note{
+  background-color: #f7f7f7;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

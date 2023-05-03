@@ -11,3 +11,4 @@ insert into [dbo].[Users](Id, UserName, Password, status, createddate) values(ne
  ALTER TABLE Questions ALTER COLUMN [Content] nvarchar(max);
  ALTER TABLE UserAnswers ALTER COLUMN Answer nvarchar(max);
  ALTER TABLE UserNotes ALTER COLUMN [Content] nvarchar(max);
+ ALTER TABLE UserAnswers ALTER COLUMN AudioFile varbinary(max);

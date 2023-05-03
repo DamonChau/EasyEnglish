@@ -1,20 +1,11 @@
 ﻿/* eslint-disable @typescript-eslint/no-empty-function */
-import * as React from 'react'
-import { useEffect } from 'react'
+import React, { useEffect } from "react";
+import ExamTestsHome from "../examTests/ExamTestsHome";
 
 const Home = () => {
-    
-    useEffect(() => {
-        
-    }, []);
+  useEffect(() => {}, []);
 
-    return (
-
-        <div>
-           Home
-        </div>
-    );
-
-}
+  return <ExamTestsHome />;
+};
 
 export default Home;

@@ -17,7 +17,11 @@ public partial class UserNote
 
     public Guid? UserAnswerId { get; set; }
 
+    public Guid? ExamResultId { get; set; }
+
     public virtual User? CreatedByNavigation { get; set; }
+
+    public virtual ExamResult? ExamResult { get; set; }
 
     public virtual UserAnswer? UserAnswer { get; set; }
 }

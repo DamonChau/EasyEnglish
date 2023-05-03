@@ -25,6 +25,13 @@ namespace EasyEnglishAPI.Controllers
             return  Ok(await _object.GetAllExamTests());
         }
 
+        [HttpGet]
+        [Route("api/ExamTests/GetAllExamTestsBySection/{testType}/{sectionType}")]
+        public async Task<ActionResult<IEnumerable<ExamTest>>> GetAllExamTestsBySection(int testType, int sectionType)
+        {
+            return Ok(await _object.GetAllExamTestsBySection(testType, sectionType));
+        }
+
         [HttpPost]
         [Route("api/ExamTests/Create")]
         public async Task<ActionResult<ExamTest>> Create([FromBody]ExamTest u)

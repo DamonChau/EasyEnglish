@@ -18,7 +18,28 @@ namespace EasyEnglishAPI.DAL
         {
             try
             {
-                return await _context.ExamTests.ToListAsync();
+                return await _context.ExamTests.OrderBy(t => t.TestType)
+                                                .ThenBy(t => t.SectionType)
+                                                .ThenByDescending(t => t.CreatedDate)
+                                                .ThenBy(t => t.Testname)
+                                                .ThenBy(t => t.Title).ToListAsync();
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<ExamTest>> GetAllExamTestsBySection(int testType, int sectionType)
+        {
+            try
+            {
+                return await _context.ExamTests.Where(t => t.TestType == testType && t.SectionType == sectionType)
+                                                .OrderBy(t => t.TestType)
+                                                .ThenBy(t => t.SectionType)
+                                                .ThenByDescending(t => t.CreatedDate)
+                                                .ThenBy(t => t.Testname)
+                                                .ThenBy(t => t.Title).ToListAsync();
             }
             catch
             {
@@ -63,8 +84,8 @@ namespace EasyEnglishAPI.DAL
         {
             try
             {
-                return  await _context.ExamTests.FindAsync(id);
-                
+                return await _context.ExamTests.FindAsync(id);
+
             }
             catch
             {
@@ -80,9 +101,9 @@ namespace EasyEnglishAPI.DAL
                 ExamTest? u = await _context.ExamTests.FindAsync(id);
                 if (u != null)
                 {
-                     _context.ExamTests.Remove(u);
+                    _context.ExamTests.Remove(u);
                     await _context.SaveChangesAsync();
-                    
+
                 }
                 return null;
             }

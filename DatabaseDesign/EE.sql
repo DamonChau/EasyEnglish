@@ -5,6 +5,26 @@ IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id('[FK_ActionLog_User
 ALTER TABLE [ActionLogs] DROP CONSTRAINT [FK_ActionLog_User]
 ;
 
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id('[FK_Comments_Comments]') AND OBJECTPROPERTY(id, 'IsForeignKey') = 1)
+ALTER TABLE [Comments] DROP CONSTRAINT [FK_Comments_Comments]
+;
+
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id('[FK_Comments_ExamTests]') AND OBJECTPROPERTY(id, 'IsForeignKey') = 1)
+ALTER TABLE [Comments] DROP CONSTRAINT [FK_Comments_ExamTests]
+;
+
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id('[FK_Comments_Users]') AND OBJECTPROPERTY(id, 'IsForeignKey') = 1)
+ALTER TABLE [Comments] DROP CONSTRAINT [FK_Comments_Users]
+;
+
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id('[FK_ExamResults_ExamTests]') AND OBJECTPROPERTY(id, 'IsForeignKey') = 1)
+ALTER TABLE [ExamResults] DROP CONSTRAINT [FK_ExamResults_ExamTests]
+;
+
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id('[FK_ExamResults_Users]') AND OBJECTPROPERTY(id, 'IsForeignKey') = 1)
+ALTER TABLE [ExamResults] DROP CONSTRAINT [FK_ExamResults_Users]
+;
+
 IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id('[FK_ExamTest_User]') AND OBJECTPROPERTY(id, 'IsForeignKey') = 1)
 ALTER TABLE [ExamTests] DROP CONSTRAINT [FK_ExamTest_User]
 ;
@@ -23,6 +43,10 @@ ALTER TABLE [Excercises] DROP CONSTRAINT [FK_Excercise_User]
 
 IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id('[FK_Feedback_User]') AND OBJECTPROPERTY(id, 'IsForeignKey') = 1)
 ALTER TABLE [Feedbacks] DROP CONSTRAINT [FK_Feedback_User]
+;
+
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id('[FK_Feedbacks_ExamResults]') AND OBJECTPROPERTY(id, 'IsForeignKey') = 1)
+ALTER TABLE [Feedbacks] DROP CONSTRAINT [FK_Feedbacks_ExamResults]
 ;
 
 IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id('[FK_Feedbacks_UserAnswers]') AND OBJECTPROPERTY(id, 'IsForeignKey') = 1)
@@ -61,16 +85,24 @@ IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id('[FK_Questions_Exce
 ALTER TABLE [Questions] DROP CONSTRAINT [FK_Questions_Excercises]
 ;
 
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id('[FK_UserAnswer_User]') AND OBJECTPROPERTY(id, 'IsForeignKey') = 1)
-ALTER TABLE [UserAnswers] DROP CONSTRAINT [FK_UserAnswer_User]
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id('[FK_UserAnswers_ExamResults]') AND OBJECTPROPERTY(id, 'IsForeignKey') = 1)
+ALTER TABLE [UserAnswers] DROP CONSTRAINT [FK_UserAnswers_ExamResults]
 ;
 
 IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id('[FK_UserAnswers_QuestionDetails]') AND OBJECTPROPERTY(id, 'IsForeignKey') = 1)
 ALTER TABLE [UserAnswers] DROP CONSTRAINT [FK_UserAnswers_QuestionDetails]
 ;
 
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id('[FK_UserAnswers_Users]') AND OBJECTPROPERTY(id, 'IsForeignKey') = 1)
+ALTER TABLE [UserAnswers] DROP CONSTRAINT [FK_UserAnswers_Users]
+;
+
 IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id('[FK_UserNote_User]') AND OBJECTPROPERTY(id, 'IsForeignKey') = 1)
 ALTER TABLE [UserNotes] DROP CONSTRAINT [FK_UserNote_User]
+;
+
+IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id('[FK_UserNotes_ExamResults]') AND OBJECTPROPERTY(id, 'IsForeignKey') = 1)
+ALTER TABLE [UserNotes] DROP CONSTRAINT [FK_UserNotes_ExamResults]
 ;
 
 IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id('[FK_UserNotes_UserAnswers]') AND OBJECTPROPERTY(id, 'IsForeignKey') = 1)
@@ -80,6 +112,14 @@ ALTER TABLE [UserNotes] DROP CONSTRAINT [FK_UserNotes_UserAnswers]
 
 IF EXISTS (SELECT * FROM dbo.SYSOBJECTS WHERE id = object_id('[ActionLogs]') AND  OBJECTPROPERTY(id, 'IsUserTable') = 1)
 DROP TABLE [ActionLogs]
+;
+
+IF EXISTS (SELECT * FROM dbo.SYSOBJECTS WHERE id = object_id('[Comments]') AND  OBJECTPROPERTY(id, 'IsUserTable') = 1)
+DROP TABLE [Comments]
+;
+
+IF EXISTS (SELECT * FROM dbo.SYSOBJECTS WHERE id = object_id('[ExamResults]') AND  OBJECTPROPERTY(id, 'IsUserTable') = 1)
+DROP TABLE [ExamResults]
 ;
 
 IF EXISTS (SELECT * FROM dbo.SYSOBJECTS WHERE id = object_id('[ExamTests]') AND  OBJECTPROPERTY(id, 'IsUserTable') = 1)
@@ -148,6 +188,26 @@ CREATE TABLE [ActionLogs] (
 )
 ;
 
+CREATE TABLE [Comments] ( 
+	[Id] uniqueidentifier NOT NULL,
+	[Content] nvarchar(250) NULL,
+	[ExamTestId] uniqueidentifier NULL,
+	[CreatedBy] uniqueidentifier NULL,
+	[CreatedDate] datetime NULL,
+	[ParentId] uniqueidentifier NULL
+)
+;
+
+CREATE TABLE [ExamResults] ( 
+	[Id] uniqueidentifier NOT NULL,
+	[ExamTestId] uniqueidentifier NULL,
+	[Score] int NULL,
+	[NoQuestion] int NULL,
+	[CreatedDate] datetime NULL,
+	[CreatedBy] uniqueidentifier NULL
+)
+;
+
 CREATE TABLE [ExamTests] ( 
 	[Id] uniqueidentifier NOT NULL,
 	[Testname] nvarchar(125) NULL,
@@ -158,7 +218,8 @@ CREATE TABLE [ExamTests] (
 	[SectionType] int NULL,
 	[Status] int NULL,
 	[CreatedDate] datetime NULL,
-	[CreatedBy] uniqueidentifier NULL
+	[CreatedBy] uniqueidentifier NULL,
+	[AudioFile] nvarchar(125) NULL
 )
 ;
 
@@ -191,7 +252,8 @@ CREATE TABLE [Feedbacks] (
 	[Status] int NULL,
 	[CreatedDate] datetime NULL,
 	[CreatedBy] uniqueidentifier NULL,
-	[UserAnswerId] uniqueidentifier NULL
+	[UserAnswerId] uniqueidentifier NULL,
+	[ExamResultId] uniqueidentifier NULL
 )
 ;
 
@@ -246,8 +308,8 @@ CREATE TABLE [QuestionDetails] (
 	[Content] nvarchar(1000) NULL,
 	[Answer] nvarchar(1000) NULL,
 	[CreatedDate] datetime NULL,
-	[CreatedBy] uniqueidentifier NULL,
-	[QuestionId] uniqueidentifier NULL
+	[QuestionId] uniqueidentifier NULL,
+	[CreatedBy] uniqueidentifier NULL
 )
 ;
 
@@ -274,7 +336,8 @@ CREATE TABLE [UserAnswers] (
 	[Result] int NULL,
 	[Description] nvarchar(125) NULL,
 	[CreatedDate] datetime NULL,
-	[Status] int NULL
+	[Status] int NULL,
+	[ExamResultId] uniqueidentifier NULL
 )
 ;
 
@@ -284,7 +347,8 @@ CREATE TABLE [UserNotes] (
 	[Status] int NULL,
 	[CreatedDate] datetime NULL,
 	[CreatedBy] uniqueidentifier NULL,
-	[UserAnswerId] uniqueidentifier NULL
+	[UserAnswerId] uniqueidentifier NULL,
+	[ExamResultId] uniqueidentifier NULL
 )
 ;
 
@@ -293,7 +357,7 @@ CREATE TABLE [Users] (
 	[UserName] nvarchar(125) NULL,
 	[Email] nvarchar(125) NULL,
 	[PhoneNo] nvarchar(125) NULL,
-	[Password] nvarchar(20) NULL,
+	[Password] nvarchar(125) NULL,
 	[Address] nvarchar(256) NULL,
 	[BillingAddress] nvarchar(256) NULL,
 	[UserType] int NULL,
@@ -307,6 +371,14 @@ CREATE TABLE [Users] (
 
 
 ALTER TABLE [ActionLogs] ADD CONSTRAINT [PK_ActionLog] 
+	PRIMARY KEY CLUSTERED ([Id])
+;
+
+ALTER TABLE [Comments] ADD CONSTRAINT [PK_Comments] 
+	PRIMARY KEY CLUSTERED ([Id])
+;
+
+ALTER TABLE [ExamResults] ADD CONSTRAINT [PK_ExamResults] 
 	PRIMARY KEY CLUSTERED ([Id])
 ;
 
@@ -381,6 +453,26 @@ ALTER TABLE [ActionLogs] ADD CONSTRAINT [FK_ActionLog_User]
 	FOREIGN KEY ([CreatedBy]) REFERENCES [Users] ([Id])
 ;
 
+ALTER TABLE [Comments] ADD CONSTRAINT [FK_Comments_Comments] 
+	FOREIGN KEY ([ParentId]) REFERENCES [Comments] ([Id])
+;
+
+ALTER TABLE [Comments] ADD CONSTRAINT [FK_Comments_ExamTests] 
+	FOREIGN KEY ([ExamTestId]) REFERENCES [ExamTests] ([Id])
+;
+
+ALTER TABLE [Comments] ADD CONSTRAINT [FK_Comments_Users] 
+	FOREIGN KEY ([CreatedBy]) REFERENCES [Users] ([Id])
+;
+
+ALTER TABLE [ExamResults] ADD CONSTRAINT [FK_ExamResults_ExamTests] 
+	FOREIGN KEY ([ExamTestId]) REFERENCES [ExamTests] ([Id])
+;
+
+ALTER TABLE [ExamResults] ADD CONSTRAINT [FK_ExamResults_Users] 
+	FOREIGN KEY ([CreatedBy]) REFERENCES [Users] ([Id])
+;
+
 ALTER TABLE [ExamTests] ADD CONSTRAINT [FK_ExamTest_User] 
 	FOREIGN KEY ([CreatedBy]) REFERENCES [Users] ([Id])
 ;
@@ -401,6 +493,10 @@ ALTER TABLE [Excercises] ADD CONSTRAINT [FK_Excercise_User]
 
 ALTER TABLE [Feedbacks] ADD CONSTRAINT [FK_Feedback_User] 
 	FOREIGN KEY ([CreatedBy]) REFERENCES [Users] ([Id])
+;
+
+ALTER TABLE [Feedbacks] ADD CONSTRAINT [FK_Feedbacks_ExamResults] 
+	FOREIGN KEY ([ExamResultId]) REFERENCES [ExamResults] ([Id])
 ;
 
 ALTER TABLE [Feedbacks] ADD CONSTRAINT [FK_Feedbacks_UserAnswers] 
@@ -440,16 +536,24 @@ ALTER TABLE [Questions] ADD CONSTRAINT [FK_Questions_Excercises]
 	FOREIGN KEY ([ExcerciseId]) REFERENCES [Excercises] ([Id])
 ;
 
-ALTER TABLE [UserAnswers] ADD CONSTRAINT [FK_UserAnswer_User] 
-	FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id])
+ALTER TABLE [UserAnswers] ADD CONSTRAINT [FK_UserAnswers_ExamResults] 
+	FOREIGN KEY ([ExamResultId]) REFERENCES [ExamResults] ([Id])
 ;
 
 ALTER TABLE [UserAnswers] ADD CONSTRAINT [FK_UserAnswers_QuestionDetails] 
 	FOREIGN KEY ([QuestionDetailId]) REFERENCES [QuestionDetails] ([Id])
 ;
 
+ALTER TABLE [UserAnswers] ADD CONSTRAINT [FK_UserAnswers_Users] 
+	FOREIGN KEY ([UserId]) REFERENCES [Users] ([Id])
+;
+
 ALTER TABLE [UserNotes] ADD CONSTRAINT [FK_UserNote_User] 
 	FOREIGN KEY ([CreatedBy]) REFERENCES [Users] ([Id])
+;
+
+ALTER TABLE [UserNotes] ADD CONSTRAINT [FK_UserNotes_ExamResults] 
+	FOREIGN KEY ([ExamResultId]) REFERENCES [ExamResults] ([Id])
 ;
 
 ALTER TABLE [UserNotes] ADD CONSTRAINT [FK_UserNotes_UserAnswers] 

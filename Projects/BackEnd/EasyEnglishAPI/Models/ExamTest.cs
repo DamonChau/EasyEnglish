@@ -25,7 +25,13 @@ public partial class ExamTest
 
     public Guid? CreatedBy { get; set; }
 
+    public string? AudioFile { get; set; }
+
+    public virtual ICollection<Comment> Comments { get; } = new List<Comment>();
+
     public virtual User? CreatedByNavigation { get; set; }
+
+    public virtual ICollection<ExamResult> ExamResults { get; } = new List<ExamResult>();
 
     public virtual ICollection<Question> Questions { get; } = new List<Question>();
 }

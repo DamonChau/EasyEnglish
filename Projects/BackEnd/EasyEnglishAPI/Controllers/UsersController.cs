@@ -28,9 +28,9 @@ namespace EasyEnglishAPI.Controllers
 
                     if (r != null)
                         return Ok(new { token = GenerateJSONWebToken(r), user = r });
-                    return Ok(new { error = "The username or password provided were incorrect!" });
+                    return BadRequest(new { error = "The username or password provided were incorrect!" });
                 }
-                return NotFound();
+                return BadRequest();
             }
             catch (Exception ex)
             {

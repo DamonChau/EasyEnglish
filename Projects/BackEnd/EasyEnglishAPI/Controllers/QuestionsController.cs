@@ -21,9 +21,23 @@ namespace EasyEnglishAPI.Controllers
             return Ok(await _objectDAL.GetAllQuestions());
         }
 
+        [HttpGet]
+        [Route("api/Questions/GetAllExamTest/{examTestId}")]
+        public async Task<ActionResult<IEnumerable<Question>>> GetAllExamTest(Guid examTestId)
+        {
+            return Ok(await _objectDAL.GetAllQuestionsByExamTest(examTestId));
+        }
+
+        [HttpGet]
+        [Route("api/Questions/GetAllExamTestWithQD/{examTestId}")]
+        public async Task<ActionResult<IEnumerable<Question>>> GetAllExamTestWithQD(Guid examTestId)
+        {
+            return Ok(await _objectDAL.GetAllQuestionsByExamTestWithQD(examTestId));
+        }
+
         [HttpPost]
         [Route("api/Questions/Create")]
-        public async Task<ActionResult<Question>> Create(Question u)
+        public async Task<ActionResult<Question>> Create([FromBody] Question u)
         {
             return Ok(await _objectDAL.AddQuestion(u));
         }
@@ -37,7 +51,7 @@ namespace EasyEnglishAPI.Controllers
 
         [HttpPut]
         [Route("api/Questions/Edit")]
-        public async Task<ActionResult<Question>> Edit(Question u)
+        public async Task<ActionResult<Question>> Edit([FromBody] Question u)
         {
             return Ok(await _objectDAL.UpdateQuestion(u));
         }

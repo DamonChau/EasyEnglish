@@ -86,7 +86,7 @@ namespace EasyEnglishAPI.DAL
                     using (var context = _context)
                     {
                         User? r = await _context.Users.SingleOrDefaultAsync(user => user.UserName == u.UserName);
-                        if (r != null && r.Password == u.Password)
+                        if (r != null && BCrypt.Net.BCrypt.Verify(u.Password, r.Password))
                         {
                             r.LoginDate = DateTime.Now;
                             await context.SaveChangesAsync();
