@@ -26,6 +26,10 @@ import {
   ExamTestsResponse,
   useDeleteExamTestMutation,
 } from "./examTestsApi";
+import {
+  isFetchBaseQueryError,
+  isErrorWithMessage,
+} from "../../services/helpers";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -73,10 +77,17 @@ const ExamTestsManager = () => {
     navigate(config.url.API_URL_FOLDER + "/examTestsDetail/" + id);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (!window.confirm("Do you want to delete info with Id: " + id)) return;
     else {
-      deleteExamTest(id);
+      try {
+        await deleteExamTest(id).unwrap();
+      } catch (err) {
+        if (isFetchBaseQueryError(err)) {
+          const msg = "error" in err ? err.error : JSON.parse(JSON.stringify(err.data)).error;
+          setErrorMsg(msg);
+        } else if (isErrorWithMessage(err)) console.log(err.message);
+      }
     }
   };
 
@@ -256,7 +267,7 @@ const ExamTestsManager = () => {
           <div className="row">
             <div className="col-lg-8">
               <h2 className="mb-3">Exam Test Manager</h2>
-              {isError ? (
+              {erroMsg ? (
                 <div className="p-2 m-2 text-danger">{erroMsg}</div>
               ) : null}
               <div>

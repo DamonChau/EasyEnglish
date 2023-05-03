@@ -20,6 +20,10 @@ import {
 } from "../comments/commentApi";
 import { parseISO } from "date-fns";
 import isUUID from "validator/es/lib/isUUID";
+import {
+  isFetchBaseQueryError,
+  isErrorWithMessage,
+} from "../../services/helpers";
 
 const PostCommentForm = ({ loggedUser, examTestId, onSave, parentId }: any) => {
   const initial = {
@@ -127,10 +131,7 @@ export const PostComment = ({ examTestId }: any) => {
     useGetAllCommentsByExamQuery(examTestId, { skip: !isView });
   const [erroMsg, setErrorMsg] = useState("");
 
-  const [
-    addComment,
-    { isLoading: isAddLoading, isError: isAddError, error: errorAdd },
-  ] = useAddCommentMutation();
+  const [addComment] = useAddCommentMutation();
 
   useEffect(() => {
     if (examTestId && isUUID(examTestId)) {
@@ -156,8 +157,14 @@ export const PostComment = ({ examTestId }: any) => {
       if (comment.content?.length! > 0) {
         await addComment(comment).unwrap();
       }
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      if (isFetchBaseQueryError(err)) {
+        const msg =
+          "error" in err
+            ? err.error
+            : JSON.parse(JSON.stringify(err.data)).error;
+        setErrorMsg(msg);
+      } else if (isErrorWithMessage(err)) console.log(err.message);
     }
   };
 
@@ -169,7 +176,7 @@ export const PostComment = ({ examTestId }: any) => {
         </p>
       ) : (
         <div>
-          {isError ? (
+          {erroMsg ? (
             <div className="p-2 m-2 text-danger">{erroMsg}</div>
           ) : null}
           <div className="comment-form-wrap pt-5">

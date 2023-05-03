@@ -26,19 +26,17 @@ import { v4 as uuidv4 } from "uuid";
 import { ListAnswerResult } from "./QuestionAnswerReadingResult";
 import QuestionAnswerReadingDetails from "./QuestionAnswerReadingDetails";
 import { Alert } from "../common/Modals";
+import {
+  isFetchBaseQueryError,
+  isErrorWithMessage,
+} from "../../services/helpers";
 
 const QuestionAnswerReading = ({ testId, getExamResult }: any) => {
   const [isView, setView] = React.useState(false);
   const { data, isFetching, isLoading, isSuccess, isError, error } =
     useGetQuestionsWithQDQuery(testId, { skip: !isView });
-  const [
-    addUserAnswer,
-    { isLoading: isAddUALoading, isError: isAddUAError, error: errorUAAdd },
-  ] = useAddUserAnswerMutation();
-  const [
-    addExamResult,
-    { isLoading: isAddERLoading, isError: isAddERError, error: errorERAdd },
-  ] = useAddExamResultMutation();
+  const [addUserAnswer] = useAddUserAnswerMutation();
+  const [addExamResult] = useAddExamResultMutation();
 
   const [userAnswers, setUserAnswers] = useStateWithCallbackLazy<
     UserAnswersDisplay[]
@@ -197,8 +195,14 @@ const QuestionAnswerReading = ({ testId, getExamResult }: any) => {
         setTestResult(r);
         return r.id;
       }
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      if (isFetchBaseQueryError(err)) {
+        const msg =
+          "error" in err
+            ? err.error
+            : JSON.parse(JSON.stringify(err.data)).error;
+        setErrorMsg(msg);
+      } else if (isErrorWithMessage(err)) console.log(err.message);
     }
   };
 
@@ -232,8 +236,14 @@ const QuestionAnswerReading = ({ testId, getExamResult }: any) => {
           );
         });
       }
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      if (isFetchBaseQueryError(err)) {
+        const msg =
+          "error" in err
+            ? err.error
+            : JSON.parse(JSON.stringify(err.data)).error;
+        setErrorMsg(msg);
+      } else if (isErrorWithMessage(err)) console.log(err.message);
     }
   };
 
@@ -303,7 +313,7 @@ const QuestionAnswerReading = ({ testId, getExamResult }: any) => {
           Submit successfully!
         </Alert>
       </Snackbar>
-      {isError ? <div className="p-2 m-2 text-danger">{erroMsg}</div> : null}
+      {erroMsg ? <div className="p-2 m-2 text-danger">{erroMsg}</div> : null}
       {isLoading ? (
         <p>
           <em>Loading...</em>

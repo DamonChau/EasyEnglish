@@ -31,6 +31,10 @@ import isUUID from "validator/lib/isUUID";
 import Snackbar from "@mui/material/Snackbar";
 import { v4 as uuidv4 } from "uuid";
 import { Alert } from "../common/Modals";
+import {
+  isFetchBaseQueryError,
+  isErrorWithMessage,
+} from "../../services/helpers";
 
 const ExamTestsDetail = () => {
   const { id } = useParams();
@@ -61,18 +65,9 @@ const ExamTestsDetail = () => {
   //only load when isEditing=true
   const { data, isFetching, isLoading, isSuccess, isError, error } =
     useGetExamTestQuery(id!, { skip: !isEditing });
-  const [
-    updateExamTest,
-    { isLoading: isUpdateLoading, isError: isUpdateError, error: errorUpdate },
-  ] = useUpdateExamTestMutation();
-  const [
-    addExamTest,
-    { isLoading: isAddLoading, isError: isAddError, error: errorAdd },
-  ] = useAddExamTestMutation();
-  const [
-    uploadFile,
-    { isLoading: isAddUFLoading, isError: isAddUFError, error: errorUFAdd },
-  ] = useUploadFilesMutation();
+  const [updateExamTest] = useUpdateExamTestMutation();
+  const [addExamTest] = useAddExamTestMutation();
+  const [uploadFile] = useUploadFilesMutation();
 
   //#region UseEffect
   //check id is valid to enable editing mode
@@ -161,7 +156,13 @@ const ExamTestsDetail = () => {
       clearFields(e); // clear input box
     } catch (err) {
       setOpen(false);
-      console.debug(err);
+      if (isFetchBaseQueryError(err)) {
+        const msg =
+          "error" in err
+            ? err.error
+            : JSON.parse(JSON.stringify(err.data)).error;
+        setErrorMsg(msg);
+      } else if (isErrorWithMessage(err)) console.log(err.message);
     }
   };
 
@@ -419,9 +420,9 @@ const ExamTestsDetail = () => {
       <section className="ftco-section">
         <div className="container">
           <div className="row">
-          {isError ? (
-                <div className="p-2 m-2 text-danger">{erroMsg}</div>
-              ) : null}
+            {erroMsg ? (
+              <div className="p-2 m-2 text-danger">{erroMsg}</div>
+            ) : null}
             <div className="col-lg-8">
               <h2 className="mb-3">Exam Test Edit Form</h2>
               <div>

@@ -18,49 +18,105 @@ namespace EasyEnglishAPI.Controllers
         [Route("api/UserNotes/GetAllUserNotesByExamResult/{examId}")]
         public async Task<ActionResult<IEnumerable<UserNote>>> GetAllUserNotesByExamResult(Guid examId)
         {
-            return Ok(await _objectDAL.GetAllUserNotesByExamResult(examId));
+            try
+            {
+                return Ok(await _objectDAL.GetAllUserNotesByExamResult(examId));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+
         }
 
         [HttpGet]
         [Route("api/UserNotes/GetAllUserNotesByUserAnswerId/{answerId}")]
         public async Task<ActionResult<IEnumerable<UserNote>>> GetAllUserNotesByUserAnswerId(Guid answerId)
         {
-            return Ok(await _objectDAL.GetAllUserNotesByUserAnswerId(answerId));
+            try
+            {
+                return Ok(await _objectDAL.GetAllUserNotesByUserAnswerId(answerId));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+
         }
 
         [HttpGet]
         [Route("api/UserNotes/GetAllUserNotesByUser/{userId}")]
         public async Task<ActionResult<IEnumerable<UserNote>>> GetAllUserNotesByUser(Guid userId)
         {
-            return Ok(await _objectDAL.GetAllUserNotesByUser(userId));
+            try
+            {
+                return Ok(await _objectDAL.GetAllUserNotesByUser(userId));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+
         }
 
         [HttpPost]
         [Route("api/UserNotes/Create")]
         public async Task<ActionResult<UserNote>> Create([FromBody] UserNote u)
         {
-            return Ok(await _objectDAL.AddUserNote(u));
+            try
+            {
+                return Ok(await _objectDAL.AddUserNote(u));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+           
         }
 
         [HttpGet]
         [Route("api/UserNotes/Details/{id}")]
         public async Task<ActionResult<UserNote>> Details(Guid id)
         {
-            return Ok(await _objectDAL.GetUserNote(id));
+            try
+            {
+                return Ok(await _objectDAL.GetUserNote(id));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+            
         }
 
         [HttpPut]
         [Route("api/UserNotes/Edit")]
         public async Task<ActionResult<UserNote>> Edit([FromBody] UserNote u)
         {
-            return Ok(await _objectDAL.UpdateUserNote(u));
+            try
+            {
+                return Ok(await _objectDAL.UpdateUserNote(u));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+            
         }
 
         [HttpDelete]
         [Route("api/UserNotes/Delete/{id}")]
         public async Task<ActionResult<UserNote>> Delete(Guid id)
         {
-            return Ok(await _objectDAL.DeleteUserNote(id));
+            try
+            {
+                return Ok(await _objectDAL.DeleteUserNote(id));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+            
         }
     }
 }

@@ -103,7 +103,6 @@ namespace EasyEnglishAPI.DAL
                 {
                     _context.ExamTests.Remove(u);
                     await _context.SaveChangesAsync();
-
                 }
                 return null;
             }

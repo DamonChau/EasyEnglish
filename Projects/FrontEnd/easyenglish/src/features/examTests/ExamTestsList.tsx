@@ -68,7 +68,7 @@ const ExamTestsList = () => {
             </div>
           </div>
           <div className="row">
-            {isError ? (
+            {erroMsg ? (
               <div className="p-2 m-2 text-danger">{erroMsg}</div>
             ) : null}
             {isLoading ? (

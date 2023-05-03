@@ -22,7 +22,11 @@ import {
   selectLoggedUser,
   selectIsAuthenticated,
 } from "../../services/slices/authSlice";
-import { ExamResults, UserNotes } from "../../interfaces/interfaces";
+import { ExamResults } from "../../interfaces/interfaces";
+import {
+  isFetchBaseQueryError,
+  isErrorWithMessage,
+} from "../../services/helpers";
 
 const ExamTestsView = () => {
   const { id } = useParams();
@@ -55,10 +59,15 @@ const ExamTestsView = () => {
           const file: FileDownload = {
             filename: data.audioFile,
           };
-          console.log(file);
-          const url = await downloadFile(file).unwrap();
-
-          setAudio(url);
+          try {
+            const url = await downloadFile(file).unwrap();
+              setAudio(url);
+          } catch (err) {
+            if (isFetchBaseQueryError(err)) {
+              const msg = "error" in err ? err.error : JSON.parse(JSON.stringify(err.data)).error;
+              setErrorMsg(msg);
+            } else if (isErrorWithMessage(err)) console.log(err.message);
+          }
         };
 
         dowloadaudiofiles();
@@ -119,7 +128,7 @@ const ExamTestsView = () => {
           <section className="ftco-section">
             <div className="container">
               <div className="row">
-                {isError ? (
+                {erroMsg ? (
                   <div className="p-2 m-2 text-danger">{erroMsg}</div>
                 ) : null}
                 <div className="col-lg-8">

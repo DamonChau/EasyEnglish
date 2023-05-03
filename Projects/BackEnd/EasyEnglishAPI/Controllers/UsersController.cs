@@ -30,11 +30,11 @@ namespace EasyEnglishAPI.Controllers
                         return Ok(new { token = GenerateJSONWebToken(r), user = r });
                     return BadRequest(new { error = "The username or password provided were incorrect!" });
                 }
-                return BadRequest();
+                return BadRequest(new { error = u.ToString() });
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { error = ex.Message });
             }
 
         }

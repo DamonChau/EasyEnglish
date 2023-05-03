@@ -31,7 +31,7 @@ namespace EasyEnglishAPI.DAL
                 return await _context.UserNotes
                     .Where(u => u.ExamResultId == examResultId)
                     .Include(u => u.CreatedByNavigation)
-                    .Include(u => u.UserAnswer).ThenInclude(u => u.QuestionDetail)
+                    .Include(u => u.UserAnswer).ThenInclude(b => b!.QuestionDetail)
                     .OrderByDescending(u => u.CreatedDate)
                     .ToListAsync();
             }

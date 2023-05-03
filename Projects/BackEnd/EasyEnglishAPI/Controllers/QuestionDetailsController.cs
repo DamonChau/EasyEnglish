@@ -19,35 +19,75 @@ namespace EasyEnglishAPI.Controllers
         [Route("api/QuestionDetails/GetAllByQuestions/{questionId}")]
         public async Task<ActionResult<IEnumerable<Question>>> GetAllByQuestions(Guid questionId)
         {
-            return Ok(await _objectDAL.GetAllByQuestions(questionId));
+            try
+            {
+                return Ok(await _objectDAL.GetAllByQuestions(questionId));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+            
         }
 
         [HttpPost]
         [Route("api/QuestionDetails/Create")]
         public async Task<ActionResult<QuestionDetail>> Create([FromBody]QuestionDetail u)
         {
-            return Ok(await _objectDAL.AddQuestionDetail(u));
+            try
+            {
+                return Ok(await _objectDAL.AddQuestionDetail(u));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+            
         }
 
         [HttpGet]
         [Route("api/QuestionDetails/Details/{id}")]
         public async Task<ActionResult<QuestionDetail>> Details(Guid id)
         {
-            return Ok(await _objectDAL.GetQuestionDetail(id));
+            try
+            {
+                return Ok(await _objectDAL.GetQuestionDetail(id));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+            
         }
 
         [HttpPut]
         [Route("api/QuestionDetails/Edit")]
         public async Task<ActionResult<QuestionDetail>> Edit([FromBody]QuestionDetail u)
         {
-            return Ok(await _objectDAL.UpdateQuestionDetail(u));
+            try
+            {
+                return Ok(await _objectDAL.UpdateQuestionDetail(u));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+            
         }
 
         [HttpDelete]
         [Route("api/QuestionDetails/Delete/{id}")]
         public async Task<ActionResult<QuestionDetail>> Delete(Guid id)
         {
-            return Ok(await _objectDAL.Delete(id));
+            try
+            {
+                return Ok(await _objectDAL.Delete(id));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+          
         }
     }
 }

@@ -22,42 +22,91 @@ namespace EasyEnglishAPI.Controllers
         [Route("api/ExamTests/GetAll")]
         public async Task<ActionResult<IEnumerable<ExamTest>>> GetAll()
         {
-            return  Ok(await _object.GetAllExamTests());
+            try
+            {
+                return Ok(await _object.GetAllExamTests());
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+
         }
 
         [HttpGet]
         [Route("api/ExamTests/GetAllExamTestsBySection/{testType}/{sectionType}")]
         public async Task<ActionResult<IEnumerable<ExamTest>>> GetAllExamTestsBySection(int testType, int sectionType)
         {
-            return Ok(await _object.GetAllExamTestsBySection(testType, sectionType));
+            try
+            {
+                return Ok(await _object.GetAllExamTestsBySection(testType, sectionType));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+
         }
 
         [HttpPost]
         [Route("api/ExamTests/Create")]
-        public async Task<ActionResult<ExamTest>> Create([FromBody]ExamTest u)
+        public async Task<ActionResult<ExamTest>> Create([FromBody] ExamTest u)
         {
-            return Ok(await _object.AddExamTests(u));
+            try
+            {
+                return Ok(await _object.AddExamTests(u));
+            }
+            catch (Exception e)
+            {
+
+                return BadRequest(new { error = e.Message });
+            }
+
         }
 
         [HttpGet]
         [Route("api/ExamTests/Details/{id}")]
         public async Task<ActionResult<ExamTest>> Details(Guid id)
         {
-            return Ok(await _object.GetExamTests(id));
+            try
+            {
+                return Ok(await _object.GetExamTests(id));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+
         }
 
         [HttpPut]
         [Route("api/ExamTests/Edit")]
-        public async Task<ActionResult<ExamTest>> Edit([FromBody]ExamTest u)
+        public async Task<ActionResult<ExamTest>> Edit([FromBody] ExamTest u)
         {
-            return Ok(await _object.UpdateExamTests(u));
+            try
+            {
+                return Ok(await _object.UpdateExamTests(u));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+            
         }
 
         [HttpDelete]
         [Route("api/ExamTests/Delete/{id}")]
         public async Task<ActionResult<ExamTest>> Delete(Guid id)
         {
-            return Ok(await _object.Delete(id));
+            try
+            {
+                return Ok(await _object.Delete(id));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+
         }
     }
 }

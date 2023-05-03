@@ -20,6 +20,10 @@ import { v4 as uuidv4 } from "uuid";
 import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import { Alert } from "../common/Modals";
+import {
+  isFetchBaseQueryError,
+  isErrorWithMessage,
+} from "../../services/helpers";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "transparent",
@@ -195,8 +199,14 @@ const QuestionAnswerSpeaking = ({ testId }: any) => {
         });
         setOpen(true);
       }
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      if (isFetchBaseQueryError(err)) {
+        const msg =
+          "error" in err
+            ? err.error
+            : JSON.parse(JSON.stringify(err.data)).error;
+        setErrorMsg(msg);
+      } else if (isErrorWithMessage(err)) console.log(err.message);
       setOpen(false);
     }
   };
@@ -222,7 +232,7 @@ const QuestionAnswerSpeaking = ({ testId }: any) => {
           <h5 className="card-header h5">Recoring Your Answer</h5>
           <div className="card-body">
             <div className="row d-flex justify-content-left mb-2">
-              {isError ? (
+              {erroMsg ? (
                 <div className="p-2 m-2 text-danger">{erroMsg}</div>
               ) : null}
               <div className="col-md-8 col-lg-12">

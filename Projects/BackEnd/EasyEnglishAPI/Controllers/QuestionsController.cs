@@ -18,49 +18,105 @@ namespace EasyEnglishAPI.Controllers
         [Route("api/Questions/GetAll")]
         public async Task<ActionResult<IEnumerable<Question>>> GetAll()
         {
-            return Ok(await _objectDAL.GetAllQuestions());
+            try
+            {
+                return Ok(await _objectDAL.GetAllQuestions());
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+            
         }
 
         [HttpGet]
         [Route("api/Questions/GetAllExamTest/{examTestId}")]
         public async Task<ActionResult<IEnumerable<Question>>> GetAllExamTest(Guid examTestId)
         {
-            return Ok(await _objectDAL.GetAllQuestionsByExamTest(examTestId));
+            try
+            {
+                return Ok(await _objectDAL.GetAllQuestionsByExamTest(examTestId));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+           
         }
 
         [HttpGet]
         [Route("api/Questions/GetAllExamTestWithQD/{examTestId}")]
         public async Task<ActionResult<IEnumerable<Question>>> GetAllExamTestWithQD(Guid examTestId)
         {
-            return Ok(await _objectDAL.GetAllQuestionsByExamTestWithQD(examTestId));
+            try
+            {
+                return Ok(await _objectDAL.GetAllQuestionsByExamTestWithQD(examTestId));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+           
         }
 
         [HttpPost]
         [Route("api/Questions/Create")]
         public async Task<ActionResult<Question>> Create([FromBody] Question u)
         {
-            return Ok(await _objectDAL.AddQuestion(u));
+            try
+            {
+                return Ok(await _objectDAL.AddQuestion(u));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+            
         }
 
         [HttpGet]
         [Route("api/Questions/Details/{id}")]
         public async Task<ActionResult<Question>> Details(Guid id)
         {
-            return Ok(await _objectDAL.GetQuestion(id));
+            try
+            {
+                return Ok(await _objectDAL.GetQuestion(id));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+            
         }
 
         [HttpPut]
         [Route("api/Questions/Edit")]
         public async Task<ActionResult<Question>> Edit([FromBody] Question u)
         {
-            return Ok(await _objectDAL.UpdateQuestion(u));
+            try
+            {
+                return Ok(await _objectDAL.UpdateQuestion(u));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+            
         }
 
         [HttpDelete]
         [Route("api/Questions/Delete/{id}")]
         public async Task<ActionResult<Question>> Delete(Guid id)
         {
-            return Ok(await _objectDAL.Delete(id));
+            try
+            {
+                return Ok(await _objectDAL.Delete(id));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+            
         }
     }
 }

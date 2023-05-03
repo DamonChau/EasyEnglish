@@ -13,19 +13,17 @@ import { useAddUserAnswerMutation } from "../users/userAnswersApi";
 import { useAddExamResultMutation } from "../examResult/examResultApi";
 import { v4 as uuidv4 } from "uuid";
 import { Alert } from "../common/Modals";
+import {
+  isFetchBaseQueryError,
+  isErrorWithMessage,
+} from "../../services/helpers";
 
 const QuestionAnswerWriting = ({ testId }: any) => {
   const [isView, setView] = React.useState(false);
   const { data, isFetching, isLoading, isSuccess, isError, error } =
     useGetQuestionsWithQDQuery(testId, { skip: !isView });
-  const [
-    addUserAnswer,
-    { isLoading: isAddUALoading, isError: isAddUAError, error: errorUAAdd },
-  ] = useAddUserAnswerMutation();
-  const [
-    addExamResult,
-    { isLoading: isAddERLoading, isError: isAddERError, error: errorERAdd },
-  ] = useAddExamResultMutation();
+  const [addUserAnswer] = useAddUserAnswerMutation();
+  const [addExamResult] = useAddExamResultMutation();
 
   const loggedUser = useTypedSelector(selectLoggedUser);
   const initialValueTestResult = {
@@ -117,8 +115,14 @@ const QuestionAnswerWriting = ({ testId }: any) => {
         });
         setOpen(true);
       }
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      if (isFetchBaseQueryError(err)) {
+        const msg =
+          "error" in err
+            ? err.error
+            : JSON.parse(JSON.stringify(err.data)).error;
+        setErrorMsg(msg);
+      } else if (isErrorWithMessage(err)) console.log(err.message);
       setOpen(false);
     }
   };
@@ -141,7 +145,7 @@ const QuestionAnswerWriting = ({ testId }: any) => {
         </p>
       ) : (
         <React.Fragment>
-          {isError ? (
+          {erroMsg ? (
             <div className="p-2 m-2 text-danger">{erroMsg}</div>
           ) : null}
           <textarea

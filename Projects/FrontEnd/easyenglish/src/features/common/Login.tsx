@@ -70,7 +70,7 @@ const Login = () => {
       <section className="ftco-section ftco-no-pt ftco-no-pb contact-section">
         <div className="container">
           <div className="h-100 d-flex align-items-center justify-content-center flex-column">
-          {isError ? (
+          {errMsg ? (
                 <div className="p-2 m-2 text-danger">{errMsg}</div>
               ) : null}
             <div className="col-md-4 p-4 p-md-4 order-md-last bg-light">

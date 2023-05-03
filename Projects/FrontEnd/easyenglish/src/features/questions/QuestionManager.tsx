@@ -53,6 +53,10 @@ import {
   CreateNewQuestionModal,
   CreateNewQuestionDetailModal,
 } from "../common/Modals";
+import {
+  isFetchBaseQueryError,
+  isErrorWithMessage,
+} from "../../services/helpers";
 
 //#region Style
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -103,18 +107,8 @@ const QuestionTableRow = ({
 
   //#region questionDetails
   const [deleteQuestionDetail] = useDeleteQuestionDetailMutation();
-  const [
-    addQuestionDetail,
-    { isLoading: isAddQDLoading, isError: isAddQDError, error: errorQDAdd },
-  ] = useAddQuestionDetailMutation();
-  const [
-    updateQuestionDetail,
-    {
-      isLoading: isUpdateQDLoading,
-      isError: isUpdateQDError,
-      error: errorQDUpdate,
-    },
-  ] = useUpdateQuestionDetailMutation();
+  const [addQuestionDetail] = useAddQuestionDetailMutation();
+  const [updateQuestionDetail] = useUpdateQuestionDetailMutation();
   //#endregion
 
   useEffect(() => {
@@ -141,11 +135,21 @@ const QuestionTableRow = ({
   };
 
   const handleCreateNewQuesionDetail = async (q: QuestionDetails) => {
-    isEditing
-      ? await updateQuestionDetail(q).unwrap()
-      : await addQuestionDetail(q).unwrap();
-    setCurrentQD(initialValue);
-    setEditing(false);
+    try {
+      isEditing
+        ? await updateQuestionDetail(q).unwrap()
+        : await addQuestionDetail(q).unwrap();
+      setCurrentQD(initialValue);
+      setEditing(false);
+    } catch (err) {
+      if (isFetchBaseQueryError(err)) {
+        const msg =
+          "error" in err
+            ? err.error
+            : JSON.parse(JSON.stringify(err.data)).error;
+        setErrorMsg(msg);
+      } else if (isErrorWithMessage(err)) console.log(err.message);
+    }
   };
 
   const handleEditQuestionDetail = (q: QuestionDetails) => {
@@ -153,10 +157,20 @@ const QuestionTableRow = ({
     setOpenAdd(true);
   };
 
-  const handleDeleteQuestionDetail = (q: QuestionDetails) => {
+  const handleDeleteQuestionDetail = async (q: QuestionDetails) => {
     if (!window.confirm("Do you want to delete info with Id: " + q.id)) return;
     else {
-      deleteQuestionDetail(q.id);
+      try {
+        await deleteQuestionDetail(q.id).unwrap();
+      } catch (err) {
+        if (isFetchBaseQueryError(err)) {
+          const msg =
+            "error" in err
+              ? err.error
+              : JSON.parse(JSON.stringify(err.data)).error;
+          setErrorMsg(msg);
+        } else if (isErrorWithMessage(err)) console.log(err.message);
+      }
     }
   };
 
@@ -166,7 +180,7 @@ const QuestionTableRow = ({
 
   return (
     <React.Fragment>
-      {isError ? <div className="p-2 m-2 text-danger">{erroMsg}</div> : null}
+      {erroMsg ? <div className="p-2 m-2 text-danger">{erroMsg}</div> : null}
       <StyledTableRow
         sx={{ "& > *": { borderBottom: "unset" } }}
         key={question.id}
@@ -370,11 +384,21 @@ const QuestionManager = () => {
   };
 
   const handleCreateNewQuesion = async (q: Questions) => {
-    isEditing
-      ? await updateQuestion(q).unwrap()
-      : await addQuestion(q).unwrap();
-    setCurrentQuestion(initialValue);
-    setEditing(false);
+    try {
+      isEditing
+        ? await updateQuestion(q).unwrap()
+        : await addQuestion(q).unwrap();
+      setCurrentQuestion(initialValue);
+      setEditing(false);
+    } catch (err) {
+      if (isFetchBaseQueryError(err)) {
+        const msg =
+          "error" in err
+            ? err.error
+            : JSON.parse(JSON.stringify(err.data)).error;
+        setErrorMsg(msg);
+      } else if (isErrorWithMessage(err)) console.log(err.message);
+    }
   };
 
   const handleEditQuestion = (q: Questions) => {
@@ -382,11 +406,21 @@ const QuestionManager = () => {
     setOpenAdd(true);
   };
 
-  const handleDeleteQuestion = (q: Questions) => {
+  const handleDeleteQuestion = async (q: Questions) => {
     if (!window.confirm("Do you want to delete info with Id: " + q.title))
       return;
     else {
-      deleteQuestion(q.id);
+      try {
+        await deleteQuestion(q.id).unwrap();
+      } catch (err) {
+        if (isFetchBaseQueryError(err)) {
+          const msg =
+            "error" in err
+              ? err.error
+              : JSON.parse(JSON.stringify(err.data)).error;
+          setErrorMsg(msg);
+        } else if (isErrorWithMessage(err)) console.log(err.message);
+      }
     }
   };
 
@@ -530,7 +564,7 @@ const QuestionManager = () => {
           <div className="row">
             <div className="col-lg-10">
               <h2 className="mb-3">Question Manager</h2>
-              {isError ? (
+              {erroMsg ? (
                 <div className="p-2 m-2 text-danger">{erroMsg}</div>
               ) : null}
               <div>

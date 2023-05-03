@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React from "react";
+import React, { useState } from "react";
 import { UserAnswersDisplay, UserNotes } from "../../interfaces/interfaces";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
@@ -14,29 +14,42 @@ import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import ListSubheader from "@mui/material/ListSubheader";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import IconButton from "@mui/material/IconButton";
-import Stack  from "@mui/material/Stack";
+import Stack from "@mui/material/Stack";
 import { CreateNewNoteModal } from "../common/Modals";
 import { useAddUserNoteMutation } from "../userNotes/userNotesApi";
+import {
+  isFetchBaseQueryError,
+  isErrorWithMessage,
+} from "../../services/helpers";
 
 export const ListAnswerResult = ({
   userAnswers,
   loggedUser,
   onCreateNewNote,
 }: any) => {
-  const [open, setOpen] = React.useState(false);
-  const [currAnwser, setAnwser] = React.useState<UserAnswersDisplay>();
-  const [
-    addUserNote,
-    { isLoading: isAddUNLoading, isError: isAddUNError, error: errorUNAdd },
-  ] = useAddUserNoteMutation();
+  const [open, setOpen] = useState(false);
+  const [currAnwser, setAnwser] = useState<UserAnswersDisplay>();
+  const [addUserNote] = useAddUserNoteMutation();
+  const [erroMsg, setErrorMsg] = useState("");
 
   const handleCreateNewNote = async (note: UserNotes) => {
-    await addUserNote(note).unwrap();
-    onCreateNewNote();
+    try {
+      await addUserNote(note).unwrap();
+      onCreateNewNote();
+    } catch (err) {
+      if (isFetchBaseQueryError(err)) {
+        const msg =
+          "error" in err
+            ? err.error
+            : JSON.parse(JSON.stringify(err.data)).error;
+        setErrorMsg(msg);
+      } else if (isErrorWithMessage(err)) console.log(err.message);
+    }
   };
 
   return (
     <Box sx={{ width: 400, bgcolor: "background.paper" }} role="presentation">
+      {erroMsg ? <div className="p-2 m-2 text-danger">{erroMsg}</div> : null}
       <List
         subheader={
           <ListSubheader component="div" id="nested-list-subheader">

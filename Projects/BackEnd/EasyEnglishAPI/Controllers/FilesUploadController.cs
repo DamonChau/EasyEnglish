@@ -57,7 +57,7 @@ namespace EasyEnglishAPI.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(new { success = "false", time = DateTime.Now.ToString("yyyy-mm-dd HH:MM:SS"), data = new { messasges = new string[] { e.Message } } });
+                return BadRequest(new { success = "false", time = DateTime.Now.ToString("yyyy-mm-dd HH:MM:SS"), error = new { messasges = new string[] { e.Message } } });
             }
         }
 
@@ -87,11 +87,11 @@ namespace EasyEnglishAPI.Controllers
                 string? contentType = "";
                 new FileExtensionContentTypeProvider().TryGetContentType(file.filename, out contentType);
 
-                return File(memory, contentType, Path.GetFileName(path));
+                return File(memory, contentType is not null ? contentType : "", Path.GetFileName(path));
             }
             catch (Exception e)
             {
-                return BadRequest(new { success = "false", time = DateTime.Now.ToString("yyyy-mm-dd HH:MM:SS"), data = new { messasges = new string[] { e.Message } } });
+                return BadRequest(new { success = "false", time = DateTime.Now.ToString("yyyy-mm-dd HH:MM:SS"), error = new { messasges = new string[] { e.Message } } });
             }   
           
         }
