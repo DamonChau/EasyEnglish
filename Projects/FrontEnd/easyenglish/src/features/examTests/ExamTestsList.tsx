@@ -32,6 +32,7 @@ const ExamTestsList = () => {
         // you can access all properties of `SerializedError` here
         setErrorMsg(error.message as string);
       }
+     
     }
   }, [isError]);
 

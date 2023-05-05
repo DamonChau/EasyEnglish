@@ -2,9 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using EasyEnglishAPI.Models;
 using EasyEnglishAPI.DAL;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
-using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EasyEnglishAPI.Controllers
 {
@@ -18,6 +16,7 @@ namespace EasyEnglishAPI.Controllers
             _object = new ExamTestsDAL(context);
         }
 
+        [Authorize]
         [HttpGet]
         [Route("api/ExamTests/GetAll")]
         public async Task<ActionResult<IEnumerable<ExamTest>>> GetAll()
@@ -48,6 +47,7 @@ namespace EasyEnglishAPI.Controllers
 
         }
 
+        [Authorize]
         [HttpPost]
         [Route("api/ExamTests/Create")]
         public async Task<ActionResult<ExamTest>> Create([FromBody] ExamTest u)
@@ -79,6 +79,7 @@ namespace EasyEnglishAPI.Controllers
 
         }
 
+        [Authorize]
         [HttpPut]
         [Route("api/ExamTests/Edit")]
         public async Task<ActionResult<ExamTest>> Edit([FromBody] ExamTest u)
@@ -94,6 +95,7 @@ namespace EasyEnglishAPI.Controllers
             
         }
 
+        [Authorize]
         [HttpDelete]
         [Route("api/ExamTests/Delete/{id}")]
         public async Task<ActionResult<ExamTest>> Delete(Guid id)

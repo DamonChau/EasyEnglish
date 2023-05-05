@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using EasyEnglishAPI.Models;
 using EasyEnglishAPI.DAL;
-using System.Xml.Linq;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace EasyEnglishAPI.Controllers
 {
@@ -16,6 +15,7 @@ namespace EasyEnglishAPI.Controllers
             _objectDAL = new CommentDAL(context);
         }
 
+        [Authorize]
         [HttpGet]
         [Route("api/Comments/GetAllCommentsByUser/{userId}")]
         public async Task<ActionResult<IEnumerable<Comment>>> GetAllCommentsByUser(Guid userId)
@@ -45,6 +45,7 @@ namespace EasyEnglishAPI.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost]
         [Route("api/Comments/Create")]
         public async Task<ActionResult<Comment>> Create([FromBody] Comment u)
@@ -60,6 +61,7 @@ namespace EasyEnglishAPI.Controllers
            
         }
 
+        [Authorize]
         [HttpGet]
         [Route("api/Comments/Details/{id}")]
         public async Task<ActionResult<Comment>> Details(Guid id)
@@ -75,6 +77,7 @@ namespace EasyEnglishAPI.Controllers
             
         }
 
+        [Authorize]
         [HttpPut]
         [Route("api/Comments/Edit")]
         public async Task<ActionResult<Comment>> Edit([FromBody] Comment u)
@@ -90,6 +93,7 @@ namespace EasyEnglishAPI.Controllers
             
         }
 
+        [Authorize]
         [HttpDelete]
         [Route("api/Comments/Delete/{id}")]
         public async Task<ActionResult<Comment>> Delete(Guid id)

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using EasyEnglishAPI.Models;
 using EasyEnglishAPI.DAL;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EasyEnglishAPI.Controllers
 {
@@ -14,6 +15,7 @@ namespace EasyEnglishAPI.Controllers
             _objectDAL = new UserNotesDAL(context);
         }
 
+        [Authorize]
         [HttpGet]
         [Route("api/UserNotes/GetAllUserNotesByExamResult/{examId}")]
         public async Task<ActionResult<IEnumerable<UserNote>>> GetAllUserNotesByExamResult(Guid examId)
@@ -29,6 +31,7 @@ namespace EasyEnglishAPI.Controllers
 
         }
 
+        [Authorize]
         [HttpGet]
         [Route("api/UserNotes/GetAllUserNotesByUserAnswerId/{answerId}")]
         public async Task<ActionResult<IEnumerable<UserNote>>> GetAllUserNotesByUserAnswerId(Guid answerId)
@@ -44,6 +47,7 @@ namespace EasyEnglishAPI.Controllers
 
         }
 
+        [Authorize]
         [HttpGet]
         [Route("api/UserNotes/GetAllUserNotesByUser/{userId}")]
         public async Task<ActionResult<IEnumerable<UserNote>>> GetAllUserNotesByUser(Guid userId)
@@ -59,6 +63,7 @@ namespace EasyEnglishAPI.Controllers
 
         }
 
+        [Authorize]
         [HttpPost]
         [Route("api/UserNotes/Create")]
         public async Task<ActionResult<UserNote>> Create([FromBody] UserNote u)
@@ -74,6 +79,7 @@ namespace EasyEnglishAPI.Controllers
            
         }
 
+        [Authorize]
         [HttpGet]
         [Route("api/UserNotes/Details/{id}")]
         public async Task<ActionResult<UserNote>> Details(Guid id)
@@ -89,6 +95,7 @@ namespace EasyEnglishAPI.Controllers
             
         }
 
+        [Authorize]
         [HttpPut]
         [Route("api/UserNotes/Edit")]
         public async Task<ActionResult<UserNote>> Edit([FromBody] UserNote u)
@@ -104,6 +111,7 @@ namespace EasyEnglishAPI.Controllers
             
         }
 
+        [Authorize]
         [HttpDelete]
         [Route("api/UserNotes/Delete/{id}")]
         public async Task<ActionResult<UserNote>> Delete(Guid id)

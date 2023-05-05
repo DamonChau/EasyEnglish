@@ -74,7 +74,7 @@ const Login = () => {
                 <div className="p-2 m-2 text-danger">{errMsg}</div>
               ) : null}
             <div className="col-md-4 p-4 p-md-4 order-md-last bg-light">
-              <form onSubmit={postLogin}>
+              <form onSubmit={postLogin} className="was-validated">
                 <div className="form-group">
                   <input
                     type="text"

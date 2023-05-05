@@ -148,22 +148,26 @@ const QuestionAnswerWriting = ({ testId }: any) => {
           {erroMsg ? (
             <div className="p-2 m-2 text-danger">{erroMsg}</div>
           ) : null}
-          <textarea
-            className="form-control"
-            rows={20}
-            cols={50}
-            name="answer"
-            placeholder="answer"
-            onChange={handleChange}
-          ></textarea>
           <div>
+            <form className="was-validated"
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSubmit();
+              }}
+            >
+              <textarea
+                className="form-control"
+                rows={20}
+                cols={50}
+                name="answer"
+                placeholder="answer"
+                onChange={handleChange}
+                required
+              ></textarea>
+            </form>
             <label id="wordCount">Word(s) Count: {wordCount}</label>
           </div>
-          <button
-            className="btn btn-primary py-2 px-3"
-            type="button"
-            onClick={handleSubmit}
-          >
+          <button className="btn btn-primary py-2 px-3" type="submit">
             Save
           </button>
         </React.Fragment>

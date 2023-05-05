@@ -225,7 +225,7 @@ const ExamTestsDetail = () => {
   //#region form render
   const renderEditForm = () => {
     return (
-      <form onSubmit={handleSave}>
+      <form onSubmit={handleSave} className="was-validated">
         <Snackbar
           open={open}
           autoHideDuration={6000}
@@ -240,9 +240,7 @@ const ExamTestsDetail = () => {
             Save successfully!
           </Alert>
         </Snackbar>
-        <div className="form-group row">
-          <input type="hidden" name="id" value={examTest.id} />
-        </div>
+        
         <div className="form-group">
           <label htmlFor="testType">Test Type</label>
           <select
@@ -285,6 +283,7 @@ const ExamTestsDetail = () => {
                 name="testName"
                 defaultValue={examTest.testname}
                 onChange={handleChange}
+                required
               />
             </div>
           </div>
@@ -299,6 +298,7 @@ const ExamTestsDetail = () => {
                 name="title"
                 defaultValue={examTest.title}
                 onChange={handleChange}
+                required
               />
             </div>
           </div>

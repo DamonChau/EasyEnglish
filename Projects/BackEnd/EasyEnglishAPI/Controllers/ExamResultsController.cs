@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using EasyEnglishAPI.Models;
 using EasyEnglishAPI.DAL;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EasyEnglishAPI.Controllers
 {
@@ -14,6 +15,7 @@ namespace EasyEnglishAPI.Controllers
             _objectDAL = new ExamResultDAL(context);
         }
 
+        [Authorize]
         [HttpGet]
         [Route("api/ExamResults/GetAllResultsByExamTest/{examTestId}")]
         public async Task<ActionResult<IEnumerable<ExamResult>>> GetAllResultsByExamTest(Guid examTestId)
@@ -29,6 +31,7 @@ namespace EasyEnglishAPI.Controllers
             
         }
 
+        [Authorize]
         [HttpGet]
         [Route("api/ExamResults/GetAllResultsByExamTestDetail/{examTestId}")]
         public async Task<ActionResult<IEnumerable<ExamResult>>> GetAllResultsByExamTestDetail(Guid examTestId)
@@ -44,6 +47,7 @@ namespace EasyEnglishAPI.Controllers
             
         }
 
+        [Authorize]
         [HttpGet]
         [Route("api/ExamResults/GetAllResultByUser/{userId}")]
         public async Task<ActionResult<IEnumerable<ExamResult>>> GetAllResultByUser(Guid userId)
@@ -59,6 +63,7 @@ namespace EasyEnglishAPI.Controllers
            ;
         }
 
+        [Authorize]
         [HttpPost]
         [Route("api/ExamResults/Create")]
         public async Task<ActionResult<ExamResult>> Create([FromBody] ExamResult u)
@@ -74,6 +79,7 @@ namespace EasyEnglishAPI.Controllers
          
         }
 
+        [Authorize]
         [HttpGet]
         [Route("api/ExamResults/Details/{id}")]
         public async Task<ActionResult<ExamResult>> Details(Guid id)
@@ -89,6 +95,7 @@ namespace EasyEnglishAPI.Controllers
             
         }
 
+        [Authorize]
         [HttpPut]
         [Route("api/ExamResults/Edit")]
         public async Task<ActionResult<ExamResult>> Edit([FromBody] ExamResult u)
@@ -104,6 +111,7 @@ namespace EasyEnglishAPI.Controllers
             
         }
 
+        [Authorize]
         [HttpDelete]
         [Route("api/ExamResults/Delete/{id}")]
         public async Task<ActionResult<ExamResult>> Delete(Guid id)

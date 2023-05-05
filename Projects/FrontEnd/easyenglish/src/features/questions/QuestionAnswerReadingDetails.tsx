@@ -3,11 +3,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
-import {
-  QuestionDetails,
-} from "../../interfaces/interfaces";
+import { QuestionDetails } from "../../interfaces/interfaces";
 import { useTypedSelector } from "../../services";
-import { selectLoggedUser, selectIsAuthenticated } from "../../services/slices/authSlice";
+import {
+  selectLoggedUser,
+  selectIsAuthenticated,
+} from "../../services/slices/authSlice";
 
 const QuestionAnswerReadingDetails = ({
   question,
@@ -53,10 +54,12 @@ const QuestionAnswerReadingDetails = ({
           <div key={qd.id}>
             <p dangerouslySetInnerHTML={{ __html: replaceWithBr(qd) }} />
             <input
+              className="form-control"
               type="text"
               id={qd.id}
               name={qd.id}
               onChange={handleChange}
+              required
             />
           </div>
         ))
@@ -73,6 +76,7 @@ const QuestionAnswerReadingDetails = ({
               id={qd.id}
               name={questionType}
               onChange={handleChange}
+              required
             />
             <label
               className="form-check-label"
@@ -94,6 +98,7 @@ const QuestionAnswerReadingDetails = ({
               id={qd.id}
               name={questionType}
               onChange={handleChange}
+              required
             />
             <label
               className="form-check-label"

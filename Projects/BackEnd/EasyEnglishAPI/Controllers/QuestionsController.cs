@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using EasyEnglishAPI.Models;
 using EasyEnglishAPI.DAL;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EasyEnglishAPI.Controllers
 {
@@ -14,6 +15,7 @@ namespace EasyEnglishAPI.Controllers
             _objectDAL = new QuestionDAL(context);
         }
 
+        [Authorize]
         [HttpGet]
         [Route("api/Questions/GetAll")]
         public async Task<ActionResult<IEnumerable<Question>>> GetAll()
@@ -29,6 +31,7 @@ namespace EasyEnglishAPI.Controllers
             
         }
 
+        [Authorize]
         [HttpGet]
         [Route("api/Questions/GetAllExamTest/{examTestId}")]
         public async Task<ActionResult<IEnumerable<Question>>> GetAllExamTest(Guid examTestId)
@@ -59,6 +62,7 @@ namespace EasyEnglishAPI.Controllers
            
         }
 
+        [Authorize]
         [HttpPost]
         [Route("api/Questions/Create")]
         public async Task<ActionResult<Question>> Create([FromBody] Question u)
@@ -74,6 +78,7 @@ namespace EasyEnglishAPI.Controllers
             
         }
 
+        [Authorize]
         [HttpGet]
         [Route("api/Questions/Details/{id}")]
         public async Task<ActionResult<Question>> Details(Guid id)
@@ -89,6 +94,7 @@ namespace EasyEnglishAPI.Controllers
             
         }
 
+        [Authorize]
         [HttpPut]
         [Route("api/Questions/Edit")]
         public async Task<ActionResult<Question>> Edit([FromBody] Question u)
@@ -104,6 +110,7 @@ namespace EasyEnglishAPI.Controllers
             
         }
 
+        [Authorize]
         [HttpDelete]
         [Route("api/Questions/Delete/{id}")]
         public async Task<ActionResult<Question>> Delete(Guid id)

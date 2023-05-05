@@ -321,27 +321,32 @@ const QuestionAnswerReading = ({ testId, getExamResult }: any) => {
       ) : (
         <div>
           <h3>Questions</h3>
-          {data &&
-            data.map((q: Questions) => (
-              <div key={q.id} className="mb-2">
-                <h6>{q.title}</h6>
-                <p
-                  dangerouslySetInnerHTML={{ __html: replaceWithBr(q) }}
-                  style={{ fontStyle: "italic" }}
-                ></p>
-                <QuestionAnswerReadingDetails
-                  key={q.id}
-                  question={q}
-                  questionDetails={q.questionDetails}
-                  handleFieldChange={handleFieldChange}
-                />
-              </div>
-            ))}
-
+          <form className="was-validated"
+            onSubmit={(e) => {
+              e.preventDefault();
+              onSave();
+            }}
+          >
+            {data &&
+              data.map((q: Questions) => (
+                <div key={q.id} className="mb-2">
+                  <h6>{q.title}</h6>
+                  <p
+                    dangerouslySetInnerHTML={{ __html: replaceWithBr(q) }}
+                    style={{ fontStyle: "italic" }}
+                  ></p>
+                  <QuestionAnswerReadingDetails
+                    key={q.id}
+                    question={q}
+                    questionDetails={q.questionDetails}
+                    handleFieldChange={handleFieldChange}
+                  />
+                </div>
+              ))}
+          </form>
           <button
             className="btn btn-primary py-2 px-3 mr-2"
             type="submit"
-            onClick={onSave}
             disabled={!isAuthenticated ? true : isSave ? true : false}
           >
             Submit

@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Azure.Core;
-using EasyEnglishAPI.DAL;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EasyEnglishAPI.Controllers
 {
@@ -25,6 +16,7 @@ namespace EasyEnglishAPI.Controllers
             _hostingEnvironment = hostingEnvironment;
         }
 
+        [Authorize]
         [HttpPost]
         [Route("api/FilesUpload/upload")]
         public async Task<IActionResult> Upload(IFormCollection colForm)
@@ -61,6 +53,7 @@ namespace EasyEnglishAPI.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost]
         [Route("api/FilesUpload/download")]
         public async Task<IActionResult> Download([FromBody] FileUpload file)

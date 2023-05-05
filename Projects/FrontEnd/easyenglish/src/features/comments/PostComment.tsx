@@ -35,6 +35,7 @@ const PostCommentForm = ({ loggedUser, examTestId, onSave, parentId }: any) => {
   };
 
   const [comment, setComment] = React.useState<Partial<Comments>>(initial);
+
   const onSubmit = () => {
     onSave(comment);
   };
@@ -47,29 +48,34 @@ const PostCommentForm = ({ loggedUser, examTestId, onSave, parentId }: any) => {
   };
 
   return (
-    <div className="w-50">
-      <div className="form-group row">
-        <input type="hidden" name="id" value={comment.id} />
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSubmit();
+      }}
+    >
+      <div className="w-50">
+        <div className="d-flex form-group">
+          <input
+            type="text"
+            className="form-control rounded"
+            name="content"
+            placeholder="message"
+            onChange={handleChange}
+            value={comment.content}
+            required
+          />
+          <IconButton
+            aria-label="Post"
+            size="small"
+            type="submit"
+            disabled={!loggedUser ? true : false}
+          >
+            <SendIcon color="primary" />
+          </IconButton>
+        </div>
       </div>
-      <div className="d-flex">
-        <input
-          type="text"
-          className="form-control rounded"
-          name="content"
-          placeholder="message"
-          onChange={handleChange}
-          value={comment.content}
-        />
-        <IconButton
-          aria-label="Post"
-          size="small"
-          onClick={onSubmit}
-          disabled={!loggedUser ? true : false}
-        >
-          <SendIcon color="primary" />
-        </IconButton>
-      </div>
-    </div>
+    </form>
   );
 };
 

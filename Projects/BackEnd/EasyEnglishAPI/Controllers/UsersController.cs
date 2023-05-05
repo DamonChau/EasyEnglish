@@ -3,6 +3,8 @@ using EasyEnglishAPI.Models;
 using EasyEnglishAPI.DAL;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
+using EasyEnglishAPI.Common;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EasyEnglishAPI.Controllers
 {
@@ -10,10 +12,12 @@ namespace EasyEnglishAPI.Controllers
     {
 
         private readonly UserDAL _objectuser;
+        private readonly JwtService _jwtService;
 
-        public UsersController(EasyEnglishContext context)
+        public UsersController(EasyEnglishContext context, JwtService jwtService)
         {
             _objectuser = new UserDAL(context);
+            _jwtService = jwtService;
         }
 
         [HttpPost]
@@ -27,7 +31,13 @@ namespace EasyEnglishAPI.Controllers
                     User? r = await _objectuser.Login(u);
 
                     if (r != null)
-                        return Ok(new { token = GenerateJSONWebToken(r), user = r });
+                        return Ok(new { token = _jwtService.CreateToken(r), user = new { id = r.Id, 
+                            userName = r.UserName, 
+                            email = r.Email, 
+                            userType = r.UserType, 
+                            status = r.Status, 
+                            createdDate = r.CreatedDate } });
+
                     return BadRequest(new { error = "The username or password provided were incorrect!" });
                 }
                 return BadRequest(new { error = u.ToString() });
@@ -39,80 +49,82 @@ namespace EasyEnglishAPI.Controllers
 
         }
 
-        private string GenerateJSONWebToken(User userInfo)
-        {
-            var securityKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("This is my custom Secret key for authentication"));
-            var credentials = new Microsoft.IdentityModel.Tokens.SigningCredentials(securityKey, Microsoft.IdentityModel.Tokens.SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken("EasyEnglish",
-              "EasyEnglish",
-              null,
-              expires: DateTime.Now.AddMinutes(1),
-              signingCredentials: credentials);
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
-        public bool ValidateCurrentToken(string token)
-        {
-            var mySecret = "This is my custom Secret key for authentication";
-            var mySecurityKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.ASCII.GetBytes(mySecret));
-
-            var myIssuer = "EasyEnglish";
-            var myAudience = "EasyEnglish";
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            try
-            {
-                tokenHandler.ValidateToken(token, new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidIssuer = myIssuer,
-                    ValidAudience = myAudience,
-                    IssuerSigningKey = mySecurityKey
-                }, out SecurityToken validatedToken);
-            }
-            catch
-            {
-                return false;
-            }
-            return true;
-        }
-
+        [Authorize]
         [HttpGet]
         [Route("api/Users/GetAll")]
         public async Task<ActionResult<IEnumerable<User>>> GetAll()
         {
-            return Ok(await _objectuser.GetAllUsers());
+            try
+            {
+                return Ok(await _objectuser.GetAllUsers());
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+
         }
 
         [HttpPost]
         [Route("api/Users/Create")]
         public async Task<ActionResult<User>> Create(User u)
         {
-            return Ok(await _objectuser.AddUser(u));
+            try
+            {
+                return Ok(await _objectuser.AddUser(u));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
         }
 
+        [Authorize]
         [HttpGet]
         [Route("api/Users/Details/{id}")]
         public async Task<ActionResult<User>> Details(Guid id)
         {
-            return Ok(await _objectuser.GetUserData(id));
+            try
+            {
+                return Ok(await _objectuser.GetUserData(id));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+
         }
 
+        [Authorize]
         [HttpPut]
         [Route("api/Users/Edit")]
         public async Task<ActionResult<User>> Edit(User u)
         {
-            return Ok(await _objectuser.UpdateUserM(u));
+            try
+            {
+                return Ok(await _objectuser.UpdateUserM(u));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+
         }
 
+        [Authorize]
         [HttpDelete]
         [Route("api/Users/Delete/{id}")]
         public async Task<ActionResult<User>> Delete(Guid id)
         {
-            return Ok(await _objectuser.DeleteUser(id));
+            try
+            {
+                return Ok(await _objectuser.DeleteUser(id));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+
         }
     }
 }

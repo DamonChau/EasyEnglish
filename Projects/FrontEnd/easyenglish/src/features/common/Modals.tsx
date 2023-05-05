@@ -77,44 +77,39 @@ export const CreateNewNoteModal = ({
             minWidth: { xs: "300px", sm: "360px", md: "400px" },
           }}
         >
-          <div className="form-group row">
-            <input type="hidden" name="id" value={note.id} />
-          </div>
-          <div className="form-group row">
-            <input type="hidden" name="examTestsId" value={note.examResultId} />
-          </div>
-          <div className="form-group row">
-            <input
-              type="hidden"
-              name="userAnswerId"
-              value={note.userAnswerId}
-            />
-          </div>
-          <div className="form-group row">
-            <input
-              className="form-control"
-              type="text"
-              name="content"
-              defaultValue={note.content}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="form-group row">
-            <select
-              className="form-control"
-              name="status"
-              value={note.status}
-              onChange={handleChange}
-              placeholder="Status"
-            >
-              {Status &&
-                Status.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.name}
-                  </option>
-                ))}
-            </select>
-          </div>
+          <form className="was-validated"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit();
+            }}
+          >
+            <div className="form-group row">
+              <input
+                className="form-control"
+                type="text"
+                name="content"
+                defaultValue={note.content}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="form-group row">
+              <select
+                className="form-control"
+                name="status"
+                value={note.status}
+                onChange={handleChange}
+                placeholder="Status"
+              >
+                {Status &&
+                  Status.map((t) => (
+                    <option key={t.id} value={t.id}>
+                      {t.name}
+                    </option>
+                  ))}
+              </select>
+            </div>
+          </form>
         </Stack>
       </DialogContent>
       <DialogActions sx={{ p: "1.25rem" }}>
@@ -125,11 +120,7 @@ export const CreateNewNoteModal = ({
         >
           Cancel
         </button>
-        <button
-          className="btn btn-primary py-2 px-2"
-          type="button"
-          onClick={handleSubmit}
-        >
+        <button className="btn btn-primary py-2 px-2" type="submit">
           Save
         </button>
       </DialogActions>
@@ -176,85 +167,89 @@ export const CreateNewQuestionModal = ({
             minWidth: { xs: "300px", sm: "360px", md: "400px" },
           }}
         >
-          <div className="form-group row">
-            <input type="hidden" name="id" value={q.id} />
-          </div>
-          <div className="form-group row">
-            <input type="hidden" name="examTestsId" value={q.examTestId} />
-          </div>
-          <div className="form-group row">
-            <input
-              className="form-control"
-              type="number"
-              min={1}
-              placeholder="order"
-              name="order"
-              defaultValue={q.order}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="form-group row">
-            <input
-              className="form-control"
-              type="text"
-              placeholder="title"
-              name="title"
-              defaultValue={q.title}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="form-group row">
-            <textarea
-              className="form-control"
-              rows={5}
-              name="content"
-              placeholder="content"
-              defaultValue={q.content}
-              onChange={handleChange}
-            ></textarea>
-          </div>
-          <div className="form-group row">
-            <input
-              className="form-control"
-              type="text"
-              name="description"
-              placeholder="description"
-              defaultValue={q.description}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="form-group row">
-            <select
-              className="form-control"
-              name="questionType"
-              value={q.questionType}
-              onChange={handleChange}
-              placeholder="Question Type"
-            >
-              {QuestionType &&
-                QuestionType.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.name}
-                  </option>
-                ))}
-            </select>
-          </div>
-          <div className="form-group row">
-            <select
-              className="form-control"
-              name="status"
-              value={q.status}
-              onChange={handleChange}
-              placeholder="Status"
-            >
-              {Status &&
-                Status.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.name}
-                  </option>
-                ))}
-            </select>
-          </div>
+          <form className="was-validated"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit();
+            }}
+          >
+            <div className="form-group row">
+              <input
+                className="form-control"
+                type="number"
+                min={1}
+                placeholder="order"
+                name="order"
+                defaultValue={q.order}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="form-group row">
+              <input
+                className="form-control"
+                type="text"
+                placeholder="title"
+                name="title"
+                defaultValue={q.title}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="form-group row">
+              <textarea
+                className="form-control"
+                rows={5}
+                name="content"
+                placeholder="content"
+                defaultValue={q.content}
+                onChange={handleChange}
+                required
+              ></textarea>
+            </div>
+            <div className="form-group row">
+              <input
+                className="form-control"
+                type="text"
+                name="description"
+                placeholder="description"
+                defaultValue={q.description}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="form-group row">
+              <select
+                className="form-control"
+                name="questionType"
+                value={q.questionType}
+                onChange={handleChange}
+                placeholder="Question Type"
+              >
+                {QuestionType &&
+                  QuestionType.map((t) => (
+                    <option key={t.id} value={t.id}>
+                      {t.name}
+                    </option>
+                  ))}
+              </select>
+            </div>
+            <div className="form-group row">
+              <select
+                className="form-control"
+                name="status"
+                value={q.status}
+                onChange={handleChange}
+                placeholder="Status"
+              >
+                {Status &&
+                  Status.map((t) => (
+                    <option key={t.id} value={t.id}>
+                      {t.name}
+                    </option>
+                  ))}
+              </select>
+            </div>
+          </form>
         </Stack>
       </DialogContent>
       <DialogActions sx={{ p: "1.25rem" }}>
@@ -265,11 +260,7 @@ export const CreateNewQuestionModal = ({
         >
           Cancel
         </button>
-        <button
-          className="btn btn-primary py-2 px-2"
-          type="button"
-          onClick={handleSubmit}
-        >
+        <button className="btn btn-primary py-2 px-2" type="submit">
           Save
         </button>
       </DialogActions>
@@ -316,43 +307,46 @@ export const CreateNewQuestionDetailModal = ({
             minWidth: { xs: "300px", sm: "360px", md: "400px" },
           }}
         >
-          <div className="form-group row">
-            <input type="hidden" name="id" value={q.id} />
-          </div>
-          <div className="form-group row">
-            <input type="hidden" name="questionId" value={q.questionId} />
-          </div>
-          <div className="form-group row">
-            <input
-              className="form-control"
-              type="number"
-              min={1}
-              placeholder="order"
-              name="order"
-              defaultValue={q.order}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="form-group row">
-            <textarea
-              className="form-control"
-              rows={5}
-              name="content"
-              placeholder="content"
-              defaultValue={q.content}
-              onChange={handleChange}
-            ></textarea>
-          </div>
-          <div className="form-group row">
-            <textarea
-              className="form-control"
-              rows={5}
-              name="answer"
-              placeholder="answer"
-              defaultValue={q.answer}
-              onChange={handleChange}
-            ></textarea>
-          </div>
+          <form className="was-validated"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit();
+            }}
+          >
+            <div className="form-group row">
+              <input
+                className="form-control"
+                type="number"
+                min={1}
+                placeholder="order"
+                name="order"
+                defaultValue={q.order}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="form-group row">
+              <textarea
+                className="form-control"
+                rows={5}
+                name="content"
+                placeholder="content"
+                defaultValue={q.content}
+                onChange={handleChange}
+                required
+              ></textarea>
+            </div>
+            <div className="form-group row">
+              <textarea
+                className="form-control"
+                rows={5}
+                name="answer"
+                placeholder="answer"
+                defaultValue={q.answer}
+                onChange={handleChange}
+              ></textarea>
+            </div>
+          </form>
         </Stack>
       </DialogContent>
       <DialogActions sx={{ p: "1.25rem" }}>
@@ -363,11 +357,7 @@ export const CreateNewQuestionDetailModal = ({
         >
           Cancel
         </button>
-        <button
-          className="btn btn-primary py-2 px-2"
-          type="button"
-          onClick={handleSubmit}
-        >
+        <button className="btn btn-primary py-2 px-2" type="submit">
           Save
         </button>
       </DialogActions>
