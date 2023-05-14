@@ -22,7 +22,7 @@ import {
   selectLoggedUser,
   selectIsAuthenticated,
 } from "../../services/slices/authSlice";
-import { ExamResults } from "../../interfaces/interfaces";
+import { ExamResults, ExamTestSectionType } from "../../interfaces/interfaces";
 import {
   isFetchBaseQueryError,
   isErrorWithMessage,
@@ -146,15 +146,15 @@ const ExamTestsView = () => {
                     dangerouslySetInnerHTML={{ __html: convertedContent }}
                   ></div>
                   <div className="pt-2">
-                    {data?.sectionType == 2 ? (
+                    {data?.sectionType == ExamTestSectionType.Writing ? (
                       <QuestionAnswerWriting testId={data?.id} />
-                    ) : data?.sectionType == 3 ? (
+                    ) : data?.sectionType == ExamTestSectionType.Speaking ? (
                       <QuestionAnswerSpeaking testId={data?.id} />
                     ) : null}
                   </div>
                   <div>
                     {isSuccess ? (
-                      <div>
+                      <div className="pt-3">
                         <nav>
                           <div
                             className="nav nav-tabs"
@@ -221,7 +221,7 @@ const ExamTestsView = () => {
                     {isSuccess ? <StopWatch /> : null}
                   </div>
                   <div className="sidebar-box ftco-animate fadeInUp ftco-animated">
-                    {data?.sectionType == 1 || data?.sectionType == 4 ? (
+                    {data?.sectionType == ExamTestSectionType.Listening || data?.sectionType == ExamTestSectionType.Reading ? (
                       <QuestionAnswerReading
                         testId={data?.id}
                         getExamResult={onAddNoteDone}

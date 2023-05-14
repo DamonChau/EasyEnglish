@@ -22,7 +22,6 @@ public partial class Comment
     public virtual ExamTest? ExamTest { get; set; }
 
     public virtual ICollection<Comment> InverseParent { get; } = new List<Comment>();
-    
 
     public virtual Comment? Parent { get; set; }
 }

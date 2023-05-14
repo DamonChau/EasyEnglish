@@ -1,24 +1,34 @@
-﻿/* eslint-disable @typescript-eslint/no-unused-vars */
+﻿/* eslint-disable react/no-children-prop */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useLoginMutation } from "../users/usersApi";
 import { useSelector } from "react-redux";
-import { selectIsAuthenticated, logout } from "../../services/slices/authSlice";
+import {
+  selectIsAuthenticated,
+  setLoggedUser,
+} from "../../services/slices/authSlice";
 import { Users } from "../../interfaces/interfaces";
 import { config } from "../../helpers/contants";
 import {
   isFetchBaseQueryError,
   isErrorWithMessage,
 } from "../../services/helpers";
+import { useAppDispatch } from "../../services";
+import { GoogleLogin } from "@react-oauth/google";
+import jwt_decode from "jwt-decode";
+import FacebookLogin from "@greatsumini/react-facebook-login";
+import { LoginType } from "../../interfaces/interfaces";
 
 const Login = () => {
-  const [login, { isError, error }] = useLoginMutation();
+  const [login] = useLoginMutation();
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [errMsg, setErrMsg] = useState("");
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -32,10 +42,15 @@ const Login = () => {
       const u = {} as Users;
       u.userName = userName;
       u.password = password;
-      await login(u).unwrap();
+      u.loginType = LoginType.SYSTEM;
+      const response = await login(u).unwrap();
+      dispatch(setLoggedUser(response));
     } catch (err) {
       if (isFetchBaseQueryError(err)) {
-        const msg = "error" in err ? err.error : JSON.parse(JSON.stringify(err.data)).error;
+        const msg =
+          "error" in err
+            ? err.error
+            : JSON.parse(JSON.stringify(err.data)).error;
         setErrMsg(msg);
       } else if (isErrorWithMessage(err)) console.log(err.message);
     }
@@ -70,10 +85,10 @@ const Login = () => {
       <section className="ftco-section ftco-no-pt ftco-no-pb contact-section">
         <div className="container">
           <div className="h-100 d-flex align-items-center justify-content-center flex-column">
-          {errMsg ? (
-                <div className="p-2 m-2 text-danger">{errMsg}</div>
-              ) : null}
-            <div className="col-md-4 p-4 p-md-4 order-md-last bg-light">
+            {errMsg ? (
+              <div className="p-2 m-2 text-danger">{errMsg}</div>
+            ) : null}
+            <div className="col-md-4 pt-4 order-md-last bg-light">
               <form onSubmit={postLogin} className="was-validated">
                 <div className="form-group">
                   <input
@@ -97,14 +112,67 @@ const Login = () => {
                     }}
                   />
                 </div>
-                <div className="form-group">
+                <div className="form-group text-right">
                   <input
                     type="submit"
-                    defaultValue="Login"
-                    className="btn btn-primary py-3 px-5"
+                    value="Login"
+                    className="btn btn-primary py-2 px-3"
                   />
                 </div>
               </form>
+            </div>
+            <div className="col-md-4 order-md-last bg-light d-flex align-items-center justify-content-center">
+              <span>Not having an account?</span>
+              <Link
+                className="nav-link"
+                to={config.url.API_URL_FOLDER + "/newUserAccount"}
+              >
+                Sign Up
+              </Link>
+            </div>
+            <div className="col-md-4 pt-4 pb-4 order-md-last bg-light border-top d-flex align-items-center justify-content-center">
+              <div>
+                <FacebookLogin
+                  appId="1324441445089018"
+                  className="btn btn-primary py-2 px-3"
+                  children="Facebook Sign in"
+                  onSuccess={(response) => {
+                    //console.log("Login Success!", response);
+                  }}
+                  onFail={(error) => {
+                    //console.log("Login Failed!", error);
+                  }}
+                  onProfileSuccess={async (response) => {
+                    //console.log("Get Profile Success!", response);
+                    const u = {} as Users;
+                    u.userName = response.id as string;
+                    u.password = response.id as string;
+                    u.aliasName = response.name as string;
+                    u.email = response.email as string;
+                    u.loginType = LoginType.FACEBOOK;
+                    const r = await login(u).unwrap();
+                    dispatch(setLoggedUser(r));
+                  }}
+                />
+              </div>
+              <div className="pl-4">
+                <GoogleLogin
+                  onSuccess={async (credentialResponse: any) => {
+                    const decoded = jwt_decode(credentialResponse.credential);
+                    const u = {} as Users;
+                    u.userName = (decoded as any).sub as string;
+                    u.password = (decoded as any).sub as string;
+                    u.aliasName = (decoded as any).name as string;
+                    u.email = (decoded as any).email as string;
+                    u.loginType = LoginType.GOOGLE;
+                    const r = await login(u).unwrap();
+                    dispatch(setLoggedUser(r));
+                  }}
+                  onError={() => {
+                    console.log("Login Failed");
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>

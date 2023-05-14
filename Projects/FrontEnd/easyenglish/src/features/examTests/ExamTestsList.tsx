@@ -21,7 +21,7 @@ const ExamTestsList = () => {
       testType: testType,
       sectionType: sectionType,
     });
-
+  
   useEffect(() => {
     if (error) {
       if ("status" in error) {
@@ -32,7 +32,6 @@ const ExamTestsList = () => {
         // you can access all properties of `SerializedError` here
         setErrorMsg(error.message as string);
       }
-     
     }
   }, [isError]);
 
@@ -77,7 +76,8 @@ const ExamTestsList = () => {
                 <em>Loading...</em>
               </p>
             ) : (
-              data &&  data!.map((exam: ExamTests) => (
+              data &&
+              data!.map((exam: ExamTests) => (
                 <div
                   key={exam.id}
                   className="col-md-6 col-lg-3 ftco-animate fadeInUp ftco-animated"
@@ -90,17 +90,10 @@ const ExamTestsList = () => {
                       />
                     </div>
                     <div className="text pt-3 text-center">
-                      <h3>
-                        {findArrayElementById(ExamTestType, exam.testType).name}
-                      </h3>
+                      <h3>{ExamTestType[exam.testType]}</h3>
                       <span className="position mb-2">
                         {" "}
-                        {
-                          findArrayElementById(
-                            ExamTestSectionType,
-                            exam.sectionType
-                          ).name
-                        }
+                        {ExamTestSectionType[exam.sectionType]}
                       </span>
                       <div className="faded">
                         <p>{exam.testname}</p>

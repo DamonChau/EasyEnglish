@@ -25,11 +25,17 @@ public partial class User
 
     public int? Token { get; set; }
 
+    public string? RefreshToken { get; set; }
+
     public int? Status { get; set; }
 
     public DateTime? CreatedDate { get; set; }
 
     public DateTime? LoginDate { get; set; }
+
+    public string? AliasName { get; set; }
+
+    public int? LoginType { get; set; }
 
     public virtual ICollection<ActionLog> ActionLogs { get; } = new List<ActionLog>();
 

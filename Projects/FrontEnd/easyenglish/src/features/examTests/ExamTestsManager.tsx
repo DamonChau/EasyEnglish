@@ -138,16 +138,12 @@ const ExamTestsManager = () => {
                         </StyledTableCell>
                         <StyledTableCell align="left">
                           {
-                            findArrayElementById(
-                              ExamTestSectionType,
-                              row.sectionType
-                            ).name
+                           ExamTestSectionType[row.sectionType]
                           }
                         </StyledTableCell>
                         <StyledTableCell align="left">
                           {
-                            findArrayElementById(ExamTestType, row.testType)
-                              .name
+                            ExamTestType[row.testType]
                           }
                         </StyledTableCell>
                         <StyledTableCell align="left">

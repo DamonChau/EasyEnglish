@@ -5,19 +5,26 @@ import { useTypedSelector } from "../../services";
 import {
   selectIsAuthenticated,
   selectLoggedUser,
+  selectUserRole,
 } from "../../services/slices/authSlice";
 
-const PrivateRoute = () => {
+interface PrivateRouteProps {
+  allowRoles: number[];
+}
+
+const PrivateRoute = ({ allowRoles }: PrivateRouteProps) => {
   const isAuthenticated = useTypedSelector(selectIsAuthenticated);
   const loggedUser = useTypedSelector(selectLoggedUser);
+  const userRole = useTypedSelector(selectUserRole);
   const location = useLocation();
 
-  return isAuthenticated ? (
+  return allowRoles.includes(userRole as number)  ? (
     <Outlet context={loggedUser} />
+  ) : isAuthenticated ? (
+    <Navigate to="/unauthorized" replace state={{ from: location }} />
   ) : (
     <Navigate to="/login" replace state={{ from: location }} />
   );
 };
-
 
 export default PrivateRoute;

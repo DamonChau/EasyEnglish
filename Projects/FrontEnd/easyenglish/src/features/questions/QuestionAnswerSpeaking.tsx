@@ -6,7 +6,7 @@ import React from "react";
 import { useState, useEffect, useRef } from "react";
 import { useTypedSelector } from "../../services";
 import { selectLoggedUser } from "../../services/slices/authSlice";
-import { UserAnswers } from "../../interfaces/interfaces";
+import { Status, UserAnswers } from "../../interfaces/interfaces";
 import isUUID from "validator/lib/isUUID";
 import Snackbar from "@mui/material/Snackbar";
 import { useGetQuestionsWithQDQuery } from "./questionsApi";
@@ -71,7 +71,7 @@ const QuestionAnswerSpeaking = ({ testId }: any) => {
     result: -1,
     userId: loggedUser!.id,
     questionDetailId: uuidv4(),
-    status: 1,
+    status: Status.Active,
     examResultId: uuidv4(),
   };
   const [userAnswer, setUserAnswer] =

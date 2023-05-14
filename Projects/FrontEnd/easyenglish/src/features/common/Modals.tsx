@@ -34,7 +34,7 @@ export const CreateNewNoteModal = ({
   const initial = {
     id: uuidv4(),
     content: "",
-    status: 1,
+    status: Status.Active,
     createdBy: loggedUser!.id,
     userAnswerId: "",
     examResultId: "",
@@ -70,19 +70,21 @@ export const CreateNewNoteModal = ({
   return (
     <Dialog open={open}>
       <DialogTitle textAlign="center">Create Notes</DialogTitle>
-      <DialogContent>
+      <DialogContent
+        sx={{
+          paddingLeft: "24px",
+          paddingRight: "24px",
+          paddingBottom: "0px",
+        }}
+      >
         <Stack
           sx={{
             width: "100%",
             minWidth: { xs: "300px", sm: "360px", md: "400px" },
+            padding: "10px",
           }}
         >
-          <form className="was-validated"
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSubmit();
-            }}
-          >
+          <form>
             <div className="form-group row">
               <input
                 className="form-control"
@@ -101,10 +103,11 @@ export const CreateNewNoteModal = ({
                 onChange={handleChange}
                 placeholder="Status"
               >
-                {Status &&
-                  Status.map((t) => (
-                    <option key={t.id} value={t.id}>
-                      {t.name}
+                {Object.keys(Status)
+                  .filter((key) => isNaN(Number(key)))
+                  .map((key, value) => (
+                    <option key={value} value={value}>
+                      {Status[value]}
                     </option>
                   ))}
               </select>
@@ -112,15 +115,19 @@ export const CreateNewNoteModal = ({
           </form>
         </Stack>
       </DialogContent>
-      <DialogActions sx={{ p: "1.25rem" }}>
+      <DialogActions sx={{ paddingBottom: "1.25rem" }}>
         <button
-          className="btn btn-primary py-2 px-2 mr-2"
+          className="btn btn-primary py-2 px-2"
           type="button"
           onClick={onClose}
         >
           Cancel
         </button>
-        <button className="btn btn-primary py-2 px-2" type="submit">
+        <button
+          className="btn btn-primary py-2 px-2"
+          type="button"
+          onClick={handleSubmit}
+        >
           Save
         </button>
       </DialogActions>
@@ -142,6 +149,7 @@ export const CreateNewQuestionModal = ({
 
   const handleSubmit = () => {
     //put your validation logic here
+    console.log(q);
     onSubmit(q);
     onClose();
   };
@@ -160,19 +168,21 @@ export const CreateNewQuestionModal = ({
   return (
     <Dialog open={open}>
       <DialogTitle textAlign="center">Create New Question</DialogTitle>
-      <DialogContent>
+      <DialogContent
+        sx={{
+          paddingLeft: "24px",
+          paddingRight: "24px",
+          paddingBottom: "0px",
+        }}
+      >
         <Stack
           sx={{
             width: "100%",
             minWidth: { xs: "300px", sm: "360px", md: "400px" },
+            padding: "10px",
           }}
         >
-          <form className="was-validated"
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSubmit();
-            }}
-          >
+          <form>
             <div className="form-group row">
               <input
                 className="form-control"
@@ -182,7 +192,6 @@ export const CreateNewQuestionModal = ({
                 name="order"
                 defaultValue={q.order}
                 onChange={handleChange}
-                required
               />
             </div>
             <div className="form-group row">
@@ -204,7 +213,6 @@ export const CreateNewQuestionModal = ({
                 placeholder="content"
                 defaultValue={q.content}
                 onChange={handleChange}
-                required
               ></textarea>
             </div>
             <div className="form-group row">
@@ -225,10 +233,11 @@ export const CreateNewQuestionModal = ({
                 onChange={handleChange}
                 placeholder="Question Type"
               >
-                {QuestionType &&
-                  QuestionType.map((t) => (
-                    <option key={t.id} value={t.id}>
-                      {t.name}
+                {Object.keys(QuestionType)
+                  .filter((key) => isNaN(Number(key)))
+                  .map((key, value) => (
+                    <option key={value} value={value}>
+                      {QuestionType[value]}
                     </option>
                   ))}
               </select>
@@ -241,10 +250,11 @@ export const CreateNewQuestionModal = ({
                 onChange={handleChange}
                 placeholder="Status"
               >
-                {Status &&
-                  Status.map((t) => (
-                    <option key={t.id} value={t.id}>
-                      {t.name}
+                {Object.keys(Status)
+                  .filter((key) => isNaN(Number(key)))
+                  .map((key, value) => (
+                    <option key={value} value={value}>
+                      {Status[value]}
                     </option>
                   ))}
               </select>
@@ -252,15 +262,19 @@ export const CreateNewQuestionModal = ({
           </form>
         </Stack>
       </DialogContent>
-      <DialogActions sx={{ p: "1.25rem" }}>
+      <DialogActions sx={{ paddingBottom: "1.25rem" }}>
         <button
-          className="btn btn-primary py-2 px-2 mr-2"
+          className="btn btn-primary py-2 px-2"
           type="button"
           onClick={onClose}
         >
           Cancel
         </button>
-        <button className="btn btn-primary py-2 px-2" type="submit">
+        <button
+          className="btn btn-primary py-2 px-2"
+          type="button"
+          onClick={handleSubmit}
+        >
           Save
         </button>
       </DialogActions>
@@ -300,19 +314,20 @@ export const CreateNewQuestionDetailModal = ({
   return (
     <Dialog open={open}>
       <DialogTitle textAlign="center">Create New Question Detail</DialogTitle>
-      <DialogContent>
+      <DialogContent
+        sx={{
+          paddingLeft: "24px",
+          paddingRight: "24px",
+          paddingBottom: "0px",
+        }}
+      >
         <Stack
           sx={{
             width: "100%",
             minWidth: { xs: "300px", sm: "360px", md: "400px" },
           }}
         >
-          <form className="was-validated"
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSubmit();
-            }}
-          >
+          <form>
             <div className="form-group row">
               <input
                 className="form-control"
@@ -333,7 +348,6 @@ export const CreateNewQuestionDetailModal = ({
                 placeholder="content"
                 defaultValue={q.content}
                 onChange={handleChange}
-                required
               ></textarea>
             </div>
             <div className="form-group row">
@@ -349,15 +363,19 @@ export const CreateNewQuestionDetailModal = ({
           </form>
         </Stack>
       </DialogContent>
-      <DialogActions sx={{ p: "1.25rem" }}>
+      <DialogActions sx={{ paddingBottom: "1.25rem" }}>
         <button
-          className="btn btn-primary py-2 px-2 mr-2"
+          className="btn btn-primary py-2 px-2"
           type="button"
           onClick={onClose}
         >
           Cancel
         </button>
-        <button className="btn btn-primary py-2 px-2" type="submit">
+        <button
+          className="btn btn-primary py-2 px-2"
+          type="button"
+          onClick={handleSubmit}
+        >
           Save
         </button>
       </DialogActions>

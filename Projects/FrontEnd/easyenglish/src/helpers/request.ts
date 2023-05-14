@@ -2,12 +2,12 @@
 import axios from "axios";
 import { config } from "./contants";
 
-const requests = (options: any) => {
-  const token = "";
+const requestsApi = (options: any, token: string, refreshToken: string) => {
   const client = axios.create({
     baseURL: config.url.API_URL,
-    timeout: 100,
-    headers: { Authorization: `${token}` },
+    timeout: 500,
+    headers: { Authorization: `Bearer ${token}`,
+                RefreshToken: refreshToken },
   });
 
   const onSuccess = (response: any) => {
@@ -35,4 +35,4 @@ const requests = (options: any) => {
   return client(options).then(onSuccess).catch(onError);
 };
 
-export default requests;
+export default requestsApi;

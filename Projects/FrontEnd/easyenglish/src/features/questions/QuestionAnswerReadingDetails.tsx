@@ -3,12 +3,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
-import { QuestionDetails } from "../../interfaces/interfaces";
+import { QuestionDetails, QuestionType } from "../../interfaces/interfaces";
 import { useTypedSelector } from "../../services";
 import {
   selectLoggedUser,
   selectIsAuthenticated,
 } from "../../services/slices/authSlice";
+import { Status } from "../../interfaces/interfaces";
 
 const QuestionAnswerReadingDetails = ({
   question,
@@ -24,7 +25,7 @@ const QuestionAnswerReadingDetails = ({
     result: -1,
     userId: isAuthenticated ? loggedUser!.id : undefined,
     questionDetailId: undefined,
-    status: 1,
+    status: Status.Active,
     order: 0,
     answerOrg: "",
   };
@@ -47,7 +48,7 @@ const QuestionAnswerReadingDetails = ({
 
   const renderDetails = (questionDetails: any, questionType: any) => {
     //single
-    if (questionType === 1) {
+    if (questionType === QuestionType.SingleAnswer) {
       return (
         questionDetails &&
         questionDetails.map((qd: QuestionDetails) => (
@@ -65,7 +66,7 @@ const QuestionAnswerReadingDetails = ({
         ))
       );
       //multiple-singleanwser
-    } else if (questionType === 2) {
+    } else if (questionType === QuestionType.MASingleChoice) {
       return (
         questionDetails &&
         questionDetails.map((qd: QuestionDetails) => (

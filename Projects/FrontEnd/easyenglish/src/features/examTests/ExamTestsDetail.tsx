@@ -52,7 +52,7 @@ const ExamTestsDetail = () => {
     title: "",
     content: "",
     description: "",
-    testType: 1,
+    testType: ExamTestType.IELTS,
     sectionType: 1,
     status: 1,
     createdBy: loggedUser!.id,
@@ -240,7 +240,7 @@ const ExamTestsDetail = () => {
             Save successfully!
           </Alert>
         </Snackbar>
-        
+
         <div className="form-group">
           <label htmlFor="testType">Test Type</label>
           <select
@@ -249,26 +249,28 @@ const ExamTestsDetail = () => {
             value={examTest.testType}
             onChange={handleChange}
           >
-            {ExamTestType &&
-              ExamTestType.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.name}
+            {Object.keys(ExamTestType)
+              .filter((key) => isNaN(Number(key)))
+              .map((key, value) => (
+                <option key={value} value={value}>
+                  {key}
                 </option>
               ))}
           </select>
         </div>
         <div className="form-group">
-          <label htmlFor="sectionType">Test Type</label>
+          <label htmlFor="sectionType">Section Type</label>
           <select
             className="form-control"
             name="sectionType"
             value={examTest.sectionType}
             onChange={handleChange}
           >
-            {ExamTestSectionType &&
-              ExamTestSectionType.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.name}
+            {Object.keys(ExamTestSectionType)
+              .filter((key) => isNaN(Number(key)))
+              .map((key, value) => (
+                <option key={value} value={value}>
+                  {key}
                 </option>
               ))}
           </select>
@@ -369,24 +371,27 @@ const ExamTestsDetail = () => {
             value={examTest.status}
             onChange={handleChange}
           >
-            {Status &&
-              Status.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name}
+            {Object.keys(Status)
+              .filter((key) => isNaN(Number(key)))
+              .map((key, value) => (
+                <option key={value} value={value}>
+                  {key}
                 </option>
               ))}
           </select>
         </div>
-        <button className="btn btn-primary py-2 px-3 py-3 mr-2" type="submit">
-          Save
-        </button>
-        <button
-          className="btn btn-primary py-2 px-3 py-3"
-          type="button"
-          onClick={handleCancel}
-        >
-          Cancel
-        </button>
+        <div className="d-flex justify-content-end">
+          <button
+            className="btn btn-primary py-2 px-3 mr-2"
+            type="button"
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
+          <button className="btn btn-primary py-2 px-3" type="submit">
+            Save
+          </button>
+        </div>
       </form>
     );
   };

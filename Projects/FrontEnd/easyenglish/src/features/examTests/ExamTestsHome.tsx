@@ -2,6 +2,7 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { config } from "../../helpers/contants";
+import { ExamTestSectionType, ExamTestType } from "../../interfaces/interfaces";
 
 const ExamTestsHome = () => {
   useEffect(() => {}, []);
@@ -37,7 +38,7 @@ const ExamTestsHome = () => {
                   <ul className="ftco-social text-center">
                     <li className="ftco-animate fadeInUp ftco-animated">
                       <Link
-                        to={config.url.API_URL_FOLDER + "/examTestsList/1/1"}
+                        to={config.url.API_URL_FOLDER + `/examTestsList/${ExamTestType.IELTS}/${ExamTestSectionType.Reading}`}
                       >
                         <span className="icon-pencil" />
                       </Link>
@@ -63,7 +64,7 @@ const ExamTestsHome = () => {
                   <ul className="ftco-social text-center">
                     <li className="ftco-animate fadeInUp ftco-animated">
                       <Link
-                        to={config.url.API_URL_FOLDER + "/examTestsList/1/2"}
+                        to={config.url.API_URL_FOLDER + `/examTestsList/${ExamTestType.IELTS}/${ExamTestSectionType.Writing}`}
                       >
                         <span className="icon-pencil" />
                       </Link>
@@ -89,7 +90,7 @@ const ExamTestsHome = () => {
                   <ul className="ftco-social text-center">
                     <li className="ftco-animate fadeInUp ftco-animated">
                       <Link
-                        to={config.url.API_URL_FOLDER + "/examTestsList/1/3"}
+                        to={config.url.API_URL_FOLDER + `/examTestsList/${ExamTestType.IELTS}/${ExamTestSectionType.Speaking}`}
                       >
                         <span className="icon-pencil" />
                       </Link>
@@ -115,7 +116,7 @@ const ExamTestsHome = () => {
                   <ul className="ftco-social text-center">
                     <li className="ftco-animate fadeInUp ftco-animated">
                       <Link
-                        to={config.url.API_URL_FOLDER + "/examTestsList/1/4"}
+                        to={config.url.API_URL_FOLDER + `/examTestsList/${ExamTestType.IELTS}/${ExamTestSectionType.Listening}`}
                       >
                         <span className="icon-pencil"/>
                       </Link>

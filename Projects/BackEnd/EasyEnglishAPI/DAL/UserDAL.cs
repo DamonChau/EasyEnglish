@@ -23,10 +23,34 @@ namespace EasyEnglishAPI.DAL
             }
         }
 
+        public async Task<Boolean> IsUserNameExists(string username)
+        {
+            try
+            {
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+                User u = await _context.Users.Where(u => u.UserName == username).FirstOrDefaultAsync();
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+                if (u is not null)
+                    return true;
+
+               return false;
+            }
+            catch
+            {
+                throw;
+
+            }
+        }
+
         public async Task<User> AddUser(User u)
         {
             try
             {
+                u.Id= Guid.NewGuid();
+                u.Password = BCrypt.Net.BCrypt.HashPassword(u.Password);
+                u.CreatedDate = DateTime.Now;
+                u.Status = 1;
+                u.UserType = 0;
                 _context.Users.Add(u);
                 await _context.SaveChangesAsync();
                 return u;
@@ -34,6 +58,7 @@ namespace EasyEnglishAPI.DAL
             catch
             {
                 throw;
+
             }
         }
 
@@ -89,6 +114,7 @@ namespace EasyEnglishAPI.DAL
                         if (r != null && BCrypt.Net.BCrypt.Verify(u.Password, r.Password))
                         {
                             r.LoginDate = DateTime.Now;
+                            r.RefreshToken = u.RefreshToken;
                             await context.SaveChangesAsync();
                             return r;
                         }

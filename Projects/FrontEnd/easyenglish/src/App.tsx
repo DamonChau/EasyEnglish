@@ -21,8 +21,11 @@ import ExamTestsView from "./features/examTests/ExamTestsView";
 import ExamTestsList from "./features/examTests/ExamTestsList";
 import QuestionManager from "./features/questions/QuestionManager";
 import PrivateRoute from "./features/common/PrivateRoute";
+import UnAuthorized from "./features/common/UnAuthorized";
+import NewUserAccount from "./features/users/NewUserAccount";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import "./App.css";
+import { UserType } from "./interfaces/interfaces";
 
 function withRouter(Component: any) {
   function ComponentWithRouterProp(props: any) {
@@ -54,7 +57,9 @@ const App = (props: any) => {
             element={<ExamTestsList />}
           />
           <Route path="/login" element={<Login />} />
-          <Route path="/" element={<PrivateRoute />}>
+          <Route path="/unauthorized" element={<UnAuthorized />} />
+          <Route path="/newUserAccount" element={<NewUserAccount />} />
+          <Route path="/" element={<PrivateRoute allowRoles={[UserType.Admin]} />}>
             <Route path="/examTestsManager" element={<ExamTestsManager />} />
             <Route path="/examTestsDetail/:id/" element={<ExamTestsDetail />} />
             <Route path="/examTestsDetail/add/" element={<ExamTestsDetail />} />

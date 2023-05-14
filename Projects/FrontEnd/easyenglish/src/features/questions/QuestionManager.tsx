@@ -199,10 +199,10 @@ const QuestionTableRow = ({
         <StyledTableCell align="left">{question.content}</StyledTableCell>
         <StyledTableCell align="left">{question.description}</StyledTableCell>
         <StyledTableCell align="left">
-          {findArrayElementById(QuestionType, question.questionType).name}
+          {QuestionType[question.questionType]}
         </StyledTableCell>
         <StyledTableCell align="left">
-          {findArrayElementById(Status, question.status).name}
+          {Status[question.status]}
         </StyledTableCell>
         <StyledTableCell align="left">
           {parseISO(question.createdDate).toDateString()}
@@ -340,7 +340,7 @@ const QuestionManager = () => {
     title: "",
     content: "",
     description: "",
-    questionType: 1,
+    questionType: QuestionType.SingleAnswer,
     status: 1,
     createdBy: loggedUser!.id,
     examTestId: examTestId,

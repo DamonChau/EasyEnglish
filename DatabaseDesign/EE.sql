@@ -363,9 +363,12 @@ CREATE TABLE [Users] (
 	[UserType] int NULL,
 	[Description] nvarchar(256) NULL,
 	[Token] int NULL,
+	[RefreshToken] nvarchar(256) NULL,
 	[Status] int NULL,
 	[CreatedDate] datetime NULL,
-	[LoginDate] datetime NULL
+	[LoginDate] datetime NULL,
+	[AliasName] nvarchar(125) NULL,
+	[LoginType] int NULL
 )
 ;
 

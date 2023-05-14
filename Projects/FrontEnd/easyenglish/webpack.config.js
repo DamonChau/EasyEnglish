@@ -17,11 +17,10 @@ module.exports = {
     static: {
         directory: path.join(__dirname, "build"),
       },
-  
+    https:true,
     compress: true,
     port: 3000, // default 8000
     historyApiFallback: true,
-   
     hot: true
   },
   devtool: 'source-map',

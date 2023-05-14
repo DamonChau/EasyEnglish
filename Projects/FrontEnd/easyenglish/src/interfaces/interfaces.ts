@@ -28,6 +28,8 @@ export interface Users {
   status: number;
   createdDate: string;
   loginDate: string;
+  aliasName: string;
+  loginType: number;
 }
 
 export interface Questions {
@@ -144,27 +146,39 @@ export interface ActionLogs {
   createdBy: string;
 }
 
-export const ExamTestType = [
-  { id: 1, name: "IELTS" },
-  { id: 2, name: "PTE" },
-  { id: 3, name: "GE" },
-];
+export enum LoginType{
+  SYSTEM,
+  FACEBOOK,
+  GOOGLE,
+}
 
-export const ExamTestSectionType = [
-  { id: 1, name: "Reading" },
-  { id: 2, name: "Writing" },
-  { id: 3, name: "Speaking" },
-  { id: 4, name: "Listening" },
-];
+export enum UserType{
+  Leaner,
+  Teacher,
+  Admin,
+}
 
-export const Status = [
-  { id: 1, name: "Active" },
-  { id: 2, name: "Inactive" },
-  { id: 3, name: "Delete" },
-];
+export enum ExamTestType{
+  IELTS,
+  PTE,
+  GE,
+}
 
-export const QuestionType = [
-  { id: 1, name: "SingleAnswer" },
-  { id: 2, name: "MultipleAnswer-SingleChoice" },
-  { id: 3, name: "MultipleAnswer-MultipleChoice" },
-];
+export enum ExamTestSectionType{
+  Reading,
+  Writing,
+  Speaking ,
+  Listening
+}
+
+export enum Status{
+  Inactive,
+  Active,
+  Delete
+}
+
+export enum QuestionType{
+  SingleAnswer,
+  MASingleChoice,
+  MAMultipleChoice
+}

@@ -5,7 +5,7 @@
 import React, { useState, useEffect } from "react";
 import { useTypedSelector } from "../../services";
 import { selectLoggedUser } from "../../services/slices/authSlice";
-import { UserAnswers } from "../../interfaces/interfaces";
+import { Status, UserAnswers } from "../../interfaces/interfaces";
 import isUUID from "validator/lib/isUUID";
 import Snackbar from "@mui/material/Snackbar";
 import { useGetQuestionsWithQDQuery } from "./questionsApi";
@@ -41,7 +41,7 @@ const QuestionAnswerWriting = ({ testId }: any) => {
     result: -1,
     userId: loggedUser!.id,
     questionDetailId: uuidv4(),
-    status: 1,
+    status: Status.Active,
     examResultId: uuidv4(),
   };
   const [userAnswer, setUserAnswer] =
@@ -149,7 +149,8 @@ const QuestionAnswerWriting = ({ testId }: any) => {
             <div className="p-2 m-2 text-danger">{erroMsg}</div>
           ) : null}
           <div>
-            <form className="was-validated"
+            <form
+              className="was-validated"
               onSubmit={(e) => {
                 e.preventDefault();
                 handleSubmit();
@@ -167,9 +168,11 @@ const QuestionAnswerWriting = ({ testId }: any) => {
             </form>
             <label id="wordCount">Word(s) Count: {wordCount}</label>
           </div>
-          <button className="btn btn-primary py-2 px-3" type="submit">
-            Save
-          </button>
+          <div className="d-flex justify-content-end">
+            <button className="btn btn-primary py-2 px-3" type="submit">
+              Save
+            </button>
+          </div>
         </React.Fragment>
       )}
     </React.Fragment>

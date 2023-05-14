@@ -244,13 +244,15 @@ public partial class EasyEnglishContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Address).HasMaxLength(256);
+            entity.Property(e => e.AliasName).HasMaxLength(125);
             entity.Property(e => e.BillingAddress).HasMaxLength(256);
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.Description).HasMaxLength(256);
             entity.Property(e => e.Email).HasMaxLength(125);
             entity.Property(e => e.LoginDate).HasColumnType("datetime");
-            entity.Property(e => e.Password).HasMaxLength(20);
+            entity.Property(e => e.Password).HasMaxLength(125);
             entity.Property(e => e.PhoneNo).HasMaxLength(125);
+            entity.Property(e => e.RefreshToken).HasMaxLength(256);
             entity.Property(e => e.UserName).HasMaxLength(125);
         });
 
