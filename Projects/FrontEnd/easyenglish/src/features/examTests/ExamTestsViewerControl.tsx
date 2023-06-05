@@ -1,4 +1,4 @@
-﻿/* eslint-disable @typescript-eslint/no-empty-interface */
+/* eslint-disable @typescript-eslint/no-empty-interface */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-empty-function */
@@ -13,10 +13,8 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import TablePagination from "@mui/material/TablePagination";
 import IconButton from "@mui/material/IconButton";
-import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PreviewIcon from "@mui/icons-material/Preview";
-import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import Checkbox from "@mui/material/Checkbox";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import Box from "@mui/material/Box";
@@ -240,7 +238,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 
 //#endregion
 
-const ExamTestsManager = () => {
+const ExamTestsViewerControl = ({onSelectedDone} : any) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(DEFAULT_ROWS_PER_PAGE);
   const [order, setOrder] = React.useState<Order>(DEFAULT_ORDER);
@@ -256,7 +254,6 @@ const ExamTestsManager = () => {
   const navigate = useNavigate();
   const { data, isFetching, isLoading, isSuccess, isError, error } =
     useGetExamTestsQuery();
-  const [deleteExamTest] = useDeleteExamTestMutation();
   const [erroMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
@@ -285,27 +282,6 @@ const ExamTestsManager = () => {
       setVisibleRows(rowsOnMount);
     }
   }, [data]);
-
-  const handleEdit = (id: string) => {
-    navigate(config.url.API_URL_FOLDER + "/examTestsDetail/" + id);
-  };
-
-  const handleDelete = async (id: string) => {
-    if (!window.confirm("Do you want to delete info with Id: " + id)) return;
-    else {
-      try {
-        await deleteExamTest(id).unwrap();
-      } catch (err) {
-        if (isFetchBaseQueryError(err)) {
-          const msg =
-            "error" in err
-              ? err.error
-              : JSON.parse(JSON.stringify(err.data)).error;
-          setErrorMsg(msg);
-        } else if (isErrorWithMessage(err)) console.log(err.message);
-      }
-    }
-  };
 
   const handleChangePage = React.useCallback(
     (event: unknown, newPage: number) => {
@@ -349,7 +325,7 @@ const ExamTestsManager = () => {
           0 * updatedRowsPerPage,
           0 * updatedRowsPerPage + updatedRowsPerPage
         );
-        
+
         setVisibleRows(updatedRows);
 
         // There is no layout jump to handle on the first page.
@@ -392,6 +368,7 @@ const ExamTestsManager = () => {
       if (data) {
         const newSelected = data.map((n) => n.id);
         setSelected(newSelected);
+        onSelectedDone(newSelected);
         return;
       }
     }
@@ -414,209 +391,131 @@ const ExamTestsManager = () => {
         selected.slice(selectedIndex + 1)
       );
     }
-
+    onSelectedDone(newSelected);
     setSelected(newSelected);
   };
 
-  function renderListwithSort() {
-    return (
-      <Box sx={{ width: "100%" }}>
-        <Paper sx={{ width: "100%", mb: 2 }}>
-          <EnhancedTableToolbar numSelected={selected.length} />
-          <TableContainer>
-            <Table
-              sx={{ minWidth: 750 }}
-              aria-labelledby="tableTitle"
-              size={dense ? "small" : "medium"}
-            >
-              <EnhancedTableHead
-                numSelected={selected.length}
-                order={order}
-                orderBy={orderBy}
-                onSelectAllClick={handleSelectAllClick}
-                onRequestSort={handleRequestSort}
-                rowCount={data?.length as number}
-              />
-              <TableBody>
-                {visibleRows
-                  ? visibleRows.map((row, index) => {
-                      const isItemSelected = isSelected(row.id);
-                      const labelId = `enhanced-table-checkbox-${index}`;
-                      return (
-                        <TableRow
-                          hover
-                          onClick={(event) => handleClick(event, row.id)}
-                          role="checkbox"
-                          aria-checked={isItemSelected}
-                          tabIndex={-1}
-                          key={row.id}
-                          selected={isItemSelected}
-                          sx={{ cursor: "pointer" }}
-                        >
-                          <TableCell padding="checkbox">
-                            <Checkbox
-                              color="primary"
-                              checked={isItemSelected}
-                              inputProps={{
-                                "aria-labelledby": labelId,
-                              }}
-                            />
-                          </TableCell>
-                          <TableCell
-                            component="th"
-                            id={labelId}
-                            scope="row"
-                            padding="none"
-                            align="left"
-                          >
-                            {row.testname}
-                          </TableCell>
-                          <TableCell align="left">{row.title}</TableCell>
-                          <TableCell align="right">
-                            {ExamTestSectionType[row.sectionType]}
-                          </TableCell>
-                          <TableCell align="right">
-                            {ExamTestType[row.testType]}
-                          </TableCell>
-                          <TableCell align="left">
-                            {parseISO(row.createdDate).toDateString()}
-                          </TableCell>
-                          <StyledTableCell align="left">
-                            <IconButton
-                              aria-label="View"
-                              placeholder="View Test"
-                              size="small"
-                              onClick={() => {
-                                navigate(
-                                  config.url.API_URL_FOLDER +
-                                    "/examTestsView/" +
-                                    row.id
-                                );
-                              }}
-                            >
-                              <PreviewIcon />
-                            </IconButton>
-                          </StyledTableCell>
-                          <StyledTableCell align="left">
-                            <IconButton
-                              aria-label="Questions"
-                              size="small"
-                              placeholder="Manage Questions"
-                              onClick={() => {
-                                navigate(
-                                  config.url.API_URL_FOLDER +
-                                    "/questionManager/" +
-                                    row.id
-                                );
-                              }}
-                            >
-                              <QuestionAnswerIcon />
-                            </IconButton>
-                          </StyledTableCell>
-                          <StyledTableCell align="left">
-                            <IconButton
-                              aria-label="Edit"
-                              size="small"
-                              placeholder="Edit Test"
-                              onClick={() => handleEdit(row.id)}
-                            >
-                              <EditIcon />
-                            </IconButton>
-                          </StyledTableCell>
-                          <StyledTableCell align="right">
-                            <IconButton
-                              aria-label="Delete"
-                              size="small"
-                              placeholder="Delete Test"
-                              onClick={() => handleDelete(row.id)}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </StyledTableCell>
-                        </TableRow>
-                      );
-                    })
-                  : null}
-                {paddingHeight > 0 && (
-                  <TableRow
-                    style={{
-                      height: paddingHeight,
-                    }}
-                  >
-                    <TableCell colSpan={6} />
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={data?.length as number}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Paper>
-        <FormControlLabel
-          control={<Switch checked={dense} onChange={handleChangeDense} />}
-          label="Dense padding"
-        />
-      </Box>
-    );
-  }
-
   return (
-    <div>
-      <section
-        className="hero-wrap hero-wrap-2"
-        style={{ backgroundImage: 'url("images/bg_1.jpg")' }}
-        data-stellar-background-ratio="0.5"
-      >
-        <div className="overlay" />
-        <div className="container">
-          <div className="row no-gutters slider-text align-items-center justify-content-center">
-            <div className="col-md-9 text-center">
-              <h1 className="mb-2 bread">Exam Test Manager</h1>
-              <p className="breadcrumbs">
-                <span className="mr-2">
-                  <a href="/">
-                    Home <i className="ion-ios-arrow-forward" />
-                  </a>
-                </span>{" "}
-                <span>
-                  Exam Test Manager
-                  <i className="ion-ios-arrow-forward" />
-                </span>
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-      <section className="ftco-section">
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-10">
-              <h2 className="mb-3">Exam Test Manager</h2>
-              {erroMsg ? (
-                <div className="p-2 m-2 text-danger">{erroMsg}</div>
-              ) : null}
-              <div>
-                {isLoading ? (
-                  <p>
-                    <em>Loading...</em>
-                  </p>
-                ) : (
-                  renderListwithSort()
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
+    <React.Fragment>
+      {erroMsg ? <div className="p-2 m-2 text-danger">{erroMsg}</div> : null}
+
+      {isLoading ? (
+        <p>
+          <em>Loading...</em>
+        </p>
+      ) : (
+        <Box sx={{ width: "100%" }}>
+          <Paper sx={{ width: "100%", mb: 2 }}>
+            <EnhancedTableToolbar numSelected={selected.length} />
+            <TableContainer>
+              <Table
+                sx={{ minWidth: 750 }}
+                aria-labelledby="tableTitle"
+                size={dense ? "small" : "medium"}
+              >
+                <EnhancedTableHead
+                  numSelected={selected.length}
+                  order={order}
+                  orderBy={orderBy}
+                  onSelectAllClick={handleSelectAllClick}
+                  onRequestSort={handleRequestSort}
+                  rowCount={data?.length as number}
+                />
+                <TableBody>
+                  {visibleRows
+                    ? visibleRows.map((row, index) => {
+                        const isItemSelected = isSelected(row.id);
+                        const labelId = `enhanced-table-checkbox-${index}`;
+                        return (
+                          <TableRow
+                            hover
+                            onClick={(event) => handleClick(event, row.id)}
+                            role="checkbox"
+                            aria-checked={isItemSelected}
+                            tabIndex={-1}
+                            key={row.id}
+                            selected={isItemSelected}
+                            sx={{ cursor: "pointer" }}
+                          >
+                            <TableCell padding="checkbox">
+                              <Checkbox
+                                color="primary"
+                                checked={isItemSelected}
+                                inputProps={{
+                                  "aria-labelledby": labelId,
+                                }}
+                              />
+                            </TableCell>
+                            <TableCell
+                              component="th"
+                              id={labelId}
+                              scope="row"
+                              padding="none"
+                              align="left"
+                            >
+                              {row.testname}
+                            </TableCell>
+                            <TableCell align="left">{row.title}</TableCell>
+                            <TableCell align="right">
+                              {ExamTestSectionType[row.sectionType]}
+                            </TableCell>
+                            <TableCell align="right">
+                              {ExamTestType[row.testType]}
+                            </TableCell>
+                            <TableCell align="left">
+                              {parseISO(row.createdDate).toDateString()}
+                            </TableCell>
+                            <StyledTableCell align="left">
+                              <IconButton
+                                aria-label="View"
+                                placeholder="View Test"
+                                size="small"
+                                onClick={() => {
+                                  navigate(
+                                    config.url.API_URL_FOLDER +
+                                      "/examTestsView/" +
+                                      row.id
+                                  );
+                                }}
+                              >
+                                <PreviewIcon />
+                              </IconButton>
+                            </StyledTableCell>
+                            
+                          </TableRow>
+                        );
+                      })
+                    : null}
+                  {paddingHeight > 0 && (
+                    <TableRow
+                      style={{
+                        height: paddingHeight,
+                      }}
+                    >
+                      <TableCell colSpan={6} />
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={data?.length as number}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </Paper>
+          <FormControlLabel
+            control={<Switch checked={dense} onChange={handleChangeDense} />}
+            label="Dense padding"
+          />
+        </Box>
+      )}
+    </React.Fragment>
   );
 };
 
-export default ExamTestsManager;
+export default ExamTestsViewerControl;

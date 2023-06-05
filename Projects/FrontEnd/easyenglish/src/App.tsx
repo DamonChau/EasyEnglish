@@ -3,14 +3,8 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { Fragment, useState, useEffect } from "react";
-import {
-  Route,
-  Routes,
-} from "react-router-dom";
-import {
-  ThemeProvider,
-  createTheme,
-} from "@mui/material/styles";
+import { Route, Routes } from "react-router-dom";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Header from "./features/common/Header";
 import Footer from "./features/common/Footer";
 import Home from "./features/common/Home";
@@ -23,6 +17,10 @@ import QuestionManager from "./features/questions/QuestionManager";
 import PrivateRoute from "./features/common/PrivateRoute";
 import UnAuthorized from "./features/common/UnAuthorized";
 import NewUserAccount from "./features/users/NewUserAccount";
+import UserManager from "./features/users/UserManager";
+import MyTeacherDashboard from "./features/users/MyTeacherDashboard";
+import MyStudentDashboard from "./features/users/MyStudentDashboard";
+import MyStudyManager from "./features/assignments/MyStudyManager";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import "./App.css";
 import { UserType } from "./interfaces/interfaces";
@@ -58,8 +56,8 @@ const App = (props: any) => {
           />
           <Route path="/login" element={<Login />} />
           <Route path="/unauthorized" element={<UnAuthorized />} />
-          <Route path="/newUserAccount" element={<NewUserAccount />} />
-          <Route path="/" element={<PrivateRoute allowRoles={[UserType.Admin]} />}>
+          <Route path="/register" element={<NewUserAccount />} />
+          <Route element={<PrivateRoute allowRoles={[UserType.Admin]} />}>
             <Route path="/examTestsManager" element={<ExamTestsManager />} />
             <Route path="/examTestsDetail/:id/" element={<ExamTestsDetail />} />
             <Route path="/examTestsDetail/add/" element={<ExamTestsDetail />} />
@@ -67,6 +65,30 @@ const App = (props: any) => {
               path="/questionManager/:examTestId/"
               element={<QuestionManager />}
             />
+            <Route path="/userManager" element={<UserManager />} />
+          </Route>
+          <Route
+            element={
+              <PrivateRoute
+                allowRoles={[UserType.Admin, UserType.Leaner, UserType.Teacher]}
+              />
+            }
+          >
+            <Route path="/accountSetting/:id" element={<NewUserAccount />} />
+            <Route path="/myStudy/" element={<MyStudyManager />} />
+            <Route path="/myTeacher/" element={<MyTeacherDashboard />} />
+            <Route path="/myStudent/" element={<MyStudentDashboard />} />
+          </Route>
+          <Route
+            element={
+              <PrivateRoute allowRoles={[UserType.Admin, UserType.Leaner]} />
+            }
+          >
+            <Route path="/myStudy/" element={<MyStudyManager />} />
+            <Route path="/myTeacher/" element={<MyTeacherDashboard />} />
+          </Route>
+          <Route element={<PrivateRoute allowRoles={[UserType.Teacher]} />}>
+            <Route path="/myStudent/" element={<MyStudentDashboard />} />
           </Route>
         </Routes>
         <Footer />

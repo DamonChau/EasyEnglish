@@ -1,18 +1,19 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import {
   useAddUserMutation,
+  useUpdateUserProfileMutation,
   useLoginMutation,
   useIsUserNameExistsQuery,
   usersApi,
+  useGetUserQuery,
 } from "../users/usersApi";
 import { useAppDispatch } from "../../services/index";
-
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { LoginType, UserType, Users } from "../../interfaces/interfaces";
+import { LoginType, Users } from "../../interfaces/interfaces";
 import {
   isFetchBaseQueryError,
   isErrorWithMessage,
@@ -21,14 +22,44 @@ import { config } from "../../helpers/contants";
 import { Alert } from "../common/Modals";
 import Snackbar from "@mui/material/Snackbar";
 import requestsApi from "../../helpers/request";
+import isUUID from "validator/lib/isUUID";
+import {
+  selectLoggedUser,
+  setLoggedUser,
+  setLoggedSession
+} from "../../services/slices/authSlice";
+import { useTypedSelector } from "../../services";
 
 const NewUserAccount = () => {
+  const { id } = useParams();
   const [addUser] = useAddUserMutation();
+  const [updateUser] = useUpdateUserProfileMutation();
   const [errMsg, setErrMsg] = useState("");
   const navigate = useNavigate();
   const [login] = useLoginMutation();
   const [open, setOpen] = useState(false);
   const dispatch = useAppDispatch();
+
+  const [isEditing, setIsEditing] = useState(false);
+  const initialAccountValue = {
+    username: "",
+    email: "",
+    phoneno: "",
+    password: "",
+    retypePassword: "",
+    address: "",
+    billingAddress: "",
+    aliasName: "",
+  };
+  const loggedUser = useTypedSelector(selectLoggedUser);
+  const { data, isFetching, isLoading, isSuccess, isError, error } =
+    useGetUserQuery(id as string, { skip: !isEditing });
+
+  useEffect(() => {
+    if (id && isUUID(id)) {
+      setIsEditing(true);
+    }
+  }, [id]);
 
   const handleClose = (
     event?: React.SyntheticEvent | Event,
@@ -49,9 +80,20 @@ const NewUserAccount = () => {
 
   const saveAccount = async (user: Partial<Users>) => {
     try {
-      if (user.aliasName) user.aliasName = user.userName;
-      await addUser(user).unwrap();
-      await login(user).unwrap();
+      //default value
+      if (user.aliasName == "") user.aliasName = user.userName;
+      let response = {};
+      if (isEditing) {
+        user.id = id;
+        response = await updateUser(user).unwrap();
+        dispatch(setLoggedUser(response));
+      } else {
+        user.loginType = LoginType.SYSTEM;
+        await addUser(user).unwrap();
+        response = await login(user).unwrap();
+        dispatch(setLoggedSession(response));
+      }
+      
       setOpen(true);
     } catch (err) {
       if (isFetchBaseQueryError(err)) {
@@ -109,6 +151,213 @@ const NewUserAccount = () => {
     aliasName: Yup.string().required("Required"),
   });
 
+  const EditFormSchema = Yup.object().shape({
+    email: Yup.string().email("Invalid email").required("Required"),
+    aliasName: Yup.string().required("Required"),
+  });
+
+  const EditFormSchemaWithPassword = Yup.object().shape({
+    password: Yup.string()
+      .concat(Yup.string())
+      .min(6, "Your password is too short."),
+    retypePassword: Yup.string()
+      .when("password", {
+        is: (password: any, schema: any) => password || !isEditing,
+        then: (schema) => schema.required("Confirm Password is required"),
+        otherwise: (schema) => schema,
+      })
+      .oneOf([Yup.ref("password")], "Your passwords do not match."),
+    email: Yup.string().email("Invalid email").required("Required"),
+    aliasName: Yup.string().required("Required"),
+  });
+
+  const newAccountForm = () => {
+    return (
+      <React.Fragment>
+        <div className="form-group row">
+          <label htmlFor="username" className="col-sm-4 col-form-label">
+            User Name (*)
+          </label>
+          <div className="col-sm-8">
+            <Field name="username" className="form-control" />
+            <ErrorMessage name="username" component="div" />
+          </div>
+        </div>
+        <div className="form-group row">
+          <label htmlFor="email" className="col-sm-4 col-form-label">
+            Email (*)
+          </label>
+          <div className="col-sm-8">
+            <Field name="email" type="email" className="form-control" />
+            <ErrorMessage name="email" component="div" />
+          </div>
+        </div>
+        <div className="form-group row">
+          <label htmlFor="password" className="col-sm-4 col-form-label">
+            Password (*)
+          </label>
+          <div className="col-sm-8">
+            <Field name="password" type="password" className="form-control" />
+            <ErrorMessage name="password" component="div" />
+          </div>
+        </div>
+        <div className="form-group row">
+          <label htmlFor="retypePassword" className="col-sm-4 col-form-label">
+            Retype Password (*)
+          </label>
+          <div className="col-sm-8">
+            <Field
+              name="retypePassword"
+              type="password"
+              className="form-control"
+            />
+            <ErrorMessage name="retypePassword" component="div" />
+          </div>
+        </div>
+        <div className="form-group row">
+          <label htmlFor="aliasName" className="col-sm-4 col-form-label">
+            Alias Name (*)
+          </label>
+          <div className="col-sm-8">
+            <Field name="aliasName" className="form-control" />
+            <ErrorMessage name="aliasName" component="div" />
+          </div>
+        </div>
+        <div className="form-group row">
+          <label htmlFor="phoneno" className="col-sm-4 col-form-label">
+            Phone No
+          </label>
+          <div className="col-sm-8">
+            <Field name="phoneno" className="form-control" />
+            <ErrorMessage name="phoneno" component="div" />
+          </div>
+        </div>
+        <div className="form-group row">
+          <label htmlFor="address" className="col-sm-4 col-form-label">
+            Address
+          </label>
+          <div className="col-sm-8">
+            <Field name="address" className="form-control" />
+            <ErrorMessage name="address" component="div" />
+          </div>
+        </div>
+        <div className="form-group row">
+          <label htmlFor="billingAddress" className="col-sm-4 col-form-label">
+            Billing Address
+          </label>
+          <div className="col-sm-8">
+            <Field name="billingAddress" className="form-control" />
+            <ErrorMessage name="billingAddress" component="div" />
+          </div>
+        </div>
+      </React.Fragment>
+    );
+  };
+
+
+  const editAccountForm = (loginType: number) => {
+    return (
+      <React.Fragment>
+        <input type="hidden" name="id" />
+        <div className="form-group row">
+          <label htmlFor="username" className="col-sm-4 col-form-label">
+            User Name
+          </label>
+          <div className="col-sm-8">
+            <Field
+              name="username"
+              className={
+                "form-control" +
+                (loginType == LoginType.SYSTEM ? "" : " bg-secondary")
+              }
+              disabled={true}
+            />
+            <ErrorMessage name="username" component="div" />
+          </div>
+        </div>
+        <div className="form-group row">
+          <label htmlFor="email" className="col-sm-4 col-form-label">
+            Email (*)
+          </label>
+          <div className="col-sm-8">
+            <Field name="email" type="email" className="form-control" />
+            <ErrorMessage name="email" component="div" />
+          </div>
+        </div>
+        <div className="form-group row">
+          <label htmlFor="password" className="col-sm-4 col-form-label">
+            Password (*)
+          </label>
+          <div className="col-sm-8">
+            <Field
+              name="password"
+              type="password"
+              className={
+                "form-control" +
+                (loginType == LoginType.SYSTEM ? "" : " bg-secondary")
+              }
+              disabled={loginType == LoginType.SYSTEM ? false : true}
+            />
+            <ErrorMessage name="password" component="div" />
+          </div>
+        </div>
+        <div className="form-group row">
+          <label htmlFor="retypePassword" className="col-sm-4 col-form-label">
+            Retype Password (*)
+          </label>
+          <div className="col-sm-8">
+            <Field
+              name="retypePassword"
+              type="password"
+              className={
+                "form-control" +
+                (loginType == LoginType.SYSTEM ? "" : " bg-secondary")
+              }
+              disabled={loginType == LoginType.SYSTEM ? false : true}
+            />
+            <ErrorMessage name="retypePassword" component="div" />
+          </div>
+        </div>
+        <div className="form-group row">
+          <label htmlFor="aliasName" className="col-sm-4 col-form-label">
+            Alias Name (*)
+          </label>
+          <div className="col-sm-8">
+            <Field name="aliasName" className="form-control" />
+            <ErrorMessage name="aliasName" component="div" />
+          </div>
+        </div>
+        <div className="form-group row">
+          <label htmlFor="phoneno" className="col-sm-4 col-form-label">
+            Phone No
+          </label>
+          <div className="col-sm-8">
+            <Field name="phoneno" className="form-control" />
+            <ErrorMessage name="phoneno" component="div" />
+          </div>
+        </div>
+        <div className="form-group row">
+          <label htmlFor="address" className="col-sm-4 col-form-label">
+            Address
+          </label>
+          <div className="col-sm-8">
+            <Field name="address" className="form-control" />
+            <ErrorMessage name="address" component="div" />
+          </div>
+        </div>
+        <div className="form-group row">
+          <label htmlFor="billingAddress" className="col-sm-4 col-form-label">
+            Billing Address
+          </label>
+          <div className="col-sm-8">
+            <Field name="billingAddress" className="form-control" />
+            <ErrorMessage name="billingAddress" component="div" />
+          </div>
+        </div>
+      </React.Fragment>
+    );
+  };
+
   return (
     <div>
       <section
@@ -157,150 +406,58 @@ const NewUserAccount = () => {
                 </Alert>
               </Snackbar>
               <Formik
-                initialValues={{
-                  username: "",
-                  email: "",
-                  phoneno: "",
-                  password: "",
-                  retypePassword: "",
-                  address: "",
-                  billingAddress: "",
-                  aliasName: "",
-                  loginType: LoginType.SYSTEM,
-                  userType: UserType.Leaner
-                }}
-                validationSchema={SignupSchema}
+                initialValues={initialAccountValue}
+                validationSchema={
+                  isEditing
+                    ? loggedUser?.loginType == LoginType.SYSTEM
+                      ? EditFormSchemaWithPassword
+                      : EditFormSchema
+                    : SignupSchema
+                }
                 onSubmit={(values) => {
                   saveAccount(values);
                 }}
               >
-                {({ errors, touched }) => (
-                  <Form>
-                    <div className="form-group row">
-                      <label
-                        htmlFor="username"
-                        className="col-sm-4 col-form-label"
-                      >
-                        User Name (*)
-                      </label>
-                      <div className="col-sm-8">
-                        <Field name="username" className="form-control" />
-                        <ErrorMessage name="username" component="div" />
+                {({ errors, touched, isSubmitting, setFieldValue }) => {
+                  useEffect(() => {
+                    if (data) {
+                      setFieldValue("username", data.userName);
+                      setFieldValue("email", data.email);
+                      setFieldValue("phoneno", data.phoneNo);
+                      setFieldValue("address", data.address);
+                      setFieldValue("billingAddress", data.billingAddress);
+                      setFieldValue("aliasName", data.aliasName);
+                    }
+                  }, [data]);
+                  return (
+                    <Form>
+                      {isEditing ? (
+                        isLoading ? (
+                          <a>Loading</a>
+                        ) : (
+                          editAccountForm(loggedUser?.loginType as number)
+                        )
+                      ) : (
+                        newAccountForm()
+                      )}
+                      <div className="d-flex flex-row-reverse">
+                        <button
+                          type="submit"
+                          className="btn btn-primary py-2 px-3"
+                        >
+                          Submit
+                        </button>
+                        <button
+                          className="btn btn-primary py-2 px-3 mr-2"
+                          type="button"
+                          onClick={handleCancel}
+                        >
+                          Cancel
+                        </button>
                       </div>
-                    </div>
-                    <div className="form-group row">
-                      <label
-                        htmlFor="email"
-                        className="col-sm-4 col-form-label"
-                      >
-                        Email (*)
-                      </label>
-                      <div className="col-sm-8">
-                        <Field
-                          name="email"
-                          type="email"
-                          className="form-control"
-                        />
-                        <ErrorMessage name="email" component="div" />
-                      </div>
-                    </div>
-                    <div className="form-group row">
-                      <label
-                        htmlFor="password"
-                        className="col-sm-4 col-form-label"
-                      >
-                        Password (*)
-                      </label>
-                      <div className="col-sm-8">
-                        <Field
-                          name="password"
-                          type="password"
-                          className="form-control"
-                        />
-                        <ErrorMessage name="password" component="div" />
-                      </div>
-                    </div>
-                    <div className="form-group row">
-                      <label
-                        htmlFor="retypePassword"
-                        className="col-sm-4 col-form-label"
-                      >
-                        Retype Password (*)
-                      </label>
-                      <div className="col-sm-8">
-                        <Field
-                          name="retypePassword"
-                          type="password"
-                          className="form-control"
-                        />
-                        <ErrorMessage name="retypePassword" component="div" />
-                      </div>
-                    </div>
-                    <div className="form-group row">
-                      <label
-                        htmlFor="aliasName"
-                        className="col-sm-4 col-form-label"
-                      >
-                        Alias Name (*)
-                      </label>
-                      <div className="col-sm-8">
-                        <Field name="aliasName" className="form-control" />
-                        <ErrorMessage name="aliasName" component="div" />
-                      </div>
-                    </div>
-                    <div className="form-group row">
-                      <label
-                        htmlFor="phoneno"
-                        className="col-sm-4 col-form-label"
-                      >
-                        Phone No
-                      </label>
-                      <div className="col-sm-8">
-                        <Field name="phoneno" className="form-control" />
-                        <ErrorMessage name="phoneno" component="div" />
-                      </div>
-                    </div>
-                    <div className="form-group row">
-                      <label
-                        htmlFor="address"
-                        className="col-sm-4 col-form-label"
-                      >
-                        Address
-                      </label>
-                      <div className="col-sm-8">
-                        <Field name="address" className="form-control" />
-                        <ErrorMessage name="address" component="div" />
-                      </div>
-                    </div>
-                    <div className="form-group row">
-                      <label
-                        htmlFor="billingAddress"
-                        className="col-sm-4 col-form-label"
-                      >
-                        Billing Address
-                      </label>
-                      <div className="col-sm-8">
-                        <Field name="billingAddress" className="form-control" />
-                        <ErrorMessage name="billingAddress" component="div" />
-                      </div>
-                    </div>
-                    <div className="d-flex flex-row-reverse">
-                      <button
-                        type="submit"
-                        className="btn btn-primary py-2 px-3"
-                      >
-                        Submit
-                      </button>
-                      <button
-                        className="btn btn-primary py-2 px-3 mr-2"
-                        type="button"
-                        onClick={handleCancel}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </Form>
-                )}
+                    </Form>
+                  );
+                }}
               </Formik>
             </div>
           </div>

@@ -64,6 +64,22 @@ namespace EasyEnglishAPI.Controllers
         }
 
         [Authorize]
+        [HttpGet]
+        [Route("api/ExamResults/GetTop3ResultsByUser/{userId}/{examTestId}")]
+        public async Task<ActionResult<IEnumerable<ExamResult>>> GetTop3ResultsByUser(Guid userId, Guid examTestId)
+        {
+            try
+            {
+                return Ok(await _objectDAL.GetTop3ResultsByUser(userId, examTestId));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+           ;
+        }
+
+        [Authorize]
         [HttpPost]
         [Route("api/ExamResults/Create")]
         public async Task<ActionResult<ExamResult>> Create([FromBody] ExamResult u)

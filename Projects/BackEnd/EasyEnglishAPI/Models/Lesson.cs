@@ -27,9 +27,11 @@ public partial class Lesson
 
     public Guid? LessonCategory { get; set; }
 
+    public virtual ICollection<AssignmentLesson> AssignmentLessons { get; } = new List<AssignmentLesson>();
+
     public virtual User? CreatedByNavigation { get; set; }
 
-    public virtual ICollection<Excercise> Excercises { get; } = new List<Excercise>();
+    public virtual ICollection<Exercise> Exercises { get; } = new List<Exercise>();
 
     public virtual LessonCategory? LessonCategoryNavigation { get; set; }
 }

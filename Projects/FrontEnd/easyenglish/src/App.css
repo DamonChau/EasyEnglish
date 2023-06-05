@@ -54,3 +54,7 @@
     transform: rotate(360deg);
   }
 }
+
+.ftco-departments .nav-pills .nav-link{
+  width: 25%!important;
+}

@@ -27,6 +27,8 @@ public partial class ExamTest
 
     public string? AudioFile { get; set; }
 
+    public virtual ICollection<AssignmentExam> AssignmentExams { get; } = new List<AssignmentExam>();
+
     public virtual ICollection<Comment> Comments { get; } = new List<Comment>();
 
     public virtual User? CreatedByNavigation { get; set; }

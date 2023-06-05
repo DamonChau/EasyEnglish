@@ -3,10 +3,16 @@ import React, { useEffect } from "react";
 import { config } from "../../helpers/contants";
 import { Link, useNavigate } from "react-router-dom";
 import { useTypedSelector, useAppDispatch } from "../../services";
-import { selectIsAuthenticated, logout } from "../../services/slices/authSlice";
+import {
+  selectIsAuthenticated,
+  logout,
+  selectLoggedUser,
+} from "../../services/slices/authSlice";
+import { UserType } from "../../interfaces/interfaces";
 
 const Header = () => {
   const isAuthenticated = useTypedSelector(selectIsAuthenticated);
+  const loggedUser = useTypedSelector(selectLoggedUser);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -111,18 +117,28 @@ const Header = () => {
                 <li className="nav-item dropdown">
                   <a
                     className="nav-link dropdown-toggle"
-                    href="/admin"
                     id="navbarDropdown"
                     role="button"
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
                   >
-                    Admin
+                    {loggedUser?.aliasName ? loggedUser?.aliasName : "Welcome"}
                   </a>
                   <ul
                     className="dropdown-menu"
                     aria-labelledby="navbarDropdown"
                   >
+                    <li className="nav-item">
+                      <Link
+                        className="nav-link"
+                        to={
+                          config.url.API_URL_FOLDER +
+                          `/accountSetting/${loggedUser?.id}`
+                        }
+                      >
+                        Account Setting
+                      </Link>
+                    </li>
                     <li className="nav-item">
                       <a
                         role="button"
@@ -132,24 +148,72 @@ const Header = () => {
                         Logout
                       </a>
                     </li>
-                    <li role="separator" className="dropdown-divider"></li>
-                    <li className="nav-item">
-                      <Link
-                        className="nav-link"
-                        to={config.url.API_URL_FOLDER + "/examTestsManager"}
-                      >
-                        Exam Tests Manager
-                      </Link>
-                    </li>
-                    <li className="nav-item">
-                      <Link
-                        className="nav-link"
-                        to={config.url.API_URL_FOLDER + "/examTestsDetail/add"}
-                      >
-                        Exam Tests Detail
-                      </Link>
-                    </li>
-                    <li role="separator" className="dropdown-divider"></li>
+                    {loggedUser?.userType == UserType.Leaner ||
+                    loggedUser?.userType == UserType.Admin ? (
+                      <React.Fragment>
+                        <li role="separator" className="dropdown-divider"></li>
+                        <li className="nav-item">
+                          <Link
+                            className="nav-link"
+                            to={config.url.API_URL_FOLDER + `/myStudy/`}
+                          >
+                            My Study
+                          </Link>
+                        </li>
+                        <li className="nav-item">
+                          <Link
+                            className="nav-link"
+                            to={config.url.API_URL_FOLDER + `/myTeacher/`}
+                          >
+                            My Teacher
+                          </Link>
+                        </li>
+                      </React.Fragment>
+                    ) : (
+                      <React.Fragment>
+                        <li role="separator" className="dropdown-divider"></li>
+                        <li className="nav-item">
+                          <Link
+                            className="nav-link"
+                            to={config.url.API_URL_FOLDER + `/myStudent/`}
+                          >
+                            My Student
+                          </Link>
+                        </li>
+                      </React.Fragment>
+                    )}
+                    {loggedUser?.userType == UserType.Admin ? (
+                      <React.Fragment>
+                        <li role="separator" className="dropdown-divider"></li>
+                        <li className="nav-item">
+                          <Link
+                            className="nav-link"
+                            to={config.url.API_URL_FOLDER + "/examTestsManager"}
+                          >
+                            Exam Tests Manager
+                          </Link>
+                        </li>
+                        <li className="nav-item">
+                          <Link
+                            className="nav-link"
+                            to={
+                              config.url.API_URL_FOLDER + "/examTestsDetail/add"
+                            }
+                          >
+                            Exam Tests Detail
+                          </Link>
+                        </li>
+                        <li role="separator" className="dropdown-divider"></li>
+                        <li className="nav-item">
+                          <Link
+                            className="nav-link"
+                            to={config.url.API_URL_FOLDER + "/userManager"}
+                          >
+                            User Manager
+                          </Link>
+                        </li>
+                      </React.Fragment>
+                    ) : null}
                   </ul>
                 </li>
               )}

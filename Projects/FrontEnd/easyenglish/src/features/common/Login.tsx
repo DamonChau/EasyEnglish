@@ -7,7 +7,7 @@ import { useLoginMutation } from "../users/usersApi";
 import { useSelector } from "react-redux";
 import {
   selectIsAuthenticated,
-  setLoggedUser,
+  setLoggedSession,
 } from "../../services/slices/authSlice";
 import { Users } from "../../interfaces/interfaces";
 import { config } from "../../helpers/contants";
@@ -44,7 +44,7 @@ const Login = () => {
       u.password = password;
       u.loginType = LoginType.SYSTEM;
       const response = await login(u).unwrap();
-      dispatch(setLoggedUser(response));
+      dispatch(setLoggedSession(response));
     } catch (err) {
       if (isFetchBaseQueryError(err)) {
         const msg =
@@ -125,7 +125,7 @@ const Login = () => {
               <span>Not having an account?</span>
               <Link
                 className="nav-link"
-                to={config.url.API_URL_FOLDER + "/newUserAccount"}
+                to={config.url.API_URL_FOLDER + "/register"}
               >
                 Sign Up
               </Link>
@@ -143,30 +143,51 @@ const Login = () => {
                     //console.log("Login Failed!", error);
                   }}
                   onProfileSuccess={async (response) => {
-                    //console.log("Get Profile Success!", response);
-                    const u = {} as Users;
-                    u.userName = response.id as string;
-                    u.password = response.id as string;
-                    u.aliasName = response.name as string;
-                    u.email = response.email as string;
-                    u.loginType = LoginType.FACEBOOK;
-                    const r = await login(u).unwrap();
-                    dispatch(setLoggedUser(r));
+                    try {
+                      const u = {} as Users;
+                      u.userName = response.id as string;
+                      u.password = response.id as string;
+                      u.aliasName = response.name as string;
+                      u.email = response.email as string;
+                      u.loginType = LoginType.FACEBOOK;
+                      const r = await login(u).unwrap();
+                      dispatch(setLoggedSession(r));
+                    } catch (err) {
+                      if (isFetchBaseQueryError(err)) {
+                        const msg =
+                          "error" in err
+                            ? err.error
+                            : JSON.parse(JSON.stringify(err.data)).error;
+                        setErrMsg(msg);
+                      } else if (isErrorWithMessage(err))
+                        console.log(err.message);
+                    }
                   }}
                 />
               </div>
               <div className="pl-4">
                 <GoogleLogin
                   onSuccess={async (credentialResponse: any) => {
-                    const decoded = jwt_decode(credentialResponse.credential);
-                    const u = {} as Users;
-                    u.userName = (decoded as any).sub as string;
-                    u.password = (decoded as any).sub as string;
-                    u.aliasName = (decoded as any).name as string;
-                    u.email = (decoded as any).email as string;
-                    u.loginType = LoginType.GOOGLE;
-                    const r = await login(u).unwrap();
-                    dispatch(setLoggedUser(r));
+                    try {
+                      const decoded = jwt_decode(credentialResponse.credential);
+                      const u = {} as Users;
+                      u.userName = (decoded as any).sub as string;
+                      u.password = (decoded as any).sub as string;
+                      u.aliasName = (decoded as any).name as string;
+                      u.email = (decoded as any).email as string;
+                      u.loginType = LoginType.GOOGLE;
+                      const r = await login(u).unwrap();
+                      dispatch(setLoggedSession(r));
+                    } catch (err) {
+                      if (isFetchBaseQueryError(err)) {
+                        const msg =
+                          "error" in err
+                            ? err.error
+                            : JSON.parse(JSON.stringify(err.data)).error;
+                        setErrMsg(msg);
+                      } else if (isErrorWithMessage(err))
+                        console.log(err.message);
+                    }
                   }}
                   onError={() => {
                     console.log("Login Failed");

@@ -25,13 +25,13 @@ public partial class Question
 
     public Guid? ExamTestId { get; set; }
 
-    public Guid? ExcerciseId { get; set; }
+    public Guid? ExerciseId { get; set; }
 
     public virtual User? CreatedByNavigation { get; set; }
 
     public virtual ExamTest? ExamTest { get; set; }
 
-    public virtual Excercise? Excercise { get; set; }
+    public virtual Exercise? Exercise { get; set; }
 
     public virtual ICollection<QuestionDetail> QuestionDetails { get; } = new List<QuestionDetail>();
 }

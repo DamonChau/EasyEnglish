@@ -1,13 +1,14 @@
-﻿/* eslint-disable @typescript-eslint/no-explicit-any */
+﻿/* eslint-disable @typescript-eslint/no-empty-interface */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface ExamTests {
   id: string;
   testname: string;
   title: string;
   content: string;
   description: string;
-  testType: number;
-  sectionType: number;
-  status: number;
+  testType: ExamTestType;
+  sectionType: ExamTestSectionType;
+  status: Status;
   createdDate: string;
   createdBy: string;
   audioFile: string;
@@ -22,14 +23,14 @@ export interface Users {
   password: string;
   address: string;
   billingAddress: string;
-  userType: number;
+  userType: UserType;
   description: string;
   token: number;
-  status: number;
+  status: Status;
   createdDate: string;
   loginDate: string;
   aliasName: string;
-  loginType: number;
+  loginType: LoginType;
 }
 
 export interface Questions {
@@ -38,8 +39,8 @@ export interface Questions {
   title: string;
   content: string;
   description: string;
-  questionType: number;
-  status: number;
+  questionType: QuestionType;
+  status: Status;
   createdDate: string;
   createdBy: string;
   examTestId: string;
@@ -64,7 +65,7 @@ export interface UserAnswers {
   result: number;
   description: string;
   createdDate: string;
-  status: number;
+  status: Status;
   examResultId: string;
   questionDetail: QuestionDetails;
 }
@@ -83,10 +84,21 @@ export interface ExamResults {
   createdBy: string;
 }
 
+export interface AssignmentExams {
+  id: string;
+  examTestId: string;
+  userid: string;
+  isFavourite: boolean;
+  isBookmarked: boolean;
+  isDone: boolean;
+  isAssigned: boolean;
+  createdDate: string;
+}
+
 export interface UserNotes {
   id: string;
   content: string;
-  status: number;
+  status: Status;
   createdDate: string;
   userAnswerId: string;
   examResultId: string;
@@ -102,7 +114,7 @@ export interface Lessons {
   content: string;
   lessonType: number;
   hashTag: string;
-  status: number;
+  status: Status;
   createdDate: string;
   createdBy: string;
   lessonCategory: string;
@@ -131,7 +143,7 @@ export interface Comments {
 export interface Feedbacks {
   id: string;
   content: string;
-  status: number;
+  status: Status;
   createdDate: string;
   createdBy: string;
 }
@@ -144,6 +156,14 @@ export interface ActionLogs {
   value: string;
   createdDate: string;
   createdBy: string;
+}
+
+export interface UserRelationship{
+  id: string;
+  userId: string;
+  relatedUserId: string;
+  relationShipType: RelationShipType;
+  status: Status;
 }
 
 export enum LoginType{
@@ -181,4 +201,15 @@ export enum QuestionType{
   SingleAnswer,
   MASingleChoice,
   MAMultipleChoice
+}
+
+export enum AssignmentStatus{
+  Favourite,
+  Bookmarked,
+  Assigned,
+  Done,
+}
+
+export enum RelationShipType{
+  LeanerTeacher
 }

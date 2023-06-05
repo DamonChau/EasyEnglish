@@ -34,8 +34,8 @@ const QuestionAnswerReadingDetails = ({
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const updatedValue = {
         ...initialValue,
-        questionDetailId: e.target.name,
-        answer: e.target.value,
+        questionDetailId: e.target.id,
+        answer: e.target.value == "on" ? "true" : e.target.value,
       };
       handleFieldChange(updatedValue);
     },
@@ -60,7 +60,7 @@ const QuestionAnswerReadingDetails = ({
               id={qd.id}
               name={qd.id}
               onChange={handleChange}
-              required
+              
             />
           </div>
         ))
@@ -75,9 +75,9 @@ const QuestionAnswerReadingDetails = ({
               className="form-check-input"
               type="radio"
               id={qd.id}
-              name={questionType}
+              name={qd.questionId}
               onChange={handleChange}
-              required
+              
             />
             <label
               className="form-check-label"
@@ -97,9 +97,9 @@ const QuestionAnswerReadingDetails = ({
               className="form-check-input"
               type="checkbox"
               id={qd.id}
-              name={questionType}
+              name={qd.questionId}
               onChange={handleChange}
-              required
+              
             />
             <label
               className="form-check-label"

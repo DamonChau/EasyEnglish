@@ -31,8 +31,6 @@ import {
   Status,
 } from "../../interfaces/interfaces";
 import { parseISO } from "date-fns";
-
-import { findArrayElementById } from "../../helpers/contants";
 import { useNavigate } from "react-router-dom";
 import { useTypedSelector } from "../../services";
 import {

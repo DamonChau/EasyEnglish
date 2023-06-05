@@ -6,6 +6,7 @@ import React, { useState, useEffect } from "react";
 import { QuestionsResponse, useGetQuestionsWithQDQuery } from "./questionsApi";
 import { useAddUserAnswerMutation } from "../users/userAnswersApi";
 import { useAddExamResultMutation } from "../examResult/examResultApi";
+import { useUpdateStatusByUserMutation } from "../assignments/assignmentExamsApi";
 import { useTypedSelector } from "../../services";
 import isUUID from "validator/lib/isUUID";
 import {
@@ -30,6 +31,7 @@ import {
   isFetchBaseQueryError,
   isErrorWithMessage,
 } from "../../services/helpers";
+import { isEquals } from "../../helpers/contants";
 
 const QuestionAnswerReading = ({ testId, getExamResult }: any) => {
   const [isView, setView] = React.useState(false);
@@ -37,6 +39,7 @@ const QuestionAnswerReading = ({ testId, getExamResult }: any) => {
     useGetQuestionsWithQDQuery(testId, { skip: !isView });
   const [addUserAnswer] = useAddUserAnswerMutation();
   const [addExamResult] = useAddExamResultMutation();
+  const [updateAssignmentExams] = useUpdateStatusByUserMutation();
 
   const [userAnswers, setUserAnswers] = useStateWithCallbackLazy<
     UserAnswersDisplay[]
@@ -54,6 +57,16 @@ const QuestionAnswerReading = ({ testId, getExamResult }: any) => {
     createdBy: isAuthenticated ? loggedUser!.id : uuidv4(),
   };
   const [testResult, setTestResult] = useState(initialValueTestResult);
+
+  const initialValueAssignmentExam = {
+    id: uuidv4(),
+    examTestId: testId,
+    isDone: true,
+    userId: isAuthenticated ? loggedUser!.id : uuidv4(),
+  };
+  const [assignmentExam, setAssignmentExam] = useState(
+    initialValueAssignmentExam
+  );
   const [erroMsg, setErrorMsg] = useState("");
 
   //update exam test result id
@@ -61,6 +74,7 @@ const QuestionAnswerReading = ({ testId, getExamResult }: any) => {
     if (testId && isUUID(testId)) {
       setView(true);
       setTestResult((prevState) => ({ ...prevState, examTestId: testId }));
+      setAssignmentExam((prevState) => ({ ...prevState, examTestId: testId }));
     }
   }, [testId]);
 
@@ -71,7 +85,7 @@ const QuestionAnswerReading = ({ testId, getExamResult }: any) => {
       questions.forEach((q) => {
         setTestResult((prevState) => ({
           ...prevState,
-          noQuestion: prevState.noQuestion + q.questionDetails.length,
+          noQuestion: prevState.noQuestion + countNoQuestionWithAnswer(q.questionDetails),
         }));
       });
     }
@@ -91,8 +105,23 @@ const QuestionAnswerReading = ({ testId, getExamResult }: any) => {
   }, [isError]);
 
   //#region helpers
+  function countNoQuestionWithAnswer(questionDetails: QuestionDetails[]) {
+    let count = 0;
+    questionDetails.forEach((qd) => {
+      if (qd.answer) count++;
+    });
+    return count;
+  }
   function replaceWithBr(q: Questions) {
     return q?.content.replace(/\n/g, "<br />");
+  }
+
+  function clearFields(e: any) {
+    Array.from(e.target).forEach((e: any) => {
+      if (e.type == "text") e.value = "";
+      else if (e.type == "checkbox") e.checked = "";
+      else if (e.type == "radio") e.checked = "";
+    });
   }
 
   const findAnswer = (
@@ -184,7 +213,7 @@ const QuestionAnswerReading = ({ testId, getExamResult }: any) => {
   //#endregion
 
   //#region save and check for result
-  const onSaveExamResult = async (
+  const saveExamResult = async (
     result: Partial<ExamResults>,
     score: number
   ) => {
@@ -206,7 +235,7 @@ const QuestionAnswerReading = ({ testId, getExamResult }: any) => {
     }
   };
 
-  const onSaveUserAnswer = async (userAnswers: UserAnswersDisplay[]) => {
+  const saveUserAnswer = async (userAnswers: UserAnswersDisplay[]) => {
     try {
       if (userAnswers) {
         userAnswers.forEach(async (answer: Partial<UserAnswers>) => {
@@ -247,7 +276,23 @@ const QuestionAnswerReading = ({ testId, getExamResult }: any) => {
     }
   };
 
-  const onSave = async () => {
+  const saveAssignmentExam = async () => {
+    try {
+      if (assignmentExam) {
+        await updateAssignmentExams(assignmentExam).unwrap();
+      }
+    } catch (err) {
+      if (isFetchBaseQueryError(err)) {
+        const msg =
+          "error" in err
+            ? err.error
+            : JSON.parse(JSON.stringify(err.data)).error;
+        setErrorMsg(msg);
+      } else if (isErrorWithMessage(err)) console.log(err.message);
+    }
+  };
+
+  const save = async () => {
     try {
       let score = 0;
       //update score and result
@@ -256,7 +301,9 @@ const QuestionAnswerReading = ({ testId, getExamResult }: any) => {
           data as QuestionsResponse,
           answer.questionDetailId
         );
-        answer.answer == qd.answer ? (answer.result = 1) : (answer.result = 0);
+        isEquals(answer.answer, qd.answer)
+          ? (answer.result = 1)
+          : (answer.result = 0);
         answer.answerOrg = qd.answer;
         answer.order = qd.order;
         answer.description = qd.order.toString();
@@ -264,7 +311,9 @@ const QuestionAnswerReading = ({ testId, getExamResult }: any) => {
         return answer;
       });
       //save ExamResult
-      const examResultId = await onSaveExamResult(testResult, score);
+      const examResultId = await saveExamResult(testResult, score);
+      //save AssignmentExam
+      await saveAssignmentExam();
 
       //save User Answer
       updatedUserAnswers = userAnswers.map((answer) => {
@@ -275,7 +324,7 @@ const QuestionAnswerReading = ({ testId, getExamResult }: any) => {
       updatedUserAnswers.sort(compareFB);
 
       setUserAnswers(updatedUserAnswers, () => {
-        onSaveUserAnswer(updatedUserAnswers);
+        saveUserAnswer(updatedUserAnswers);
       });
 
       setOpen(true);
@@ -321,10 +370,11 @@ const QuestionAnswerReading = ({ testId, getExamResult }: any) => {
       ) : (
         <div>
           <h3>Questions</h3>
-          <form className="was-validated"
+          <form
             onSubmit={(e) => {
               e.preventDefault();
-              onSave();
+              clearFields(e);
+              save();
             }}
           >
             {data &&
@@ -343,30 +393,31 @@ const QuestionAnswerReading = ({ testId, getExamResult }: any) => {
                   />
                 </div>
               ))}
+
+            <button
+              className="btn btn-primary py-2 px-3 mr-2"
+              type="submit"
+              disabled={!isAuthenticated ? true : isSave ? true : false}
+            >
+              Submit
+            </button>
+            <button
+              className="btn btn-primary py-2 px-3 mr-2"
+              type="button"
+              onClick={toggleDrawer}
+              disabled={!isAuthenticated ? true : !isSave ? true : false}
+            >
+              View Results
+            </button>
+            <button
+              className="btn btn-primary py-2 px-3 mr-2"
+              type="button"
+              onClick={restartNewTest}
+              disabled={!isAuthenticated ? true : !isSave ? true : false}
+            >
+              Restart
+            </button>
           </form>
-          <button
-            className="btn btn-primary py-2 px-3 mr-2"
-            type="submit"
-            disabled={!isAuthenticated ? true : isSave ? true : false}
-          >
-            Submit
-          </button>
-          <button
-            className="btn btn-primary py-2 px-3 mr-2"
-            type="button"
-            onClick={toggleDrawer}
-            disabled={!isAuthenticated ? true : !isSave ? true : false}
-          >
-            View Results
-          </button>
-          <button
-            className="btn btn-primary py-2 px-3 mr-2"
-            type="button"
-            onClick={restartNewTest}
-            disabled={!isAuthenticated ? true : !isSave ? true : false}
-          >
-            Restart
-          </button>
         </div>
       )}
     </div>

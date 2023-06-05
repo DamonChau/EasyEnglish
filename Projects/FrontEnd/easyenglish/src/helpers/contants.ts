@@ -30,3 +30,9 @@ export function findArrayElementById(array: any, id: any) {
     return element.id === id;
   });
 }
+
+export function isEquals(a : string | number, b: string | number) {
+  return typeof a === 'string' && typeof b === 'string'
+      ? a.localeCompare(b, undefined, { sensitivity: 'accent' }) === 0
+      : a === b;
+}

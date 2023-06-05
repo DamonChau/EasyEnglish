@@ -9,23 +9,39 @@ const initialState = {
   token: null,
   refreshToken: null,
   isAuthenticated: false,
-} as { user: null | Users; token: string | null; refreshToken: string | null; isAuthenticated: boolean };
+} as {
+  user: null | Users;
+  token: string | null;
+  refreshToken: string | null;
+  isAuthenticated: boolean;
+};
 
 const slice = createSlice({
   name: "auth",
   initialState,
   reducers: {
     logout: () => initialState,
+    setLoggedSession: (state, action: PayloadAction<any>) => {
+      try {
+        state.user = action.payload.user;
+        state.token = action.payload.token;
+        state.refreshToken = action.payload.refreshToken;
+        state.isAuthenticated = true;
+      } catch (error) {
+        console.log(error);
+      }
+    },
     setLoggedUser: (state, action: PayloadAction<any>) => {
-      state.user = action.payload.user;
-      state.token = action.payload.token;
-      state.refreshToken = action.payload.refreshToken;
-      state.isAuthenticated = true;
+      try {
+        state.user = action.payload;
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
 });
 
-export const { logout, setLoggedUser } = slice.actions;
+export const { logout, setLoggedSession, setLoggedUser } = slice.actions;
 export default slice.reducer as Reducer<typeof initialState>;
 
 export const selectIsAuthenticated = (state: RootState) =>
@@ -33,5 +49,4 @@ export const selectIsAuthenticated = (state: RootState) =>
 
 export const selectLoggedUser = (state: RootState) => state.auth.user;
 export const selectToken = (state: RootState) => state.auth.token;
-export const selectUserRole = (state: RootState) => state.auth.user?.userType;
 export const selectRefreshToke = (state: RootState) => state.auth.refreshToken;

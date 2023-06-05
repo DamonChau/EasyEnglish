@@ -34,7 +34,8 @@ namespace EasyEnglishAPI.DAL
                 List<Comment> allComments = await _context.Comments
                     .Include(u => u.InverseParent)
                     .Include(u => u.CreatedByNavigation)
-                    .OrderByDescending(u => u.CreatedDate).ThenBy(u=>u.CreatedBy)
+                    .OrderByDescending(u => u.CreatedDate)
+                    .ThenBy(u=>u.CreatedBy)
                     .ToListAsync();
 
                 IEnumerable<Comment> filteredComments = allComments.Where(u => u.ExamTestId == examId && u.ParentId == null);

@@ -13,15 +13,21 @@ public partial class EasyEnglishContext : DbContext
 
     public virtual DbSet<ActionLog> ActionLogs { get; set; }
 
+    public virtual DbSet<AssignmentExam> AssignmentExams { get; set; }
+
+    public virtual DbSet<AssignmentExercise> AssignmentExercises { get; set; }
+
+    public virtual DbSet<AssignmentLesson> AssignmentLessons { get; set; }
+
     public virtual DbSet<Comment> Comments { get; set; }
 
     public virtual DbSet<ExamResult> ExamResults { get; set; }
 
     public virtual DbSet<ExamTest> ExamTests { get; set; }
 
-    public virtual DbSet<Excercise> Excercises { get; set; }
+    public virtual DbSet<Exercise> Exercises { get; set; }
 
-    public virtual DbSet<ExcerciseCategory> ExcerciseCategories { get; set; }
+    public virtual DbSet<ExerciseCategory> ExerciseCategories { get; set; }
 
     public virtual DbSet<Feedback> Feedbacks { get; set; }
 
@@ -41,6 +47,8 @@ public partial class EasyEnglishContext : DbContext
 
     public virtual DbSet<UserNote> UserNotes { get; set; }
 
+    public virtual DbSet<UserRelationship> UserRelationships { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<ActionLog>(entity =>
@@ -55,6 +63,50 @@ public partial class EasyEnglishContext : DbContext
             entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.ActionLogs)
                 .HasForeignKey(d => d.CreatedBy)
                 .HasConstraintName("FK_ActionLog_User");
+        });
+
+        modelBuilder.Entity<AssignmentExam>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_Assignments");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.ExamTest).WithMany(p => p.AssignmentExams)
+                .HasForeignKey(d => d.ExamTestId)
+                .HasConstraintName("FK_Assignments_ExamTests");
+
+            entity.HasOne(d => d.User).WithMany(p => p.AssignmentExams)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_Assignments_Users");
+        });
+
+        modelBuilder.Entity<AssignmentExercise>(entity =>
+        {
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Exercise).WithMany(p => p.AssignmentExercises)
+                .HasForeignKey(d => d.ExerciseId)
+                .HasConstraintName("FK_AssignmentExercises_Exercises");
+
+            entity.HasOne(d => d.User).WithMany(p => p.AssignmentExercises)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_AssignmentExercises_Users");
+        });
+
+        modelBuilder.Entity<AssignmentLesson>(entity =>
+        {
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Lesson).WithMany(p => p.AssignmentLessons)
+                .HasForeignKey(d => d.LessonId)
+                .HasConstraintName("FK_AssignmentLessons_Lessons");
+
+            entity.HasOne(d => d.User).WithMany(p => p.AssignmentLessons)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_AssignmentLessons_Users");
         });
 
         modelBuilder.Entity<Comment>(entity =>
@@ -106,30 +158,30 @@ public partial class EasyEnglishContext : DbContext
                 .HasConstraintName("FK_ExamTest_User");
         });
 
-        modelBuilder.Entity<Excercise>(entity =>
+        modelBuilder.Entity<Exercise>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK_Excercise");
+            entity.HasKey(e => e.Id).HasName("PK_Exercise");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.Description).HasMaxLength(256);
-            entity.Property(e => e.ExcerciseName).HasMaxLength(125);
+            entity.Property(e => e.ExerciseName).HasMaxLength(125);
             entity.Property(e => e.Title).HasMaxLength(125);
 
-            entity.HasOne(d => d.Cat).WithMany(p => p.Excercises)
+            entity.HasOne(d => d.Cat).WithMany(p => p.Exercises)
                 .HasForeignKey(d => d.CatId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_Excercise_ExcerciseCategory");
+                .HasConstraintName("FK_Exercise_ExerciseCategory");
 
-            entity.HasOne(d => d.Lesson).WithMany(p => p.Excercises)
+            entity.HasOne(d => d.Lesson).WithMany(p => p.Exercises)
                 .HasForeignKey(d => d.LessonId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK_Excercise_Lessons");
+                .HasConstraintName("FK_Exercise_Lessons");
         });
 
-        modelBuilder.Entity<ExcerciseCategory>(entity =>
+        modelBuilder.Entity<ExerciseCategory>(entity =>
         {
-            entity.ToTable("ExcerciseCategory");
+            entity.ToTable("ExerciseCategory");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.CatName).HasMaxLength(125);
@@ -221,9 +273,9 @@ public partial class EasyEnglishContext : DbContext
                 .HasForeignKey(d => d.ExamTestId)
                 .HasConstraintName("FK_Questions_ExamTests");
 
-            entity.HasOne(d => d.Excercise).WithMany(p => p.Questions)
-                .HasForeignKey(d => d.ExcerciseId)
-                .HasConstraintName("FK_Questions_Excercises");
+            entity.HasOne(d => d.Exercise).WithMany(p => p.Questions)
+                .HasForeignKey(d => d.ExerciseId)
+                .HasConstraintName("FK_Questions_Exercises");
         });
 
         modelBuilder.Entity<QuestionDetail>(entity =>
@@ -297,6 +349,21 @@ public partial class EasyEnglishContext : DbContext
             entity.HasOne(d => d.UserAnswer).WithMany(p => p.UserNotes)
                 .HasForeignKey(d => d.UserAnswerId)
                 .HasConstraintName("FK_UserNotes_UserAnswers");
+        });
+
+        modelBuilder.Entity<UserRelationship>(entity =>
+        {
+            entity.ToTable("UserRelationship");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+
+            entity.HasOne(d => d.RelatedUser).WithMany(p => p.UserRelationshipRelatedUsers)
+                .HasForeignKey(d => d.RelatedUserId)
+                .HasConstraintName("FK_UserRelationship_Related_Users");
+
+            entity.HasOne(d => d.User).WithMany(p => p.UserRelationshipUsers)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_UserRelationship_Users");
         });
 
         OnModelCreatingPartial(modelBuilder);

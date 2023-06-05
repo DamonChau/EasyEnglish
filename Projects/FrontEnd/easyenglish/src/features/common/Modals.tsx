@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import {
   Questions,
@@ -10,6 +10,12 @@ import {
   QuestionDetails,
   UserNotes,
   Status,
+  ExamTests,
+  ExamResults,
+  ExamTestType,
+  ExamTestSectionType,
+  Users,
+  UserType,
 } from "../../interfaces/interfaces";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -17,6 +23,12 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Stack from "@mui/material/Stack";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
+import { parseISO } from "date-fns";
+import { useGetTop3ResultsByUserQuery } from "../examResult/examResultApi";
+import ExamTestsViewerControl from "../examTests/ExamTestsViewerControl";
 
 export const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
   function Alert(props, ref) {
@@ -149,7 +161,6 @@ export const CreateNewQuestionModal = ({
 
   const handleSubmit = () => {
     //put your validation logic here
-    console.log(q);
     onSubmit(q);
     onClose();
   };
@@ -377,6 +388,343 @@ export const CreateNewQuestionDetailModal = ({
           onClick={handleSubmit}
         >
           Save
+        </button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+export const ViewExamScoreModal = ({
+  open,
+  loggedUser,
+  examTest,
+  onClose,
+}: any) => {
+  const [isView, setIsview] = useState(false);
+
+  const id = examTest ? examTest.id : null;
+  const {
+    data: examTestResults,
+    isLoading,
+    isError,
+    error,
+  } = useGetTop3ResultsByUserQuery(
+    {
+      userId: loggedUser?.id,
+      examTestId: id,
+    },
+    { skip: !isView }
+  );
+
+  const [erroMsg, setErrorMsg] = useState("");
+
+  useEffect(() => {
+    if (examTest) {
+      setIsview(true);
+    }
+  }, [examTest]);
+
+  useEffect(() => {
+    if (error) {
+      if ("status" in error) {
+        // you can access all properties of `FetchBaseQueryError` here
+        const msg = "error" in error ? error.error : JSON.stringify(error.data);
+        setErrorMsg(msg);
+      } else {
+        // you can access all properties of `SerializedError` here
+        setErrorMsg(error.message as string);
+      }
+    }
+  }, [isError]);
+
+  return (
+    <Dialog open={open} fullWidth maxWidth="md">
+      <DialogTitle textAlign="center">Your latest results</DialogTitle>
+      <DialogContent
+        sx={{
+          paddingLeft: "24px",
+          paddingRight: "24px",
+          paddingBottom: "0px",
+        }}
+      >
+        <Stack>
+          {erroMsg ? (
+            <div className="p-2 m-2 text-danger">{erroMsg}</div>
+          ) : null}
+          {!isLoading ? (
+            <div className="d-flex justify-content-center align-items-center">
+              {examTestResults &&
+                examTestResults.map((result: ExamResults) => (
+                  <Card
+                    sx={{
+                      minWidth: 275,
+                      margin: "5px",
+                      backgroundColor: "#F8F9FA",
+                    }}
+                    key={result.id}
+                  >
+                    <CardContent>
+                      <Typography
+                        sx={{ fontSize: 14 }}
+                        color="text.secondary"
+                        gutterBottom
+                      >
+                        {ExamTestType[examTest.testType as number]}{" "}
+                        {ExamTestSectionType[examTest.sectionType as number]}
+                      </Typography>
+                      <Typography variant="h5" component="div">
+                        {examTest.testname}
+                      </Typography>
+
+                      <Typography variant="body2">
+                        Score : <b>{result.score}</b>
+                        <br />
+                        Questions : <b>{result.noQuestion}</b>
+                        <br />
+                        Date :{" "}
+                        <b>{parseISO(result.createdDate).toDateString()}</b>
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                ))}
+              {examTestResults?.length == 0 && (
+                <h6>
+                  <em>No Result(s) to show</em>
+                </h6>
+              )}
+            </div>
+          ) : (
+            <p>
+              <em>Loading...</em>
+            </p>
+          )}
+        </Stack>
+      </DialogContent>
+      <DialogActions sx={{ paddingBottom: "1.25rem" }}>
+        <button
+          className="btn btn-primary py-2 px-2"
+          type="button"
+          onClick={onClose}
+        >
+          Close
+        </button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+export const EditUserStatusModal = ({ open, user, onClose, onSubmit }: any) => {
+  const [u, setU] = React.useState<Partial<Users>>(user);
+
+  useEffect(() => {
+    setU(user);
+  }, [user]);
+
+  const handleSubmit = () => {
+    //put your validation logic here
+    onSubmit(u);
+    onClose();
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement
+    >
+  ) => {
+    setU((prev) => ({
+      ...u,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  return (
+    <Dialog open={open}>
+      <DialogTitle textAlign="center">Edit User Status</DialogTitle>
+      <DialogContent
+        sx={{
+          paddingLeft: "24px",
+          paddingRight: "24px",
+          paddingBottom: "0px",
+        }}
+      >
+        <Stack
+          sx={{
+            width: "100%",
+            minWidth: { xs: "300px", sm: "360px", md: "400px" },
+            padding: "10px",
+          }}
+        >
+          {u && (
+            <form>
+              <div className="d-flex justify-content-center mb-2">
+                <Typography variant="h6" component="div">
+                  {u.userName}
+                </Typography>
+              </div>
+              <div className="form-group row">
+                <select
+                  className="form-control"
+                  name="userType"
+                  value={u.userType}
+                  onChange={handleChange}
+                  placeholder="User Type"
+                >
+                  {Object.keys(UserType)
+                    .filter((key) => isNaN(Number(key)))
+                    .map((key, value) => (
+                      <option key={value} value={value}>
+                        {UserType[value]}
+                      </option>
+                    ))}
+                </select>
+              </div>
+              <div className="form-group row">
+                <select
+                  className="form-control"
+                  name="status"
+                  value={u.status}
+                  onChange={handleChange}
+                  placeholder="Status"
+                >
+                  {Object.keys(Status)
+                    .filter((key) => isNaN(Number(key)))
+                    .map((key, value) => (
+                      <option key={value} value={value}>
+                        {Status[value]}
+                      </option>
+                    ))}
+                </select>
+              </div>
+            </form>
+          )}
+        </Stack>
+      </DialogContent>
+      <DialogActions sx={{ paddingBottom: "1.25rem" }}>
+        <button
+          className="btn btn-primary py-2 px-2"
+          type="button"
+          onClick={onClose}
+        >
+          Cancel
+        </button>
+        <button
+          className="btn btn-primary py-2 px-2"
+          type="button"
+          onClick={handleSubmit}
+        >
+          Save
+        </button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+export const ConfirmationModal = ({
+  open,
+  headerText,
+  confirmationText,
+  onClose,
+  onSubmit,
+}: any) => {
+  const handleSubmit = () => {
+    //put your validation logic here
+    onSubmit();
+    onClose();
+  };
+
+  return (
+    <Dialog open={open}>
+      <DialogTitle textAlign="center" variant="h6">
+        {headerText}
+      </DialogTitle>
+      <DialogContent
+        sx={{
+          paddingLeft: "24px",
+          paddingRight: "24px",
+          paddingBottom: "0px",
+        }}
+      >
+        <Stack
+          sx={{
+            width: "100%",
+            minWidth: { xs: "300px", sm: "360px", md: "400px" },
+            padding: "10px",
+          }}
+        >
+          <div className="d-flex justify-content-center mb-2">
+            <Typography variant="body1" component="div">
+              {confirmationText}
+            </Typography>
+          </div>
+        </Stack>
+      </DialogContent>
+      <DialogActions sx={{ paddingBottom: "1.25rem" }}>
+        <button
+          className="btn btn-primary py-2 px-2"
+          type="button"
+          onClick={onClose}
+        >
+          Cancel
+        </button>
+        <button
+          className="btn btn-primary py-2 px-2"
+          type="button"
+          onClick={handleSubmit}
+        >
+          OK
+        </button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+export const ViewExamTestsModal = ({ open, onClose, onSubmit }: any) => {
+  const [selected, setSelected] = React.useState<readonly string[]>([]);
+
+  const onSelectedDone = (items: string[]) => {
+    setSelected(items);
+  };
+
+  const handleSubmit = () => {
+    //put your validation logic here
+    onSubmit(selected);
+    onClose();
+  };
+
+  return (
+    <Dialog open={open} fullWidth maxWidth="md">
+      <DialogTitle textAlign="center" variant="h6">
+        Exam Tests
+      </DialogTitle>
+      <DialogContent
+        sx={{
+          paddingLeft: "24px",
+          paddingRight: "24px",
+          paddingBottom: "0px",
+        }}
+      >
+        <Stack>
+          <div className="d-flex justify-content-center">
+            <ExamTestsViewerControl
+              onSelectedDone={onSelectedDone}
+            ></ExamTestsViewerControl>
+          </div>
+        </Stack>
+      </DialogContent>
+      <DialogActions sx={{ paddingBottom: "1.25rem" }}>
+        <button
+          className="btn btn-primary py-2 px-2"
+          type="button"
+          onClick={onClose}
+        >
+          Cancel
+        </button>
+        <button
+          className="btn btn-primary py-2 px-2"
+          type="button"
+          onClick={handleSubmit}
+        >
+          OK
         </button>
       </DialogActions>
     </Dialog>

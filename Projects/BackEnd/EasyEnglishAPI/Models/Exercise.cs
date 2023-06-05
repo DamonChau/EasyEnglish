@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace EasyEnglishAPI.Models;
 
-public partial class Excercise
+public partial class Exercise
 {
     public Guid Id { get; set; }
 
-    public string? ExcerciseName { get; set; }
+    public string? ExerciseName { get; set; }
 
     public string? Title { get; set; }
 
@@ -27,7 +27,9 @@ public partial class Excercise
 
     public Guid? CatId { get; set; }
 
-    public virtual ExcerciseCategory? Cat { get; set; }
+    public virtual ICollection<AssignmentExercise> AssignmentExercises { get; } = new List<AssignmentExercise>();
+
+    public virtual ExerciseCategory? Cat { get; set; }
 
     public virtual Lesson? Lesson { get; set; }
 

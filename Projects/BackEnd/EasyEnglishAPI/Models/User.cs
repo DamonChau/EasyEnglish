@@ -39,6 +39,12 @@ public partial class User
 
     public virtual ICollection<ActionLog> ActionLogs { get; } = new List<ActionLog>();
 
+    public virtual ICollection<AssignmentExam> AssignmentExams { get; } = new List<AssignmentExam>();
+
+    public virtual ICollection<AssignmentExercise> AssignmentExercises { get; } = new List<AssignmentExercise>();
+
+    public virtual ICollection<AssignmentLesson> AssignmentLessons { get; } = new List<AssignmentLesson>();
+
     public virtual ICollection<Comment> Comments { get; } = new List<Comment>();
 
     public virtual ICollection<ExamResult> ExamResults { get; } = new List<ExamResult>();
@@ -56,4 +62,8 @@ public partial class User
     public virtual ICollection<UserAnswer> UserAnswers { get; } = new List<UserAnswer>();
 
     public virtual ICollection<UserNote> UserNotes { get; } = new List<UserNote>();
+
+    public virtual ICollection<UserRelationship> UserRelationshipRelatedUsers { get; } = new List<UserRelationship>();
+
+    public virtual ICollection<UserRelationship> UserRelationshipUsers { get; } = new List<UserRelationship>();
 }

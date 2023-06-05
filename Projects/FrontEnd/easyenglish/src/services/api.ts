@@ -8,7 +8,7 @@
 } from "@reduxjs/toolkit/query/react";
 import { config } from "../helpers/contants";
 import { RootState } from "../services";
-import { logout, setLoggedUser } from "./slices/authSlice";
+import { logout, setLoggedSession } from "./slices/authSlice";
 import { Mutex } from "async-mutex";
 
 const baseQuery = fetchBaseQuery({
@@ -49,7 +49,7 @@ const baseQueryWithReauth: BaseQueryFn<
         );
 
         if (refreshResult.data) {
-          api.dispatch(setLoggedUser(refreshResult.data));
+          api.dispatch(setLoggedSession(refreshResult.data));
           // Retry the initial query need to update refreshToken
           result = await baseQueryWithRetry(args, api, extraOptions);
         } else {
@@ -83,6 +83,8 @@ export const api = createApi({
     "examResults",
     "userNotes",
     "comments",
+    "assignmentExams",
+    "userRelationship",
   ],
   endpoints: () => ({}),
 });

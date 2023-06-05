@@ -17,7 +17,9 @@ namespace EasyEnglishAPI.DAL
         {
             try
             {
-                return await _context.ExamResults.Where(q => q.ExamTestId == examTestId).ToListAsync();
+                return await _context.ExamResults
+                    .Where(q => q.ExamTestId == examTestId)
+                    .ToListAsync();
             }
             catch
             {
@@ -29,7 +31,10 @@ namespace EasyEnglishAPI.DAL
         {
             try
             {
-                return await _context.ExamResults.Include(q => q.ExamTest).Where(q => q.ExamTestId == examTestId).ToListAsync();
+                return await _context.ExamResults
+                    .Include(q => q.ExamTest)
+                    .Where(q => q.ExamTestId == examTestId)
+                    .ToListAsync();
             }
             catch
             {
@@ -41,7 +46,25 @@ namespace EasyEnglishAPI.DAL
         {
             try
             {
-                return await _context.ExamResults.Where(q => q.CreatedBy == userId).ToListAsync();
+                return await _context.ExamResults
+                    .Where(q => q.CreatedBy == userId)
+                    .ToListAsync();
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<ExamResult>> GetTop3ResultsByUser(Guid userId, Guid examTestId)
+        {
+            try
+            {
+                return await _context.ExamResults
+                    .Where(q => q.ExamTestId == examTestId && q.CreatedBy == userId)
+                    .OrderByDescending(q => q.CreatedDate)
+                    .Take(3)
+                    .ToListAsync();
             }
             catch
             {

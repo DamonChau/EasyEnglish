@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace EasyEnglishAPI.Models;
 
-public partial class ExcerciseCategory
+public partial class ExerciseCategory
 {
     public Guid Id { get; set; }
 
@@ -13,5 +13,5 @@ public partial class ExcerciseCategory
 
     public DateTime? CreatedDate { get; set; }
 
-    public virtual ICollection<Excercise> Excercises { get; } = new List<Excercise>();
+    public virtual ICollection<Exercise> Exercises { get; } = new List<Exercise>();
 }

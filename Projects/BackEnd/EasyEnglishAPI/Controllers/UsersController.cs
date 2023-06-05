@@ -46,19 +46,13 @@ namespace EasyEnglishAPI.Controllers
 
                     if (r != null)
                     {
+                        //hide password from client side
+                        r.Password = null;
                         return Ok(new
                         {
                             token = _jwtService.CreateToken(r),
                             refreshToken = refreshToken,
-                            user = new
-                            {
-                                id = r.Id,
-                                userName = r.UserName,
-                                email = r.Email,
-                                userType = r.UserType,
-                                status = r.Status,
-                                createdDate = r.CreatedDate
-                            },
+                            user = r,
                         });
                     }
                     return BadRequest(new { error = "The username or password provided were incorrect!" });
@@ -99,20 +93,14 @@ namespace EasyEnglishAPI.Controllers
 
                 var newAccessToken = _jwtService.CreateToken(user);
                 var newRefreshToken = _jwtService.GenerateRefreshToken();
+                //hide password from client side
+                user.Password = null;
                 return Ok(new
                 {
                     token = newAccessToken,
                     refreshToken = refreshToken,
-                    user = new
-                    {
-                        id = user.Id,
-                        userName = user.UserName,
-                        email = user.Email,
-                        userType = user.UserType,
-                        status = user.Status,
-                        createdDate = user.CreatedDate
-                    },
-                });
+                    user = user
+                }); ;
             }
             catch (Exception e)
             {
@@ -151,6 +139,23 @@ namespace EasyEnglishAPI.Controllers
 
         }
 
+        [Authorize]
+        [HttpGet]
+        [Route("api/Users/GetAllTeachers/{userId}")]
+        public async Task<ActionResult<IEnumerable<User>>> GetAllTeachers(Guid userId)
+        {
+            try
+            {
+                return Ok(await _objectuser.GetAllTeachers(userId));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+
+        }
+
+        [Authorize]
         [HttpPost]
         [Route("api/Users/Create")]
         public async Task<ActionResult<User>> Create([FromBody] User u)
@@ -183,12 +188,28 @@ namespace EasyEnglishAPI.Controllers
 
         [Authorize]
         [HttpPut]
-        [Route("api/Users/Edit")]
-        public async Task<ActionResult<User>> Edit([FromBody] User u)
+        [Route("api/Users/UpdateUserProfile")]
+        public async Task<ActionResult<User>> UpdateUserProfile([FromBody] User u)
         {
             try
             {
-                return Ok(await _objectuser.UpdateUserM(u));
+                return Ok(await _objectuser.UpdateUserProfile(u));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { error = e.Message });
+            }
+
+        }
+
+        [Authorize]
+        [HttpPut]
+        [Route("api/Users/UpdateUser")]
+        public async Task<ActionResult<User>> UpdateUser([FromBody] User u)
+        {
+            try
+            {
+                return Ok(await _objectuser.UpdateUser(u));
             }
             catch (Exception e)
             {

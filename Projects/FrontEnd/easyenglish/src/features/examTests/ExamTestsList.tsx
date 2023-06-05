@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-empty-function */
@@ -6,11 +7,144 @@ import { Link, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { useGetExamTestsBySectionQuery } from "./examTestsApi";
 import {
+  useGetByUsersQuery,
+  useUpdateStatusByUserMutation,
+} from "../assignments/assignmentExamsApi";
+import {
   ExamTests,
   ExamTestType,
   ExamTestSectionType,
+  AssignmentExams,
 } from "../../interfaces/interfaces";
-import { config, findArrayElementById } from "../../helpers/contants";
+import { config } from "../../helpers/contants";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import { selectLoggedUser } from "../../services/slices/authSlice";
+import { useTypedSelector } from "../../services";
+
+const AssignmentStatus = ({ examId }: any) => {
+  const loggedUser = useTypedSelector(selectLoggedUser);
+  const [updateAssignmentExam] = useUpdateStatusByUserMutation();
+  const { data, isFetching, isLoading, isSuccess, isError, error } =
+    useGetByUsersQuery({
+      examId: examId,
+      userId: loggedUser?.id,
+    });
+  const [examStatus, setExamStatus] =
+    React.useState<Partial<AssignmentExams>>();
+
+  useEffect(() => {
+    if (data) {
+      setExamStatus(data);
+    }
+  }, [isLoading]);
+
+  return (
+    <ul className="ftco-social text-center">
+      <li className="ftco-animate fadeInUp ftco-animated">
+        <Link
+          placeholder="Start"
+          to={config.url.API_URL_FOLDER + "/examTestsView/" + examId}
+        >
+          <PlayArrowIcon />
+        </Link>
+      </li>
+      {loggedUser && !isLoading ? (
+        <React.Fragment>
+          <li className="ftco-animate fadeInUp ftco-animated">
+            <Link
+              to={""}
+              placeholder="Favorite"
+              onClick={async () => {
+                try {
+                  const updatedStatus = {
+                    ...examStatus,
+                    isFavourite: !examStatus?.isFavourite,
+                  };
+                  await updateAssignmentExam(
+                    updatedStatus as AssignmentExams
+                  ).unwrap();
+                  setExamStatus(updatedStatus);
+                } catch (error) {
+                  console.log(error);
+                }
+              }}
+            >
+              {examStatus?.isFavourite ? (
+                <FavoriteIcon />
+              ) : (
+                <FavoriteBorderIcon />
+              )}
+            </Link>
+          </li>
+          <li className="ftco-animate fadeInUp ftco-animated">
+            <Link
+              to={""}
+              placeholder="Bookmark"
+              onClick={async () => {
+                try {
+                  const updatedStatus = {
+                    ...examStatus,
+                    isBookmarked: !examStatus?.isBookmarked,
+                  };
+                  await updateAssignmentExam(
+                    updatedStatus as AssignmentExams
+                  ).unwrap();
+                  setExamStatus(updatedStatus);
+                } catch (error) {
+                  console.log(error);
+                }
+              }}
+            >
+              {examStatus?.isBookmarked ? (
+                <BookmarkIcon />
+              ) : (
+                <BookmarkBorderIcon />
+              )}
+            </Link>
+          </li>
+          <li className="ftco-animate fadeInUp ftco-animated">
+            <Link
+              to={""}
+              placeholder="Done"
+              onClick={async () => {
+                try {
+                  const updatedStatus = {
+                    ...examStatus,
+                    isDone: !examStatus?.isDone,
+                  };
+                  await updateAssignmentExam(
+                    updatedStatus as AssignmentExams
+                  ).unwrap();
+                  setExamStatus(updatedStatus);
+                } catch (error) {
+                  console.log(error);
+                }
+              }}
+            >
+              {examStatus?.isDone ? (
+                <CheckCircleIcon />
+              ) : (
+                <CheckCircleOutlineIcon />
+              )}
+            </Link>
+          </li>
+          <li className="ftco-animate fadeInUp ftco-animated">
+            <Link to={""} placeholder="Assigned">
+              {examStatus?.isAssigned ? <PriorityHighIcon /> : null}
+            </Link>
+          </li>
+        </React.Fragment>
+      ) : null}
+    </ul>
+  );
+};
 
 const ExamTestsList = () => {
   const { testType, sectionType } = useParams();
@@ -21,7 +155,7 @@ const ExamTestsList = () => {
       testType: testType,
       sectionType: sectionType,
     });
-  
+
   useEffect(() => {
     if (error) {
       if ("status" in error) {
@@ -46,7 +180,7 @@ const ExamTestsList = () => {
         <div className="container">
           <div className="row no-gutters slider-text align-items-center justify-content-center">
             <div className="col-md-9 text-center">
-              <h1 className="mb-2 bread"></h1>
+              <h1 className="mb-2 bread">Test List</h1>
               <p className="breadcrumbs">
                 <span className="mr-2">
                   <a href="/">
@@ -98,22 +232,7 @@ const ExamTestsList = () => {
                       <div className="faded">
                         <p>{exam.testname}</p>
                         <p>{exam.title}</p>
-                        <ul className="ftco-social text-center">
-                          <li className="ftco-animate fadeInUp ftco-animated">
-                            <Link
-                              to={
-                                config.url.API_URL_FOLDER +
-                                "/examTestsView/" +
-                                exam.id
-                              }
-                            >
-                              <span
-                                className="icon-pencil"
-                                title="Start New Test"
-                              />
-                            </Link>
-                          </li>
-                        </ul>
+                        <AssignmentStatus examId={exam.id}></AssignmentStatus>
                       </div>
                     </div>
                   </div>
