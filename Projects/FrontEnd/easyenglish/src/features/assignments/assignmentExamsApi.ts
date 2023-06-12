@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { api } from "../../services/api";
 import { AssignmentExams, ExamTests } from "../../interfaces/interfaces";
@@ -18,14 +19,14 @@ export const assignmentExamsApi = api.injectEndpoints({
         };
       },
       providesTags: (result, error, arg) => [
-        { type: "assignmentExams", id: arg },
+        { type: "assignmentExams", id: result?.id },
       ],
     }),
     //get only one without create
     getAssignmentExam: build.query<AssignmentExams, string>({
       query: (id) => `api/AssignmentExams/Details/${id}`,
       providesTags: (result, error, arg) => [
-        { type: "assignmentExams", id: arg },
+        { type: "assignmentExams", id: result?.id },
       ],
     }),
     getAllByStatusWithDetail: build.query<AssignmentExamsDetailResponse, any>({

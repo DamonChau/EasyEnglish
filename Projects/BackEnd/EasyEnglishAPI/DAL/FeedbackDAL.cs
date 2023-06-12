@@ -3,24 +3,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EasyEnglishAPI.DAL
 {
-    public class UserAnswersDAL
+    public class FeedbackDAL
     {
         private readonly EasyEnglishContext _context;
 
-        public UserAnswersDAL(EasyEnglishContext context)
+        public FeedbackDAL(EasyEnglishContext context)
         {
             _context = context;
         }
 
-        public async Task<IEnumerable<UserAnswer>> GetAllByExam(Guid examResultId)
+        public async Task<Feedback?> GetFeedbacksByExamResult(Guid examResultId)
         {
             try
             {
-                return await _context.UserAnswers
-                    .Where(ua => ua.ExamResultId == examResultId)
-                    .Include(ua => ua.QuestionDetail)
-                    .OrderBy(ua => ua.Description)
-                    .ToListAsync();
+                return await _context.Feedbacks
+                   .Where(fb => fb.ExamResultId == examResultId)
+                    .FirstOrDefaultAsync();
             }
             catch
             {
@@ -28,25 +26,13 @@ namespace EasyEnglishAPI.DAL
             }
         }
 
-        public async Task<IEnumerable<UserAnswer>> GetAllUserAnswer()
-        {
-            try
-            {
-                return await _context.UserAnswers.ToListAsync();
-            }
-            catch
-            {
-                throw;
-            }
-        }
-
-        public async Task<UserAnswer> AddUserAnswer(UserAnswer u)
+        public async Task<Feedback> AddFeedback(Feedback u)
         {
             try
             {
                 u.Id = Guid.NewGuid();
                 u.CreatedDate = DateTime.Now;
-                _context.UserAnswers.Add(u);
+                _context.Feedbacks.Add(u);
                 await _context.SaveChangesAsync();
                 return u;
             }
@@ -56,7 +42,7 @@ namespace EasyEnglishAPI.DAL
             }
         }
 
-        public async Task<UserAnswer> UpdateUserAnswer(UserAnswer u)
+        public async Task<Feedback> UpdateFeedback(Feedback u)
         {
             try
             {
@@ -70,11 +56,11 @@ namespace EasyEnglishAPI.DAL
             }
         }
 
-        public async Task<UserAnswer?> GetUserAnswer(Guid id)
+        public async Task<Feedback?> GetFeedback(Guid id)
         {
             try
             {
-                return await _context.UserAnswers.FindAsync(id);
+                return await _context.Feedbacks.FindAsync(id);
             }
             catch
             {
@@ -82,14 +68,14 @@ namespace EasyEnglishAPI.DAL
             }
         }
 
-        public async Task<UserAnswer?> DeleteUserAnswer(Guid id)
+        public async Task<Feedback?> DeleteFeedback(Guid id)
         {
             try
             {
-                UserAnswer? u = await _context.UserAnswers.FindAsync(id);
+                Feedback? u = await _context.Feedbacks.FindAsync(id);
                 if (u != null)
                 {
-                    _context.UserAnswers.Remove(u);
+                    _context.Feedbacks.Remove(u);
                     await _context.SaveChangesAsync();
                 }
                 return null;

@@ -9,6 +9,8 @@ public partial class QuestionDetail
 
     public int? Order { get; set; }
 
+    public int? Qno { get; set; }
+
     public string? Content { get; set; }
 
     public string? Answer { get; set; }

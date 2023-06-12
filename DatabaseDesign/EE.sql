@@ -73,10 +73,6 @@ IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id('[FK_Feedbacks_Exam
 ALTER TABLE [Feedbacks] DROP CONSTRAINT [FK_Feedbacks_ExamResults]
 ;
 
-IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id('[FK_Feedbacks_UserAnswers]') AND OBJECTPROPERTY(id, 'IsForeignKey') = 1)
-ALTER TABLE [Feedbacks] DROP CONSTRAINT [FK_Feedbacks_UserAnswers]
-;
-
 IF EXISTS (SELECT * FROM dbo.sysobjects WHERE id = object_id('[FK_Improvement_User]') AND OBJECTPROPERTY(id, 'IsForeignKey') = 1)
 ALTER TABLE [Improvements] DROP CONSTRAINT [FK_Improvement_User]
 ;
@@ -336,7 +332,6 @@ CREATE TABLE [Feedbacks] (
 	[Status] int NULL,
 	[CreatedDate] datetime NULL,
 	[CreatedBy] uniqueidentifier NULL,
-	[UserAnswerId] uniqueidentifier NULL,
 	[ExamResultId] uniqueidentifier NULL
 )
 ;
@@ -389,6 +384,7 @@ CREATE TABLE [QuestionAnswers] (
 CREATE TABLE [QuestionDetails] ( 
 	[Id] uniqueidentifier NOT NULL,
 	[Order] int NULL,
+	[QNo] int NULL,
 	[Content] nvarchar(1000) NULL,
 	[Answer] nvarchar(1000) NULL,
 	[CreatedDate] datetime NULL,
@@ -633,10 +629,6 @@ ALTER TABLE [Feedbacks] ADD CONSTRAINT [FK_Feedback_User]
 
 ALTER TABLE [Feedbacks] ADD CONSTRAINT [FK_Feedbacks_ExamResults] 
 	FOREIGN KEY ([ExamResultId]) REFERENCES [ExamResults] ([Id])
-;
-
-ALTER TABLE [Feedbacks] ADD CONSTRAINT [FK_Feedbacks_UserAnswers] 
-	FOREIGN KEY ([UserAnswerId]) REFERENCES [UserAnswers] ([Id])
 ;
 
 ALTER TABLE [Improvements] ADD CONSTRAINT [FK_Improvement_User] 

@@ -50,11 +50,13 @@ export interface Questions {
 export interface QuestionDetails {
   id: string;
   order: number;
+  qno: number;
   content: string;
   answer: string;
   createdDate: string;
   createdBy: string;
   questionId: string;
+  questionType: QuestionType;
 }
 
 export interface UserAnswers {
@@ -72,6 +74,7 @@ export interface UserAnswers {
 
 export interface UserAnswersDisplay extends UserAnswers {
   order: number;
+  qno: number;
   answerOrg: string;
 }
 
@@ -100,7 +103,6 @@ export interface UserNotes {
   content: string;
   status: Status;
   createdDate: string;
-  userAnswerId: string;
   examResultId: string;
   createdBy: string;
   userAnswer: UserAnswers;
@@ -146,6 +148,7 @@ export interface Feedbacks {
   status: Status;
   createdDate: string;
   createdBy: string;
+  examResultId: string;
 }
 
 export interface ActionLogs {

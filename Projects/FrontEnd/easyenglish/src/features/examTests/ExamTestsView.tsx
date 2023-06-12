@@ -55,7 +55,7 @@ const ExamTestsView = () => {
       setConvertedContent(draftToHtml(JSON.parse(data?.content as string)));
 
       if (data.audioFile) {
-        const dowloadaudiofiles = async () => {
+        const downloadAudiofiles = async () => {
           const file: FileDownload = {
             filename: data.audioFile,
           };
@@ -70,7 +70,7 @@ const ExamTestsView = () => {
           }
         };
 
-        dowloadaudiofiles();
+        downloadAudiofiles();
       }
     }
   }, [data]);
@@ -88,7 +88,7 @@ const ExamTestsView = () => {
     }
   }, [isError]);
 
-  const onAddNoteDone = (r: ExamResults) => {
+  const handleExamResultDone = (r: ExamResults) => {
     setTestResult(r);
   };
 
@@ -224,7 +224,7 @@ const ExamTestsView = () => {
                     {data?.sectionType == ExamTestSectionType.Listening || data?.sectionType == ExamTestSectionType.Reading ? (
                       <QuestionAnswerReading
                         testId={data?.id}
-                        getExamResult={onAddNoteDone}
+                        onGetExamResult={handleExamResultDone}
                       />
                     ) : null}
                   </div>

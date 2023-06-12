@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { useTypedSelector } from "../../services";
-import { selectLoggedUser } from "../../services/slices/authSlice";
+import { selectLoggedUser,selectIsAuthenticated } from "../../services/slices/authSlice";
 import { Status, UserAnswers } from "../../interfaces/interfaces";
 import isUUID from "validator/lib/isUUID";
 import Snackbar from "@mui/material/Snackbar";
@@ -17,6 +17,7 @@ import {
   isFetchBaseQueryError,
   isErrorWithMessage,
 } from "../../services/helpers";
+import { useUpdateStatusByUserMutation } from "../assignments/assignmentExamsApi";
 
 const QuestionAnswerWriting = ({ testId }: any) => {
   const [isView, setView] = React.useState(false);
@@ -24,7 +25,7 @@ const QuestionAnswerWriting = ({ testId }: any) => {
     useGetQuestionsWithQDQuery(testId, { skip: !isView });
   const [addUserAnswer] = useAddUserAnswerMutation();
   const [addExamResult] = useAddExamResultMutation();
-
+  const isAuthenticated = useTypedSelector(selectIsAuthenticated);
   const loggedUser = useTypedSelector(selectLoggedUser);
   const initialValueTestResult = {
     id: uuidv4(),
@@ -34,7 +35,15 @@ const QuestionAnswerWriting = ({ testId }: any) => {
     createdBy: loggedUser!.id,
   };
   const [testResult, setTestResult] = useState(initialValueTestResult);
-
+  const initialValueAssignmentExam = {
+    id: uuidv4(),
+    examTestId: testId,
+    isDone: true,
+    userId: isAuthenticated ? loggedUser!.id : uuidv4(),
+  };
+  const [assignmentExam, setAssignmentExam] = useState(
+    initialValueAssignmentExam
+  );
   const initialValue = {
     id: uuidv4(),
     answer: "",
@@ -49,6 +58,7 @@ const QuestionAnswerWriting = ({ testId }: any) => {
   const [wordCount, setWordCount] = useState(0);
   const [erroMsg, setErrorMsg] = useState("");
   const [open, setOpen] = React.useState(false);
+  const [updateAssignmentExams] = useUpdateStatusByUserMutation();
 
   //update exam test result id
   useEffect(() => {
@@ -97,6 +107,22 @@ const QuestionAnswerWriting = ({ testId }: any) => {
     setOpen(false);
   };
 
+  const saveAssignmentExam = async () => {
+    try {
+      if (assignmentExam) {
+        await updateAssignmentExams(assignmentExam).unwrap();
+      }
+    } catch (err) {
+      if (isFetchBaseQueryError(err)) {
+        const msg =
+          "error" in err
+            ? err.error
+            : JSON.parse(JSON.stringify(err.data)).error;
+        setErrorMsg(msg);
+      } else if (isErrorWithMessage(err)) console.log(err.message);
+    }
+  };
+
   const handleSubmit = async () => {
     try {
       if (data) {
@@ -111,6 +137,7 @@ const QuestionAnswerWriting = ({ testId }: any) => {
             };
             setUserAnswer(updatedUserAnswer);
             await addUserAnswer(updatedUserAnswer).unwrap();
+            await saveAssignmentExam();
           });
         });
         setOpen(true);
@@ -150,7 +177,6 @@ const QuestionAnswerWriting = ({ testId }: any) => {
           ) : null}
           <div>
             <form
-              className="was-validated"
               onSubmit={(e) => {
                 e.preventDefault();
                 handleSubmit();
@@ -163,15 +189,14 @@ const QuestionAnswerWriting = ({ testId }: any) => {
                 name="answer"
                 placeholder="answer"
                 onChange={handleChange}
-                required
               ></textarea>
+              <label id="wordCount">Word(s) Count: {wordCount}</label>
+              <div className="d-flex justify-content-end">
+                <button className="btn btn-primary py-2 px-3" type="submit">
+                  Save
+                </button>
+              </div>
             </form>
-            <label id="wordCount">Word(s) Count: {wordCount}</label>
-          </div>
-          <div className="d-flex justify-content-end">
-            <button className="btn btn-primary py-2 px-3" type="submit">
-              Save
-            </button>
           </div>
         </React.Fragment>
       )}

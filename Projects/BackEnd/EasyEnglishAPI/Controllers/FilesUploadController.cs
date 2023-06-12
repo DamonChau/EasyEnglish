@@ -80,7 +80,7 @@ namespace EasyEnglishAPI.Controllers
                 string? contentType = "";
                 new FileExtensionContentTypeProvider().TryGetContentType(file.filename, out contentType);
 
-                return File(memory, contentType is not null ? contentType : "", Path.GetFileName(path));
+                return File(memory, contentType is not null ? contentType : "audio/webm", Path.GetFileName(path));
             }
             catch (Exception e)
             {

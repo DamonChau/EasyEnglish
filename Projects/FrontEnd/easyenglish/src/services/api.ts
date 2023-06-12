@@ -85,6 +85,7 @@ export const api = createApi({
     "comments",
     "assignmentExams",
     "userRelationship",
+    "feedbacks"
   ],
   endpoints: () => ({}),
 });

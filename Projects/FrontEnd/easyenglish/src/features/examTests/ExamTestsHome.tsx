@@ -41,11 +41,13 @@ const ExamTestsHome = () => {
           <div className="row justify-content-center mb-5 pb-2">
             <div className="col-md-8 text-center heading-section ftco-animate fadeInUp ftco-animated">
               <span className="subheading">IELTS</span>
-              <h2 className="mb-4">All of our IELTS tests</h2>
+              <h2 className="mb-4">IELTS tests</h2>
               <p>
-                Separated they live in. A small river named Duden flows by their
-                place and supplies it with the necessary regelialia. It is a
-                paradisematic country
+                The International English Language Testing System (IELTS) is a
+                globally recognized English language proficiency test. It is
+                designed to assess the language skills of individuals who plan
+                to study, work, or migrate to countries where English is the
+                primary language of communication.
               </p>
             </div>
           </div>

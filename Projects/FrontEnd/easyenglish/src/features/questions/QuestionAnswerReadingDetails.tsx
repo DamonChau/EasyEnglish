@@ -4,38 +4,21 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
 import { QuestionDetails, QuestionType } from "../../interfaces/interfaces";
-import { useTypedSelector } from "../../services";
-import {
-  selectLoggedUser,
-  selectIsAuthenticated,
-} from "../../services/slices/authSlice";
-import { Status } from "../../interfaces/interfaces";
 
 const QuestionAnswerReadingDetails = ({
   question,
   questionDetails,
   handleFieldChange,
 }: any) => {
-  const loggedUser = useTypedSelector(selectLoggedUser);
-  const isAuthenticated = useTypedSelector(selectIsAuthenticated);
-  //UserAnswersDisplay
-  const initialValue = {
-    id: undefined,
-    answer: "",
-    result: -1,
-    userId: isAuthenticated ? loggedUser!.id : undefined,
-    questionDetailId: undefined,
-    status: Status.Active,
-    order: 0,
-    answerOrg: "",
-  };
-
   const handleChange = React.useCallback(
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    (
+      e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+      qd: QuestionDetails
+    ) => {
       const updatedValue = {
-        ...initialValue,
+        ...qd,
         questionDetailId: e.target.id,
-        answer: e.target.value == "on" ? "true" : e.target.value,
+        answer: e.target.value.trim(),
       };
       handleFieldChange(updatedValue);
     },
@@ -59,8 +42,7 @@ const QuestionAnswerReadingDetails = ({
               type="text"
               id={qd.id}
               name={qd.id}
-              onChange={handleChange}
-              
+              onChange={(e) => handleChange(e, qd)}
             />
           </div>
         ))
@@ -76,8 +58,7 @@ const QuestionAnswerReadingDetails = ({
               type="radio"
               id={qd.id}
               name={qd.questionId}
-              onChange={handleChange}
-              
+              onChange={(e) => handleChange(e, qd)}
             />
             <label
               className="form-check-label"
@@ -98,8 +79,7 @@ const QuestionAnswerReadingDetails = ({
               type="checkbox"
               id={qd.id}
               name={qd.questionId}
-              onChange={handleChange}
-              
+              onChange={(e) => handleChange(e, qd)}
             />
             <label
               className="form-check-label"

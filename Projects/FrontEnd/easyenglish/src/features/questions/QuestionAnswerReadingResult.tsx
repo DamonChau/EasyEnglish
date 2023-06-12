@@ -12,44 +12,16 @@ import ListItemText from "@mui/material/ListItemText";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import ListSubheader from "@mui/material/ListSubheader";
-import EditNoteIcon from "@mui/icons-material/EditNote";
-import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
-import { CreateNewNoteModal } from "../common/Modals";
-import { useAddUserNoteMutation } from "../userNotes/userNotesApi";
-import {
-  isFetchBaseQueryError,
-  isErrorWithMessage,
-} from "../../services/helpers";
 
 export const ListAnswerResult = ({
   userAnswers,
   loggedUser,
   onCreateNewNote,
 }: any) => {
-  const [open, setOpen] = useState(false);
-  const [currAnwser, setAnwser] = useState<UserAnswersDisplay>();
-  const [addUserNote] = useAddUserNoteMutation();
-  const [erroMsg, setErrorMsg] = useState("");
-
-  const handleCreateNewNote = async (note: UserNotes) => {
-    try {
-      await addUserNote(note).unwrap();
-      onCreateNewNote();
-    } catch (err) {
-      if (isFetchBaseQueryError(err)) {
-        const msg =
-          "error" in err
-            ? err.error
-            : JSON.parse(JSON.stringify(err.data)).error;
-        setErrorMsg(msg);
-      } else if (isErrorWithMessage(err)) console.log(err.message);
-    }
-  };
-
+  
   return (
     <Box sx={{ width: 400, bgcolor: "background.paper" }} role="presentation">
-      {erroMsg ? <div className="p-2 m-2 text-danger">{erroMsg}</div> : null}
       <List
         subheader={
           <ListSubheader component="div" id="nested-list-subheader">
@@ -62,18 +34,6 @@ export const ListAnswerResult = ({
             key={answer.questionDetailId}
             disablePadding
             alignItems="flex-start"
-            secondaryAction={
-              <IconButton
-                edge="end"
-                aria-label="note"
-                onClick={() => {
-                  setOpen(true);
-                  setAnwser(answer);
-                }}
-              >
-                <EditNoteIcon />
-              </IconButton>
-            }
           >
             <ListItemIcon>
               {answer.result === 1 ? (
@@ -84,7 +44,7 @@ export const ListAnswerResult = ({
             </ListItemIcon>
             <React.Fragment>
               <Stack direction="row" spacing={2}>
-                <ListItemText primary={"Q.No"} secondary={answer.order} />
+                <ListItemText primary={"Q.No"} secondary={answer.qno} />
               </Stack>
               <Stack
                 direction="row"
@@ -109,14 +69,6 @@ export const ListAnswerResult = ({
           </ListItem>
         ))}
       </List>
-      <CreateNewNoteModal
-        key={1} // re-render child component
-        answer={currAnwser}
-        open={open}
-        loggedUser={loggedUser}
-        onClose={() => setOpen(false)}
-        onSubmit={handleCreateNewNote}
-      ></CreateNewNoteModal>
     </Box>
   );
 };

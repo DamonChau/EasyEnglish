@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { api } from "../../services/api";
 import { ExamResults } from "../../interfaces/interfaces";
@@ -46,7 +47,7 @@ export const examResultsApi = api.injectEndpoints({
     }),
     getExamResult: build.query<ExamResults, string>({
       query: (id) => `api/ExamResults/Details/${id}`,
-      providesTags: (result, error, arg) => [{ type: "examResults", id: arg }],
+      providesTags: (result, error, arg) => [{ type: "examResults", id: result?.id }],
     }),
     addExamResult: build.mutation<ExamResults, Partial<ExamResults>>({
       query: (body) => ({

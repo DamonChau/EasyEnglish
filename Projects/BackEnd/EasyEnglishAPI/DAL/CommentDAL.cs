@@ -47,7 +47,6 @@ namespace EasyEnglishAPI.DAL
             }
         }
 
-
         public async Task<Comment> AddComment(Comment u)
         {
             try

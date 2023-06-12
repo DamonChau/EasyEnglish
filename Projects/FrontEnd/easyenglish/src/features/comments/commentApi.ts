@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { api } from "../../services/api";
 import { Comments } from "../../interfaces/interfaces";
@@ -25,7 +26,7 @@ export const commentsApi = api.injectEndpoints({
     }),
     getComment: build.query<Comments, string>({
       query: (id) => `api/Comments/Details/${id}`,
-      providesTags: (result, error, arg) => [{ type: "comments", id: arg }],
+      providesTags: (result, error, arg) => [{ type: "comments", id: result?.id }],
     }),
     addComment: build.mutation<Comments, Partial<Comments>>({
       query: (body) => ({

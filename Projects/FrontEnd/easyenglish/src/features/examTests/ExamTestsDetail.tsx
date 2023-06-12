@@ -40,7 +40,6 @@ const ExamTestsDetail = () => {
   const { id } = useParams();
   const [isEditing, setIsEditing] = useState(false);
 
-  //causing waring - no update yet
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
   );
@@ -212,6 +211,7 @@ const ExamTestsDetail = () => {
     new Promise((resolve, reject) =>
       getFileBase64(file, (data: string) => resolve({ data: { link: data } }))
     );
+
   const embedVideoCallBack = (link: any) => {
     if (link.indexOf("youtu.be") >= 0) {
       link = link.replace("watch?v=", "embed/");

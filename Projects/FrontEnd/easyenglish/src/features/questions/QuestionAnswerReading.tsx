@@ -15,6 +15,8 @@ import {
   QuestionDetails,
   UserAnswers,
   ExamResults,
+  QuestionType,
+  Status,
 } from "../../interfaces/interfaces";
 import {
   selectLoggedUser,
@@ -33,7 +35,7 @@ import {
 } from "../../services/helpers";
 import { isEquals } from "../../helpers/contants";
 
-const QuestionAnswerReading = ({ testId, getExamResult }: any) => {
+const QuestionAnswerReading = ({ testId, onGetExamResult }: any) => {
   const [isView, setView] = React.useState(false);
   const { data, isFetching, isLoading, isSuccess, isError, error } =
     useGetQuestionsWithQDQuery(testId, { skip: !isView });
@@ -82,12 +84,7 @@ const QuestionAnswerReading = ({ testId, getExamResult }: any) => {
   useEffect(() => {
     if (data) {
       const questions: Questions[] = data;
-      questions.forEach((q) => {
-        setTestResult((prevState) => ({
-          ...prevState,
-          noQuestion: prevState.noQuestion + countNoQuestionWithAnswer(q.questionDetails),
-        }));
-      });
+      setNoQuestionExamResult(questions);
     }
   }, [data]);
 
@@ -105,6 +102,16 @@ const QuestionAnswerReading = ({ testId, getExamResult }: any) => {
   }, [isError]);
 
   //#region helpers
+  const setNoQuestionExamResult = (questions: Questions[]) => {
+    questions.forEach((q) => {
+      setTestResult((prevState) => ({
+        ...prevState,
+        noQuestion:
+          prevState.noQuestion + countNoQuestionWithAnswer(q.questionDetails),
+      }));
+    });
+  };
+
   function countNoQuestionWithAnswer(questionDetails: QuestionDetails[]) {
     let count = 0;
     questionDetails.forEach((qd) => {
@@ -112,6 +119,7 @@ const QuestionAnswerReading = ({ testId, getExamResult }: any) => {
     });
     return count;
   }
+
   function replaceWithBr(q: Questions) {
     return q?.content.replace(/\n/g, "<br />");
   }
@@ -131,21 +139,38 @@ const QuestionAnswerReading = ({ testId, getExamResult }: any) => {
     let questionDetail: QuestionDetails = {
       id: "",
       order: -1,
+      qno: -1,
       answer: "",
       content: "",
       createdDate: "",
       createdBy: "",
       questionId: "",
+      questionType: QuestionType.SingleAnswer,
     };
     for (const q of questions) {
       for (const qd of q.questionDetails) {
         if (qd.id === questionDetailId) {
-          questionDetail = qd;
+          questionDetail = { ...qd, questionType: q.questionType };
           break;
         }
       }
     }
     return questionDetail;
+  };
+
+  const findAllCorrectAnswer = (
+    questions: QuestionsResponse,
+    questionId: string
+  ): string => {
+    let answers = "";
+    for (const q of questions) {
+      for (const qd of q.questionDetails) {
+        if (qd.answer && qd.questionId == questionId) {
+          answers += qd.answer + ",";
+        }
+      }
+    }
+    return answers;
   };
 
   const compareFB = (a: UserAnswersDisplay, b: UserAnswersDisplay) => {
@@ -209,6 +234,7 @@ const QuestionAnswerReading = ({ testId, getExamResult }: any) => {
     setSave(false);
     setTestResult(initialValueTestResult);
     setView(true);
+    setNoQuestionExamResult(data as Questions[]);
   };
   //#endregion
 
@@ -221,6 +247,7 @@ const QuestionAnswerReading = ({ testId, getExamResult }: any) => {
       if (result) {
         result.score = score;
         const r = await addExamResult(result).unwrap();
+        onGetExamResult(r);
         setTestResult(r);
         return r.id;
       }
@@ -301,15 +328,38 @@ const QuestionAnswerReading = ({ testId, getExamResult }: any) => {
           data as QuestionsResponse,
           answer.questionDetailId
         );
-        isEquals(answer.answer, qd.answer)
-          ? (answer.result = 1)
-          : (answer.result = 0);
-        answer.answerOrg = qd.answer;
+
+        if (qd.questionType == QuestionType.SingleAnswer) {
+          isEquals(answer.answer, qd.answer)
+            ? (answer.result = 1)
+            : (answer.result = 0);
+          answer.answerOrg = qd.answer;
+        } else {
+          //if found correct answer
+          if (qd.answer) {
+            answer.answer = qd.answer;
+            answer.answerOrg = qd.answer;
+            answer.result = 1;
+          } else {
+            //wrong answer
+            answer.answer = qd.content.charAt(0);
+            answer.answerOrg = findAllCorrectAnswer(
+              data as QuestionsResponse,
+              qd.questionId
+            );
+            answer.result = 0;
+          }
+        }
+        //set up as question no
         answer.order = qd.order;
+        answer.qno = qd.qno;
         answer.description = qd.order.toString();
+        answer.userId = loggedUser?.id as string;
+        answer.status = Status.Active;
         score += answer.result;
         return answer;
       });
+
       //save ExamResult
       const examResultId = await saveExamResult(testResult, score);
       //save AssignmentExam
@@ -338,9 +388,6 @@ const QuestionAnswerReading = ({ testId, getExamResult }: any) => {
     }
   };
 
-  const onCreateNewNote = () => {
-    getExamResult(testResult);
-  };
   //#endregion
 
   return (
@@ -349,7 +396,6 @@ const QuestionAnswerReading = ({ testId, getExamResult }: any) => {
         <ListAnswerResult
           userAnswers={userAnswers}
           loggedUser={loggedUser}
-          onCreateNewNote={onCreateNewNote}
         />
       </Drawer>
       <Snackbar

@@ -33,22 +33,6 @@ namespace EasyEnglishAPI.Controllers
 
         [Authorize]
         [HttpGet]
-        [Route("api/UserNotes/GetAllUserNotesByUserAnswerId/{answerId}")]
-        public async Task<ActionResult<IEnumerable<UserNote>>> GetAllUserNotesByUserAnswerId(Guid answerId)
-        {
-            try
-            {
-                return Ok(await _objectDAL.GetAllUserNotesByUserAnswerId(answerId));
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new { error = e.Message });
-            }
-
-        }
-
-        [Authorize]
-        [HttpGet]
         [Route("api/UserNotes/GetAllUserNotesByUser/{userId}")]
         public async Task<ActionResult<IEnumerable<UserNote>>> GetAllUserNotesByUser(Guid userId)
         {
@@ -76,7 +60,7 @@ namespace EasyEnglishAPI.Controllers
             {
                 return BadRequest(new { error = e.Message });
             }
-           
+
         }
 
         [Authorize]
@@ -92,7 +76,7 @@ namespace EasyEnglishAPI.Controllers
             {
                 return BadRequest(new { error = e.Message });
             }
-            
+
         }
 
         [Authorize]
@@ -108,7 +92,7 @@ namespace EasyEnglishAPI.Controllers
             {
                 return BadRequest(new { error = e.Message });
             }
-            
+
         }
 
         [Authorize]
@@ -124,7 +108,7 @@ namespace EasyEnglishAPI.Controllers
             {
                 return BadRequest(new { error = e.Message });
             }
-            
+
         }
     }
 }

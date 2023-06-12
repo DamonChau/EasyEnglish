@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { api } from "../../services/api";
 import { QuestionDetails } from "../../interfaces/interfaces";
@@ -17,7 +18,7 @@ export const questionDetailsApi = api.injectEndpoints({
     getQuestionDetail: build.query<QuestionDetails, string>({
       query: (id) => `api/QuestionDetails/Details/${id}`,
       providesTags: (result, error, arg) => [
-        { type: "questionDetails", id: arg },
+        { type: "questionDetails", id: result?.id },
       ],
     }),
     addQuestionDetail: build.mutation<

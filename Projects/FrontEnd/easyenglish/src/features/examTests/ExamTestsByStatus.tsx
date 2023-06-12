@@ -3,7 +3,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-empty-function */
 import React, { useEffect, useState } from "react";
+import { config } from "../../helpers/contants";
+import { useNavigate } from "react-router-dom";
+import {
+  AssignmentExamsDetailResponse,
+  useGetAllByStatusWithDetailQuery,
+} from "../assignments/assignmentExamsApi";
 import { styled } from "@mui/material/styles";
+import { parseISO } from "date-fns";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
@@ -12,34 +19,42 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import TablePagination from "@mui/material/TablePagination";
-import Chip from "@mui/material/Chip";
+import IconButton from "@mui/material/IconButton";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import TableSortLabel from "@mui/material/TableSortLabel";
+import AssessmentIcon from "@mui/icons-material/Assessment";
 import Box from "@mui/material/Box";
 import { visuallyHidden } from "@mui/utils";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
-import IconButton from "@mui/material/IconButton";
-import { useTypedSelector } from "../../services";
-import { selectLoggedUser } from "../../services/slices/authSlice";
-import { Users, Status, UserRelationship } from "../../interfaces/interfaces";
-import {
-  isFetchBaseQueryError,
-  isErrorWithMessage,
-} from "../../services/helpers";
 import { Order, getComparator, stableSort } from "../../helpers/muiTable";
-import { ConfirmationModal } from "../common/Modals";
 import {
-  useUpdateStatusMutation,
-  useGetAllStudentsByUserQuery,
-} from "./userRelationshipApi";
-import AddTaskIcon from "@mui/icons-material/AddTask";
-import AssessmentIcon from "@mui/icons-material/Assessment";
+  ExamTestSectionType,
+  ExamTestType,
+  ExamTests,
+  AssignmentStatus,
+} from "../../interfaces/interfaces";
+import ViewExamScoreModal from "../../features/examResult/ViewExamScoreModal";
+import isUUID from "validator/lib/isUUID";
 
-const DEFAULT_ORDER = "asc";
-const DEFAULT_ORDER_BY = "userName";
-const DEFAULT_ROWS_PER_PAGE = 10;
+//#region sort table
+interface ExamTestsDisplay
+  extends Omit<ExamTests, "audioFile" | "audioFileUpload"> {}
+
+function convertToExamTestsDisplay(
+  data: AssignmentExamsDetailResponse
+): ExamTestsDisplay[] {
+  const convertedData: ExamTestsDisplay[] = [];
+
+  for (const assignmentDetail of data) {
+    const { examTest, ...rest } = assignmentDetail;
+    const convertedTest: ExamTestsDisplay = { ...examTest };
+    convertedData.push(convertedTest);
+  }
+  return convertedData;
+}
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -51,79 +66,63 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
 }));
 
-export interface UserRelationshipDisplay extends Users {
-  relationshipId: string;
-  relationshipStatus: Status;
-}
-
 interface HeadCell {
   disablePadding: boolean;
-  id: keyof UserRelationshipDisplay;
+  id: keyof ExamTestsDisplay;
   label: string;
   numeric: boolean;
 }
 
+const headCells: readonly HeadCell[] = [
+  {
+    id: "testname",
+    numeric: false,
+    disablePadding: true,
+    label: "Test Name",
+  },
+  {
+    id: "title",
+    numeric: false,
+    disablePadding: false,
+    label: "Title",
+  },
+  {
+    id: "sectionType",
+    numeric: true,
+    disablePadding: false,
+    label: "Section Type",
+  },
+  {
+    id: "testType",
+    numeric: true,
+    disablePadding: false,
+    label: "Test Type",
+  },
+  {
+    id: "createdDate",
+    numeric: false,
+    disablePadding: false,
+    label: "Created Date",
+  },
+];
+
+const DEFAULT_ORDER = "asc";
+const DEFAULT_ORDER_BY = "testname";
+const DEFAULT_ROWS_PER_PAGE = 10;
+
 interface EnhancedTableProps {
   onRequestSort: (
     event: React.MouseEvent<unknown>,
-    newOrderBy: keyof UserRelationshipDisplay
+    newOrderBy: keyof ExamTestsDisplay
   ) => void;
   order: Order;
   orderBy: string;
 }
 
-const headCells: readonly HeadCell[] = [
-  {
-    id: "userName",
-    numeric: false,
-    disablePadding: true,
-    label: "User Name",
-  },
-  {
-    id: "email",
-    numeric: false,
-    disablePadding: false,
-    label: "Email",
-  },
-  {
-    id: "status",
-    numeric: true,
-    disablePadding: false,
-    label: "UserStatus",
-  },
-  {
-    id: "relationshipStatus",
-    numeric: true,
-    disablePadding: false,
-    label: "Relationship Status",
-  },
-];
-
-function EnhancedTableToolbar(props: any) {
-  const { header } = props;
-  return (
-    <Toolbar
-      sx={{
-        pl: { sm: 2 },
-        pr: { xs: 1, sm: 1 },
-      }}
-    >
-      <Typography
-        sx={{ flex: "1 1 100%" }}
-        variant="h6"
-        id="tableTitle"
-        component="div"
-      >
-        {header}
-      </Typography>
-    </Toolbar>
-  );
-}
-
 function EnhancedTableHead(props: EnhancedTableProps) {
   const { order, orderBy, onRequestSort } = props;
   const createSortHandler =
-    (newOrderBy: keyof UserRelationshipDisplay) =>
+    (newOrderBy: keyof ExamTestsDisplay) =>
     (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, newOrderBy);
     };
@@ -157,71 +156,62 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   );
 }
 
-const MyStudent = ({ onAssignTask, onViewStudentProgress }: any) => {
-  const loggedUser = useTypedSelector(selectLoggedUser);
-  const [erroMsg, setErrorMsg] = useState("");
-  const { data, isFetching, isLoading, isSuccess, isError, error } =
-    useGetAllStudentsByUserQuery(loggedUser?.id as string);
+function EnhancedTableToolbar() {
+  return (
+    <Toolbar
+      sx={{
+        pl: { sm: 2 },
+        pr: { xs: 1, sm: 1 },
+      }}
+    >
+      <Typography
+        sx={{ flex: "1 1 100%" }}
+        variant="h6"
+        id="tableTitle"
+        component="div"
+      >
+        Exam Tests
+      </Typography>
+    </Toolbar>
+  );
+}
+
+//#endregion
+
+const ExamTestsByStatus = ({ status, userId }: any) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(DEFAULT_ROWS_PER_PAGE);
   const [order, setOrder] = useState<Order>(DEFAULT_ORDER);
   const [orderBy, setOrderBy] =
-    React.useState<keyof UserRelationshipDisplay>(DEFAULT_ORDER_BY);
+    React.useState<keyof ExamTestsDisplay>(DEFAULT_ORDER_BY);
   const [dense, setDense] = useState(true);
-  const [visibleRows, setVisibleRows] = useState<
-    UserRelationshipDisplay[] | null
-  >(null);
+  const [visibleRows, setVisibleRows] = useState<ExamTestsDisplay[] | null>(
+    null
+  );
+  const [dataRows, setDataRows] = useState<ExamTestsDisplay[] | null>(null);
+  const [currRow, setCurrRow] = useState<ExamTestsDisplay | null>(null);
   const [paddingHeight, setPaddingHeight] = useState(0);
+  const navigate = useNavigate();
   const [isView, setView] = useState(false);
-  const [currUser, setCurrUser] = useState<UserRelationshipDisplay | null>(
-    null
+  const [openViewScore, setOpenViewScore] = useState(false);
+  const { data } = useGetAllByStatusWithDetailQuery(
+    {
+      userId: userId,
+      status,
+    },
+    { skip: userId == undefined ? true : false }
   );
-  const [openConfirmationModal, setConfirmationModal] = useState(false);
-  const [dataRows, setDataRows] = useState<UserRelationshipDisplay[] | null>(
-    null
-  );
-  const [updateStatus] = useUpdateStatusMutation();
-
-  function convert2UserRelationshipDisplay(
-    data: any
-  ): UserRelationshipDisplay[] {
-    const convertedData: UserRelationshipDisplay[] = [];
-
-    for (const row of data) {
-      const { user, id, status, ...rest } = row;
-      const convertedTest: UserRelationshipDisplay = {
-        ...user,
-        relationshipId: id,
-        relationshipStatus: status,
-      };
-      convertedData.push(convertedTest);
-    }
-    return convertedData;
-  }
-
-  useEffect(() => {
-    if (error) {
-      if ("status" in error) {
-        // you can access all properties of `FetchBaseQueryError` here
-        const msg = "error" in error ? error.error : JSON.stringify(error.data);
-        setErrorMsg(msg);
-      } else {
-        // you can access all properties of `SerializedError` here
-        setErrorMsg(error.message as string);
-      }
-    }
-  }, [isError]);
 
   useEffect(() => {
     if (data) {
-      setDataRows(convert2UserRelationshipDisplay(data));
+      setDataRows(convertToExamTestsDisplay(data));
       setView(false);
     }
   }, [data]);
 
   useEffect(() => {
     if (dataRows) {
-      let rowsOnMount = stableSort<UserRelationshipDisplay>(
+      let rowsOnMount = stableSort<ExamTestsDisplay>(
         dataRows,
         getComparator(DEFAULT_ORDER, DEFAULT_ORDER_BY)
       );
@@ -239,7 +229,7 @@ const MyStudent = ({ onAssignTask, onViewStudentProgress }: any) => {
       setPage(newPage);
 
       if (dataRows) {
-        const sortedRows = stableSort<UserRelationshipDisplay>(
+        const sortedRows = stableSort<ExamTestsDisplay>(
           dataRows,
           getComparator(order, orderBy)
         );
@@ -269,7 +259,7 @@ const MyStudent = ({ onAssignTask, onViewStudentProgress }: any) => {
 
       setPage(0);
       if (dataRows) {
-        const sortedRows = stableSort<UserRelationshipDisplay>(
+        const sortedRows = stableSort<ExamTestsDisplay>(
           dataRows,
           getComparator(order, orderBy)
         );
@@ -291,17 +281,14 @@ const MyStudent = ({ onAssignTask, onViewStudentProgress }: any) => {
   };
 
   const handleRequestSort = React.useCallback(
-    (
-      event: React.MouseEvent<unknown>,
-      newOrderBy: keyof UserRelationshipDisplay
-    ) => {
+    (event: React.MouseEvent<unknown>, newOrderBy: keyof ExamTestsDisplay) => {
       const isAsc = orderBy === newOrderBy && order === "asc";
       const toggledOrder = isAsc ? "desc" : "asc";
       setOrder(toggledOrder);
       setOrderBy(newOrderBy);
 
       if (dataRows) {
-        const sortedRows = stableSort<UserRelationshipDisplay>(
+        const sortedRows = stableSort<ExamTestsDisplay>(
           dataRows,
           getComparator(toggledOrder, newOrderBy)
         );
@@ -315,40 +302,17 @@ const MyStudent = ({ onAssignTask, onViewStudentProgress }: any) => {
     [order, orderBy, page, rowsPerPage]
   );
 
-  const deactivatedStudent = (user: UserRelationshipDisplay) => {
-    setCurrUser(user);
-    setConfirmationModal(true);
-  };
-
-  const updateRelationshipStatus = async () => {
-    try {
-      const rel: Partial<UserRelationship> = {
-        id: currUser?.relationshipId,
-        status:
-          currUser?.relationshipStatus == Status.Active ||
-          currUser?.relationshipStatus == Status.Inactive
-            ? Status.Delete
-            : Status.Active,
-      };
-      await updateStatus(rel).unwrap();
-    } catch (err) {
-      if (isFetchBaseQueryError(err)) {
-        const msg =
-          "error" in err
-            ? err.error
-            : JSON.parse(JSON.stringify(err.data)).error;
-        setErrorMsg(msg);
-      } else if (isErrorWithMessage(err)) console.log(err.message);
-    }
+  const showScore = (examTest: ExamTestsDisplay) => {
+    setCurrRow(examTest);
+    setOpenViewScore(true);
   };
 
   return (
     <React.Fragment>
-      {erroMsg ? <div className="p-2 m-2 text-danger">{erroMsg}</div> : null}
       {isView ? (
-        <Box sx={{ width: "100%", p: 3 }}>
+        <Box sx={{ width: "100%" }}>
           <Paper sx={{ width: "100%", mb: 2, p: 2 }}>
-            <EnhancedTableToolbar header="My Students" />
+            <EnhancedTableToolbar />
             <TableContainer>
               <Table
                 sx={{ minWidth: 750 }}
@@ -372,49 +336,52 @@ const MyStudent = ({ onAssignTask, onViewStudentProgress }: any) => {
                                 padding="none"
                                 align="left"
                               >
-                                {row.userName}
+                                {row.testname}
                               </TableCell>
-                              <TableCell align="left">{row.email}</TableCell>
+                              <TableCell align="left">{row.title}</TableCell>
                               <TableCell align="right">
-                                {Status[row.status]}
+                                {ExamTestSectionType[row.sectionType]}
                               </TableCell>
                               <TableCell align="right">
-                                <Chip
-                                  onClick={() => deactivatedStudent(row)}
-                                  label={Status[row.relationshipStatus]}
-                                  color={
-                                    row.relationshipStatus == Status.Active
-                                      ? "success"
-                                      : "error"
-                                  }
-                                />
+                                {ExamTestType[row.testType]}
+                              </TableCell>
+                              <TableCell align="left">
+                                {parseISO(row.createdDate).toDateString()}
                               </TableCell>
                               <StyledTableCell
                                 align="left"
-                                placeholder="Edit Status"
+                                placeholder="Start Test"
                               >
                                 <IconButton
-                                  aria-label="Edit"
-                                  placeholder="Edit"
+                                  aria-label="Start"
+                                  placeholder="Start Test"
                                   size="small"
-                                  onClick={() => onAssignTask(row)}
+                                  onClick={() => {
+                                    navigate(
+                                      config.url.API_URL_FOLDER +
+                                        "/examTestsView/" +
+                                        row.id
+                                    );
+                                  }}
                                 >
-                                  <AddTaskIcon />
+                                  <PlayArrowIcon />
                                 </IconButton>
                               </StyledTableCell>
-                              <StyledTableCell
-                                align="left"
-                                placeholder="View Student Progress"
-                              >
-                                <IconButton
-                                  aria-label="StudentProgress"
-                                  placeholder="Student Progress"
-                                  size="small"
-                                  onClick={() => onViewStudentProgress(row)}
+                              {status == AssignmentStatus.Done ? (
+                                <StyledTableCell
+                                  align="left"
+                                  placeholder="View Score"
                                 >
-                                  <AssessmentIcon />
-                                </IconButton>
-                              </StyledTableCell>
+                                  <IconButton
+                                    aria-label="View Score"
+                                    placeholder="View Score"
+                                    size="small"
+                                    onClick={() => showScore(row)}
+                                  >
+                                    <AssessmentIcon />
+                                  </IconButton>
+                                </StyledTableCell>
+                              ) : null}
                             </TableRow>
                           </React.Fragment>
                         );
@@ -426,7 +393,7 @@ const MyStudent = ({ onAssignTask, onViewStudentProgress }: any) => {
                         height: paddingHeight,
                       }}
                     >
-                      <TableCell colSpan={5} />
+                      <TableCell colSpan={6} />
                     </TableRow>
                   )}
                 </TableBody>
@@ -435,7 +402,7 @@ const MyStudent = ({ onAssignTask, onViewStudentProgress }: any) => {
             <TablePagination
               rowsPerPageOptions={[5, 10, 25]}
               component="div"
-              count={data?.length as number}
+              count={dataRows?.length as number}
               rowsPerPage={rowsPerPage}
               page={page}
               onPageChange={handleChangePage}
@@ -452,25 +419,14 @@ const MyStudent = ({ onAssignTask, onViewStudentProgress }: any) => {
           <em>Loading...</em>
         </p>
       )}
-      <ConfirmationModal
-        headerText={`${
-          currUser?.relationshipStatus == Status.Active ||
-          currUser?.relationshipStatus == Status.Inactive
-            ? "Cancel"
-            : "Active"
-        } Student`}
-        confirmationText={`Are you sure to  ${
-          currUser?.relationshipStatus == Status.Active ||
-          currUser?.relationshipStatus == Status.Inactive
-            ? "cancel"
-            : "active"
-        } ${currUser?.aliasName} as your student ?`}
-        onSubmit={updateRelationshipStatus}
-        open={openConfirmationModal}
-        onClose={() => setConfirmationModal(false)}
-      ></ConfirmationModal>
+      <ViewExamScoreModal
+        examTest={currRow}
+        userId={userId}
+        open={openViewScore}
+        onClose={() => setOpenViewScore(false)}
+      ></ViewExamScoreModal>
     </React.Fragment>
   );
 };
 
-export default MyStudent;
+export default ExamTestsByStatus;

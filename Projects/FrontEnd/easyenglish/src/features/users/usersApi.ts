@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { api } from "../../services/api";
 import { Users } from "../../interfaces/interfaces";
@@ -31,7 +32,7 @@ export const usersApi = api.injectEndpoints({
     }),
     getUser: build.query<Users, string>({
       query: (id) => `api/Users/Details/${id}`,
-      providesTags: (result, error, arg) => [{ type: "users", id: arg }],
+      providesTags: (result, error, arg) => [{ type: "users", id: result?.id }],
     }),
     addUser: build.mutation<Users, Partial<Users>>({
       query: (body) => ({

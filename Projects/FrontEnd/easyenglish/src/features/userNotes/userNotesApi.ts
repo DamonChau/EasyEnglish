@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { api } from "../../services/api";
 import { UserNotes } from "../../interfaces/interfaces";
@@ -8,15 +9,6 @@ export const userNotesApi = api.injectEndpoints({
     getAllUserNotesByExamResult: build.query<UserNotesResponse, string>({
       query: (examTestId) => ({
         url: `api/UserNotes/GetAllUserNotesByExamResult/${examTestId}`,
-      }),
-      providesTags: (result = []) => [
-        ...result.map(({ id }) => ({ type: "userNotes", id } as const)),
-        { type: "userNotes" as const, id: "LIST" },
-      ],
-    }),
-    getAllUserNotesByUserAnswerId: build.query<UserNotesResponse, string>({
-      query: (answerId) => ({
-        url: `api/UserNotes/GetAllUserNotesByUserAnswerId/${answerId}`,
       }),
       providesTags: (result = []) => [
         ...result.map(({ id }) => ({ type: "userNotes", id } as const)),
@@ -34,7 +26,7 @@ export const userNotesApi = api.injectEndpoints({
     }),
     getUserNote: build.query<UserNotes, string>({
       query: (id) => `api/UserNotes/Details/${id}`,
-      providesTags: (result, error, arg) => [{ type: "userNotes", id: arg }],
+      providesTags: (result, error, arg) => [{ type: "userNotes", id: result?.id }],
     }),
     addUserNote: build.mutation<UserNotes, Partial<UserNotes>>({
       query: (body) => ({
@@ -72,7 +64,6 @@ export const userNotesApi = api.injectEndpoints({
 
 export const {
   useGetAllUserNotesByExamResultQuery,
-  useGetAllUserNotesByUserAnswerIdQuery,
   useGetAllUserNotesByUserQuery,
   useGetUserNoteQuery,
   useAddUserNoteMutation,

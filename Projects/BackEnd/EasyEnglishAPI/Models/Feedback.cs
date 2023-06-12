@@ -15,8 +15,6 @@ public partial class Feedback
 
     public Guid? CreatedBy { get; set; }
 
-    public Guid? UserAnswerId { get; set; }
-
     public Guid? ExamResultId { get; set; }
 
     public virtual User? CreatedByNavigation { get; set; }
@@ -24,6 +22,4 @@ public partial class Feedback
     public virtual ExamResult? ExamResult { get; set; }
 
     public virtual ICollection<Improvement> Improvements { get; } = new List<Improvement>();
-
-    public virtual UserAnswer? UserAnswer { get; set; }
 }

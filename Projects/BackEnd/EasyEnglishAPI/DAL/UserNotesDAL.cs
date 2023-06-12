@@ -31,7 +31,6 @@ namespace EasyEnglishAPI.DAL
                 return await _context.UserNotes
                     .Where(u => u.ExamResultId == examResultId)
                     .Include(u => u.CreatedByNavigation)
-                    .Include(u => u.UserAnswer).ThenInclude(b => b!.QuestionDetail)
                     .OrderByDescending(u => u.CreatedDate)
                     .ToListAsync();
             }
@@ -41,22 +40,7 @@ namespace EasyEnglishAPI.DAL
             }
         }
 
-        public async Task<IEnumerable<UserNote>> GetAllUserNotesByUserAnswerId(Guid answerId)
-        {
-            try
-            {
-                return await _context.UserNotes
-                    .Where(u => u.UserAnswerId == answerId)
-                    .OrderByDescending(u => u.CreatedDate)
-                    .ToListAsync();
-            }
-            catch
-            {
-                throw;
-            }
-        }
-
-
+        
         public async Task<UserNote> AddUserNote(UserNote u)
         {
             try

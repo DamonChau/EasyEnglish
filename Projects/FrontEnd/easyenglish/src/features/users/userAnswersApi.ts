@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { api } from "../../services/api";
 import { UserAnswers } from "../../interfaces/interfaces";
@@ -16,9 +17,16 @@ export const userAnswersApi = api.injectEndpoints({
         { type: "userAnswers" as const, id: "LIST" },
       ],
     }),
+    getAllByExam: build.query<UserAnswerResponse, string>({
+      query: (examResultId) => ({ url: `api/UserAnswers/GetAllByExam/${examResultId}` }),
+      providesTags: (result = []) => [
+        ...result.map(({ id }) => ({ type: "userAnswers", id } as const)),
+        { type: "userAnswers" as const, id: "LIST" },
+      ],
+    }),
     getUserAnswer: build.query<UserAnswers, string>({
       query: (id) => `api/UserAnswers/Details/${id}`,
-      providesTags: (result, error, arg) => [{ type: "userAnswers", id: arg }],
+      providesTags: (result, error, arg) => [{ type: "userAnswers", id: result?.id }],
     }),
     addUserAnswer: build.mutation<UserAnswers, Partial<UserAnswers>>({
       query: (body) => ({
@@ -81,4 +89,5 @@ export const {
   useDeleteUserAnswerMutation,
   useUploadFilesMutation,
   useDownloadFilesMutation,
+  useGetAllByExamQuery,
 } = userAnswersApi;

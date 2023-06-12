@@ -33,7 +33,7 @@ namespace EasyEnglishAPI.Controllers
 
         [HttpGet]
         [Route("api/Comments/GetAllCommentsByExam/{examId}")]
-        public async Task<ActionResult<IEnumerable<UserNote>>> GetAllCommentsByExam(Guid examId)
+        public async Task<ActionResult<IEnumerable<Comment>>> GetAllCommentsByExam(Guid examId)
         {
             try
             {

@@ -5,7 +5,7 @@
 import React from "react";
 import { useState, useEffect, useRef } from "react";
 import { useTypedSelector } from "../../services";
-import { selectLoggedUser } from "../../services/slices/authSlice";
+import { selectLoggedUser,selectIsAuthenticated } from "../../services/slices/authSlice";
 import { Status, UserAnswers } from "../../interfaces/interfaces";
 import isUUID from "validator/lib/isUUID";
 import Snackbar from "@mui/material/Snackbar";
@@ -24,6 +24,7 @@ import {
   isFetchBaseQueryError,
   isErrorWithMessage,
 } from "../../services/helpers";
+import { useUpdateStatusByUserMutation } from "../assignments/assignmentExamsApi";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "transparent",
@@ -36,6 +37,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const QuestionAnswerSpeaking = ({ testId }: any) => {
   const [isView, setView] = React.useState(false);
+  const isAuthenticated = useTypedSelector(selectIsAuthenticated);
   const { data, isFetching, isLoading, isSuccess, isError, error } =
     useGetQuestionsWithQDQuery(testId, { skip: !isView });
   const [
@@ -63,7 +65,17 @@ const QuestionAnswerSpeaking = ({ testId }: any) => {
     noQuestion: 1,
     createdBy: loggedUser!.id,
   };
+  const initialValueAssignmentExam = {
+    id: uuidv4(),
+    examTestId: testId,
+    isDone: true,
+    userId: isAuthenticated ? loggedUser!.id : uuidv4(),
+  };
+  const [assignmentExam, setAssignmentExam] = useState(
+    initialValueAssignmentExam
+  );
   const [testResult, setTestResult] = useState(initialValueTestResult);
+  const [updateAssignmentExams] = useUpdateStatusByUserMutation();
 
   const initialValue = {
     id: uuidv4(),
@@ -175,6 +187,22 @@ const QuestionAnswerSpeaking = ({ testId }: any) => {
     };
   };
 
+  const saveAssignmentExam = async () => {
+    try {
+      if (assignmentExam) {
+        await updateAssignmentExams(assignmentExam).unwrap();
+      }
+    } catch (err) {
+      if (isFetchBaseQueryError(err)) {
+        const msg =
+          "error" in err
+            ? err.error
+            : JSON.parse(JSON.stringify(err.data)).error;
+        setErrorMsg(msg);
+      } else if (isErrorWithMessage(err)) console.log(err.message);
+    }
+  };
+
   const handleSubmit = async () => {
     try {
       if (data) {
@@ -195,6 +223,7 @@ const QuestionAnswerSpeaking = ({ testId }: any) => {
             };
             setUserAnswer(updatedUserAnswer);
             await addUserAnswer(updatedUserAnswer).unwrap();
+            await saveAssignmentExam();
           });
         });
         setOpen(true);

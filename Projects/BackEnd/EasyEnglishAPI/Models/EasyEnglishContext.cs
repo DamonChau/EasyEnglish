@@ -203,10 +203,6 @@ public partial class EasyEnglishContext : DbContext
             entity.HasOne(d => d.ExamResult).WithMany(p => p.Feedbacks)
                 .HasForeignKey(d => d.ExamResultId)
                 .HasConstraintName("FK_Feedbacks_ExamResults");
-
-            entity.HasOne(d => d.UserAnswer).WithMany(p => p.Feedbacks)
-                .HasForeignKey(d => d.UserAnswerId)
-                .HasConstraintName("FK_Feedbacks_UserAnswers");
         });
 
         modelBuilder.Entity<Improvement>(entity =>
@@ -284,6 +280,7 @@ public partial class EasyEnglishContext : DbContext
             entity.Property(e => e.Answer).HasMaxLength(1000);
             entity.Property(e => e.Content).HasMaxLength(1000);
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+            entity.Property(e => e.Qno).HasColumnName("QNo");
 
             entity.HasOne(d => d.Question).WithMany(p => p.QuestionDetails)
                 .HasForeignKey(d => d.QuestionId)
@@ -345,10 +342,6 @@ public partial class EasyEnglishContext : DbContext
             entity.HasOne(d => d.ExamResult).WithMany(p => p.UserNotes)
                 .HasForeignKey(d => d.ExamResultId)
                 .HasConstraintName("FK_UserNotes_ExamResults");
-
-            entity.HasOne(d => d.UserAnswer).WithMany(p => p.UserNotes)
-                .HasForeignKey(d => d.UserAnswerId)
-                .HasConstraintName("FK_UserNotes_UserAnswers");
         });
 
         modelBuilder.Entity<UserRelationship>(entity =>

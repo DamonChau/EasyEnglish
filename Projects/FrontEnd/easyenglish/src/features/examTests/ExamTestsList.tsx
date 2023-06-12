@@ -150,6 +150,7 @@ const ExamTestsList = () => {
   const { testType, sectionType } = useParams();
   const [erroMsg, setErrorMsg] = useState("");
   const navigate = useNavigate();
+  const loggedUser = useTypedSelector(selectLoggedUser);
   const { data, isFetching, isLoading, isSuccess, isError, error } =
     useGetExamTestsBySectionQuery({
       testType: testType,
@@ -232,7 +233,9 @@ const ExamTestsList = () => {
                       <div className="faded">
                         <p>{exam.testname}</p>
                         <p>{exam.title}</p>
-                        <AssignmentStatus examId={exam.id}></AssignmentStatus>
+                        {loggedUser && (
+                          <AssignmentStatus examId={exam.id}></AssignmentStatus>
+                        )}
                       </div>
                     </div>
                   </div>

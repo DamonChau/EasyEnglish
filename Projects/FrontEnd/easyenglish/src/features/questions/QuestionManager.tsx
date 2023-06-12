@@ -240,6 +240,7 @@ const QuestionTableRow = ({
                   <TableHead>
                     <TableRow>
                       <TableCell>Order</TableCell>
+                      <TableCell>QuestioNo</TableCell>
                       <TableCell>Content</TableCell>
                       <TableCell align="right">Answer</TableCell>
                       <TableCell align="right">CreatedDate</TableCell>
@@ -251,6 +252,9 @@ const QuestionTableRow = ({
                         <TableRow key={qd.id}>
                           <TableCell component="th" scope="row">
                             {qd.order}
+                          </TableCell>
+                          <TableCell component="th" scope="row">
+                            {qd.qno}
                           </TableCell>
                           <TableCell>{qd.content}</TableCell>
                           <TableCell align="right">{qd.answer}</TableCell>
