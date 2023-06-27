@@ -23,7 +23,11 @@ import MyStudentDashboard from "./features/users/MyStudentDashboard";
 import MyStudyManager from "./features/assignments/MyStudyManager";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import "./App.css";
-import { UserType } from "./interfaces/interfaces";
+import { UserType } from "./models/types";
+import LessonList from "./features/lessons/LessonList";
+import LessonView from "./features/lessons/LessonView";
+import LessonManager from "./features/lessons/LessonManager";
+import LessonDetail from "./features/lessons/LessonDetail";
 
 function withRouter(Component: any) {
   function ComponentWithRouterProp(props: any) {
@@ -53,6 +57,11 @@ const App = (props: any) => {
           <Route
             path="/examTestsList/:testType/:sectionType"
             element={<ExamTestsList />}
+          />
+          <Route path="/lessonView/:id/" element={<LessonView />} />
+          <Route
+            path="/lessonList/:lessonType/"
+            element={<LessonList />}
           />
           <Route path="/login" element={<Login />} />
           <Route path="/unauthorized" element={<UnAuthorized />} />
@@ -89,6 +98,9 @@ const App = (props: any) => {
           </Route>
           <Route element={<PrivateRoute allowRoles={[UserType.Teacher]} />}>
             <Route path="/myStudent/" element={<MyStudentDashboard />} />
+            <Route path="/lessonManager" element={<LessonManager />} />
+            <Route path="/lessonDetail/:id/" element={<LessonDetail />} />
+            <Route path="/lessonDetail/add/" element={<LessonDetail />} />
           </Route>
         </Routes>
         <Footer />

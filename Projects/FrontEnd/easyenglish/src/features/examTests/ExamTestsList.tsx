@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
+import { useParams, Params } from "react-router-dom";
 import { useGetExamTestsBySectionQuery } from "./examTestsApi";
 import {
   useGetByUsersQuery,
@@ -15,7 +15,7 @@ import {
   ExamTestType,
   ExamTestSectionType,
   AssignmentExams,
-} from "../../interfaces/interfaces";
+} from "../../models/types";
 import { config } from "../../helpers/contants";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -28,7 +28,11 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { selectLoggedUser } from "../../services/slices/authSlice";
 import { useTypedSelector } from "../../services";
 
-const AssignmentStatus = ({ examId }: any) => {
+interface AssignmentStatusProps {
+  examId: string;
+}
+
+const AssignmentStatus = ({ examId }: AssignmentStatusProps) => {
   const loggedUser = useTypedSelector(selectLoggedUser);
   const [updateAssignmentExam] = useUpdateStatusByUserMutation();
   const { data, isFetching, isLoading, isSuccess, isError, error } =
@@ -146,8 +150,15 @@ const AssignmentStatus = ({ examId }: any) => {
   );
 };
 
+interface ExamTestsListParams {
+  testType: ExamTestType | undefined;
+  sectionType: ExamTestSectionType | undefined;
+}
+
 const ExamTestsList = () => {
-  const { testType, sectionType } = useParams();
+  const { testType, sectionType } = useParams<
+    keyof ExamTestsListParams
+  >() as ExamTestsListParams;
   const [erroMsg, setErrorMsg] = useState("");
   const navigate = useNavigate();
   const loggedUser = useTypedSelector(selectLoggedUser);
@@ -227,7 +238,6 @@ const ExamTestsList = () => {
                     <div className="text pt-3 text-center">
                       <h3>{ExamTestType[exam.testType]}</h3>
                       <span className="position mb-2">
-                        {" "}
                         {ExamTestSectionType[exam.sectionType]}
                       </span>
                       <div className="faded">

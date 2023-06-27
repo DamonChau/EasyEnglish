@@ -32,7 +32,7 @@ import {
   ExamTestSectionType,
   ExamTestType,
   ExamTests,
-} from "../../interfaces/interfaces";
+} from "../../models/types";
 import { parseISO } from "date-fns";
 import { config } from "../../helpers/contants";
 import { useNavigate } from "react-router-dom";

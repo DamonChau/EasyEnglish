@@ -1,7 +1,7 @@
 ﻿/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { PayloadAction, Reducer, createSlice } from "@reduxjs/toolkit";
-import type { Users } from "../../interfaces/interfaces";
+import type { Users } from "../../models/types";
 import type { RootState } from "../";
 
 const initialState = {

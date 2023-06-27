@@ -6,7 +6,7 @@ import React from "react";
 import { useState, useEffect, useRef } from "react";
 import { useTypedSelector } from "../../services";
 import { selectLoggedUser,selectIsAuthenticated } from "../../services/slices/authSlice";
-import { Status, UserAnswers } from "../../interfaces/interfaces";
+import { Status, UserAnswers } from "../../models/types";
 import isUUID from "validator/lib/isUUID";
 import Snackbar from "@mui/material/Snackbar";
 import { useGetQuestionsWithQDQuery } from "./questionsApi";
@@ -35,7 +35,11 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-const QuestionAnswerSpeaking = ({ testId }: any) => {
+interface QuestionAnswerSpeakingProps{
+  testId: string
+}
+
+const QuestionAnswerSpeaking = ({ testId }: QuestionAnswerSpeakingProps) => {
   const [isView, setView] = React.useState(false);
   const isAuthenticated = useTypedSelector(selectIsAuthenticated);
   const { data, isFetching, isLoading, isSuccess, isError, error } =

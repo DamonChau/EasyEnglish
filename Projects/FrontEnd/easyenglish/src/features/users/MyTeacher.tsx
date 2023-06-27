@@ -22,7 +22,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import { useTypedSelector } from "../../services";
 import { selectLoggedUser } from "../../services/slices/authSlice";
-import { Users, Status, UserRelationship } from "../../interfaces/interfaces";
+import { Users, Status, UserRelationship } from "../../models/types";
 
 import {
   isFetchBaseQueryError,

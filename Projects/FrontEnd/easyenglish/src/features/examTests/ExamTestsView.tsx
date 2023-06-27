@@ -22,7 +22,7 @@ import {
   selectLoggedUser,
   selectIsAuthenticated,
 } from "../../services/slices/authSlice";
-import { ExamResults, ExamTestSectionType } from "../../interfaces/interfaces";
+import { ExamResults, ExamTestSectionType } from "../../models/types";
 import {
   isFetchBaseQueryError,
   isErrorWithMessage,

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { api } from "../../services/api";
-import { UserNotes } from "../../interfaces/interfaces";
+import { UserNotes } from "../../models/types";
 export type UserNotesResponse = UserNotes[];
 
 export const userNotesApi = api.injectEndpoints({

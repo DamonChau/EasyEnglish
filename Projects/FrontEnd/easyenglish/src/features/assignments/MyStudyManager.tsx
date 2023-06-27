@@ -5,7 +5,7 @@
 import React, { useEffect, useState } from "react";
 import { selectLoggedUser } from "../../services/slices/authSlice";
 import { useTypedSelector } from "../../services";
-import { AssignmentStatus } from "../../interfaces/interfaces";
+import { AssignmentStatus } from "../../models/types";
 import ExamTestsByStatus from "../examTests/ExamTestsByStatus";
 
 const MyStudyManager = () => {

@@ -17,7 +17,8 @@ import {
   ExamResults,
   QuestionType,
   Status,
-} from "../../interfaces/interfaces";
+  Users,
+} from "../../models/types";
 import {
   selectLoggedUser,
   selectIsAuthenticated,
@@ -35,7 +36,15 @@ import {
 } from "../../services/helpers";
 import { isEquals } from "../../helpers/contants";
 
-const QuestionAnswerReading = ({ testId, onGetExamResult }: any) => {
+interface QuestionAnswerReadingProps {
+  testId: string;
+  onGetExamResult: (examResult: ExamResults) => void;
+}
+
+const QuestionAnswerReading = ({
+  testId,
+  onGetExamResult,
+}: QuestionAnswerReadingProps) => {
   const [isView, setView] = React.useState(false);
   const { data, isFetching, isLoading, isSuccess, isError, error } =
     useGetQuestionsWithQDQuery(testId, { skip: !isView });
@@ -186,25 +195,25 @@ const QuestionAnswerReading = ({ testId, onGetExamResult }: any) => {
 
   //#region events
   const handleFieldChange = React.useCallback(
-    (userAnswers: UserAnswersDisplay) => {
+    (userAnswer: UserAnswersDisplay) => {
       setUserAnswers(
         (prevState) => {
           // Check if the object already exists in the array
           const existingObjectIndex = prevState.findIndex(
             (obj) =>
-              obj.questionDetailId === userAnswers.questionDetailId &&
-              obj.userId === userAnswers.userId
+              obj.questionDetailId === userAnswer.questionDetailId &&
+              obj.userId === userAnswer.userId
           );
 
           // If it exists, update the object at the existing index
           if (existingObjectIndex !== -1) {
             const updatedArray = [...prevState];
-            updatedArray[existingObjectIndex] = userAnswers;
+            updatedArray[existingObjectIndex] = userAnswer;
             return updatedArray;
           }
 
           // If it doesn't exist, add the new object to the end of the array
-          return [...prevState, userAnswers];
+          return [...prevState, userAnswer];
         },
         () => {}
       );
@@ -393,10 +402,7 @@ const QuestionAnswerReading = ({ testId, onGetExamResult }: any) => {
   return (
     <div>
       <Drawer anchor={"left"} open={openDrawer} onClose={toggleDrawer}>
-        <ListAnswerResult
-          userAnswers={userAnswers}
-          loggedUser={loggedUser}
-        />
+        <ListAnswerResult userAnswers={userAnswers} />
       </Drawer>
       <Snackbar
         open={open}
@@ -435,7 +441,7 @@ const QuestionAnswerReading = ({ testId, onGetExamResult }: any) => {
                     key={q.id}
                     question={q}
                     questionDetails={q.questionDetails}
-                    handleFieldChange={handleFieldChange}
+                    onFieldChange={handleFieldChange}
                   />
                 </div>
               ))}

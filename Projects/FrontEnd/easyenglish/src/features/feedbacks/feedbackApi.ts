@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { api } from "../../services/api";
-import { Feedbacks } from "../../interfaces/interfaces";
+import { Feedbacks } from "../../models/types";
 export type FeedbacksResponse = Feedbacks[];
 
 export const feedbacksApi = api.injectEndpoints({

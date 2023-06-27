@@ -30,7 +30,7 @@ import {
   Status,
   RelationShipType,
   UserRelationship,
-} from "../../interfaces/interfaces";
+} from "../../models/types";
 import { UsersResponse, useGetAllTeachersQuery, usersApi } from "./usersApi";
 import {
   isFetchBaseQueryError,

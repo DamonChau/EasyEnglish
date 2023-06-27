@@ -18,7 +18,7 @@ import {
   Status,
   ExamTestType,
   ExamTestSectionType,
-} from "../../interfaces/interfaces";
+} from "../../models/types";
 import { Editor } from "react-draft-wysiwyg";
 import {
   EditorState,
@@ -52,8 +52,8 @@ const ExamTestsDetail = () => {
     content: "",
     description: "",
     testType: ExamTestType.IELTS,
-    sectionType: 1,
-    status: 1,
+    sectionType: ExamTestSectionType.Listening,
+    status: Status.Active,
     createdBy: loggedUser!.id,
   };
   const [examTest, setexamTest] = useState<Partial<ExamTests>>(initialValue);

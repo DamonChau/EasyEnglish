@@ -2,7 +2,7 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { config } from "../../helpers/contants";
-import { ExamTestSectionType, ExamTestType } from "../../interfaces/interfaces";
+import { ExamTestSectionType, ExamTestType } from "../../models/types";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 
 const ExamTestsHome = () => {
@@ -10,38 +10,11 @@ const ExamTestsHome = () => {
 
   return (
     <React.Fragment>
-      <section
-        className="hero-wrap hero-wrap-2"
-        style={{ backgroundImage: 'url("images/bg_1.jpg")' }}
-        data-stellar-background-ratio="0.5"
-      >
-        <div className="overlay" />
-        <div className="container">
-          <div className="row no-gutters slider-text align-items-center justify-content-center">
-            <div className="col-md-9 text-center">
-              <h1 className="mb-2 bread">Exam Tests</h1>
-              <p className="breadcrumbs">
-                <span className="mr-2">
-                  <a href="/">
-                    Home <i className="ion-ios-arrow-forward" />
-                  </a>
-                </span>
-                <span className="mr-2">
-                  <a href="/">
-                    Exam Tests <i className="ion-ios-arrow-forward" />
-                  </a>
-                </span>
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
       <section className="ftco-section">
         <div className="container">
           <div className="row justify-content-center mb-5 pb-2">
             <div className="col-md-8 text-center heading-section ftco-animate fadeInUp ftco-animated">
-              <span className="subheading">IELTS</span>
-              <h2 className="mb-4">IELTS tests</h2>
+              <h2 className="mb-4">IELTS</h2>
               <p>
                 The International English Language Testing System (IELTS) is a
                 globally recognized English language proficiency test. It is

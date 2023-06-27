@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿
 using EasyEnglishAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -78,7 +76,6 @@ namespace EasyEnglishAPI.DAL
                 throw;
             }
         }
-
 
         public async Task<ExamTest?> GetExamTests(Guid id)
         {

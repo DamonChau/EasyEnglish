@@ -3,7 +3,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from "react";
-import { UserAnswersDisplay, UserNotes } from "../../interfaces/interfaces";
+import {
+  UserAnswers,
+  UserAnswersDisplay,
+  UserNotes,
+  Users,
+} from "../../models/types";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -14,12 +19,13 @@ import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import ListSubheader from "@mui/material/ListSubheader";
 import Stack from "@mui/material/Stack";
 
+interface ListAnswerResultProps {
+  userAnswers: UserAnswersDisplay[];
+}
+
 export const ListAnswerResult = ({
-  userAnswers,
-  loggedUser,
-  onCreateNewNote,
-}: any) => {
-  
+  userAnswers
+}: ListAnswerResultProps) => {
   return (
     <Box sx={{ width: 400, bgcolor: "background.paper" }} role="presentation">
       <List

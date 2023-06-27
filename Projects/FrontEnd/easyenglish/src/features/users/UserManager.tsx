@@ -27,7 +27,7 @@ import {
   UserType,
   Status,
   LoginType,
-} from "../../interfaces/interfaces";
+} from "../../models/types";
 import {
   UsersResponse,
   useGetUsersQuery,
@@ -285,7 +285,7 @@ const UserManager = () => {
     setOpenEditModal(true);
   };
 
-  const saveUser = async (user: Users) => {
+  const saveUser = async (user: Partial<Users>) => {
     try {
       await updateUser(user).unwrap();
     } catch (err) {
@@ -408,7 +408,7 @@ const UserManager = () => {
           </p>
         )}
         <EditUserStatusModal
-          user={currUser}
+          user={currUser as Users}
           onSubmit={saveUser}
           open={openEditModal}
           onClose={() => setOpenEditModal(false)}

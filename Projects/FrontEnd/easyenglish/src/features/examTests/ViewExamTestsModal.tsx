@@ -10,57 +10,67 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Stack from "@mui/material/Stack";
 import ExamTestsViewerControl from "../examTests/ExamTestsViewerControl";
 
-const ViewExamTestsModal = ({ open, onClose, onSubmit }: any) => {
-    const [selected, setSelected] = React.useState<readonly string[]>([]);
-  
-    const onSelectedDone = (items: string[]) => {
-      setSelected(items);
-    };
-  
-    const handleSubmit = () => {
-      //put your validation logic here
-      onSubmit(selected);
-      onClose();
-    };
-  
-    return (
-      <Dialog open={open} fullWidth maxWidth="md">
-        <DialogTitle textAlign="center" variant="h6">
-          Exam Tests
-        </DialogTitle>
-        <DialogContent
-          sx={{
-            paddingLeft: "24px",
-            paddingRight: "24px",
-            paddingBottom: "0px",
-          }}
-        >
-          <Stack>
-            <div className="d-flex justify-content-center">
-              <ExamTestsViewerControl
-                onSelectedDone={onSelectedDone}
-              ></ExamTestsViewerControl>
-            </div>
-          </Stack>
-        </DialogContent>
-        <DialogActions sx={{ paddingBottom: "1.25rem" }}>
-          <button
-            className="btn btn-primary py-2 px-2"
-            type="button"
-            onClick={onClose}
-          >
-            Cancel
-          </button>
-          <button
-            className="btn btn-primary py-2 px-2"
-            type="button"
-            onClick={handleSubmit}
-          >
-            OK
-          </button>
-        </DialogActions>
-      </Dialog>
-    );
+interface ViewExamTestsModalProps {
+  open: boolean;
+  onClose: () => void;
+  onSubmit: (selected: readonly string[]) => void;
+}
+
+const ViewExamTestsModal = ({
+  open,
+  onClose,
+  onSubmit,
+}: ViewExamTestsModalProps) => {
+  const [selected, setSelected] = React.useState<readonly string[]>([]);
+
+  const onSelectedDone = (items: readonly string[]) => {
+    setSelected(items);
   };
 
-  export default ViewExamTestsModal;
+  const handleSubmit = () => {
+    //put your validation logic here
+    onSubmit(selected);
+    onClose();
+  };
+
+  return (
+    <Dialog open={open} fullWidth maxWidth="md">
+      <DialogTitle textAlign="center" variant="h6">
+        Exam Tests
+      </DialogTitle>
+      <DialogContent
+        sx={{
+          paddingLeft: "24px",
+          paddingRight: "24px",
+          paddingBottom: "0px",
+        }}
+      >
+        <Stack>
+          <div className="d-flex justify-content-center">
+            <ExamTestsViewerControl
+              onSelectedDone={onSelectedDone}
+            ></ExamTestsViewerControl>
+          </div>
+        </Stack>
+      </DialogContent>
+      <DialogActions sx={{ paddingBottom: "1.25rem" }}>
+        <button
+          className="btn btn-primary py-2 px-2"
+          type="button"
+          onClick={onClose}
+        >
+          Cancel
+        </button>
+        <button
+          className="btn btn-primary py-2 px-2"
+          type="button"
+          onClick={handleSubmit}
+        >
+          OK
+        </button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
+export default ViewExamTestsModal;

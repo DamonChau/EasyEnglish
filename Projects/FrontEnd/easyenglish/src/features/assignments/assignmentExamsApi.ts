@@ -1,17 +1,29 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { api } from "../../services/api";
-import { AssignmentExams, ExamTests } from "../../interfaces/interfaces";
+import { AssignmentExams, AssignmentStatus, ExamTests, Status } from "../../models/types";
+import { Asserts } from "yup";
 export type AssignmentExamsResponse = AssignmentExams[];
 export type AssignmentExamsDetailResponse = AssignmentExamsDetail[];
-export interface AssignmentExamsDetail extends AssignmentExams{
+
+export interface AssignmentExamsDetail extends AssignmentExams {
   examTest: ExamTests;
+}
+
+interface AssignmentExamArgs {
+  userId: string | undefined;
+  examId: string | undefined;
+}
+
+interface AssignmentExamsDetailArgs {
+  userId: string | undefined;
+  status: AssignmentStatus | undefined;
 }
 
 export const assignmentExamsApi = api.injectEndpoints({
   endpoints: (build) => ({
     //get & create AssignmentExams if not exists
-    getByUsers: build.query<AssignmentExams, any>({
+    getByUsers: build.query<AssignmentExams, AssignmentExamArgs>({
       query: (args) => {
         const { userId, examId } = args;
         return {
@@ -29,7 +41,10 @@ export const assignmentExamsApi = api.injectEndpoints({
         { type: "assignmentExams", id: result?.id },
       ],
     }),
-    getAllByStatusWithDetail: build.query<AssignmentExamsDetailResponse, any>({
+    getAllByStatusWithDetail: build.query<
+      AssignmentExamsDetailResponse,
+      AssignmentExamsDetailArgs
+    >({
       query: (args) => {
         const { userId, status } = args;
         return {

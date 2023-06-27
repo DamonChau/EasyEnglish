@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { Status, Feedbacks, UserType } from "../../interfaces/interfaces";
+import { Status, Feedbacks, UserType, ExamResults } from "../../models/types";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -32,7 +32,13 @@ import {
   useUpdateFeedbacksMutation,
 } from "./feedbackApi";
 
-const FeedbackManagerModal = ({ open, examResult, onClose }: any) => {
+interface FeedbackManagerModalProps {
+  open: boolean;
+  examResult: ExamResults;
+  onClose: () => void;
+}
+
+const FeedbackManagerModal = ({ open, examResult, onClose }: FeedbackManagerModalProps) => {
   const loggedUser = useTypedSelector(selectLoggedUser);
   const initial = {
     id: uuidv4(),

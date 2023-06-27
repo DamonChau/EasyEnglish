@@ -5,7 +5,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { Status, UserNotes } from "../../interfaces/interfaces";
+import { Status, UserNotes, Users } from "../../models/types";
 import {
   selectLoggedUser,
   selectIsAuthenticated,
@@ -24,11 +24,17 @@ import {
   isErrorWithMessage,
 } from "../../services/helpers";
 
+interface CreateNewNoteFormProps {
+  examResultId: string;
+  loggedUser: Users;
+  onSubmit: (note: Partial<UserNotes>) => void;
+}
+
 export const CreateNewNoteForm = ({
   examResultId,
   loggedUser,
   onSubmit,
-}: any) => {
+}: CreateNewNoteFormProps) => {
   const initial = {
     id: uuidv4(),
     content: "",
@@ -149,7 +155,7 @@ export const PostNotes = ({ examResultId }: any) => {
     }
   }, [examResultId]);
 
-  const handleCreateNewNote = async (note: UserNotes) => {
+  const handleCreateNewNote = async (note: Partial<UserNotes>) => {
     try {
       await addUserNote(note).unwrap();
     } catch (err) {
@@ -170,7 +176,7 @@ export const PostNotes = ({ examResultId }: any) => {
         {isNoteLoad ? (
           <CreateNewNoteForm
             examResultId={examResultId}
-            loggedUser={loggedUser}
+            loggedUser={loggedUser as Users}
             onSubmit={handleCreateNewNote}
           ></CreateNewNoteForm>
         ) : null}

@@ -7,7 +7,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import SendIcon from "@mui/icons-material/Send";
 import IconButton from "@mui/material/IconButton";
-import { Comments } from "../../interfaces/interfaces";
+import { Comments, Users } from "../../models/types";
 import { v4 as uuidv4 } from "uuid";
 import {
   selectLoggedUser,
@@ -15,6 +15,7 @@ import {
 } from "../../services/slices/authSlice";
 import { useTypedSelector } from "../../services";
 import {
+  CommentsResponse,
   useAddCommentMutation,
   useGetAllCommentsByExamQuery,
 } from "../comments/commentApi";
@@ -25,7 +26,19 @@ import {
   isErrorWithMessage,
 } from "../../services/helpers";
 
-const PostCommentForm = ({ loggedUser, examTestId, onSave, parentId }: any) => {
+interface PostCommentFormProps {
+  loggedUser: Users | null;
+  examTestId: string | undefined;
+  onSave: (comment: Partial<Comments>) => void;
+  parentId?: string | undefined;
+}
+
+const PostCommentForm = ({
+  loggedUser,
+  examTestId,
+  onSave,
+  parentId,
+}: PostCommentFormProps) => {
   const initial = {
     id: uuidv4(),
     content: "",
@@ -36,8 +49,8 @@ const PostCommentForm = ({ loggedUser, examTestId, onSave, parentId }: any) => {
 
   const [comment, setComment] = React.useState<Partial<Comments>>(initial);
 
-  const onSubmit = () => {
-    onSave(comment);
+  const onSubmit = async () => {
+    await onSave(comment);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,57 +92,74 @@ const PostCommentForm = ({ loggedUser, examTestId, onSave, parentId }: any) => {
   );
 };
 
-const PostList = ({ loggedUser, examTestId, data, onSave }: any) => {
+interface PostListProps {
+  loggedUser: Users | null;
+  examTestId: string | undefined;
+  onSave: (comment: Partial<Comments>) => void;
+  data: CommentsResponse | undefined;
+}
+
+const PostList = ({ loggedUser, examTestId, data, onSave }: PostListProps) => {
+  if (!data) {
+    return <p>No Data</p>;
+  }
   return (
-    data &&
-    data?.map((c: Comments) => (
-      <li className="comment" key={c.id}>
-        <div className="vcard bio">
-          <img src="images/person_1.jpg" alt="Image placeholder"></img>
-        </div>
-        <div className="comment-body">
-          <h3>{c.createdByNavigation.userName}</h3>
-          <div className="meta mb-2">
-            {parseISO(c.createdDate).toDateString()}
-          </div>
-          <p>{c.content}</p>
-          <p>
-            <a
-              className="reply"
-              data-toggle="collapse"
-              href={loggedUser ? "#_" + c.id : "#"}
-              role="button"
-              aria-expanded="false"
-              aria-controls={c.id}
-            >
-              reply
-            </a>
-          </p>
-          <div className="collapse" id={"_" + c.id}>
-            <PostCommentForm
-              loggedUser={loggedUser}
-              examTestId={examTestId}
-              onSave={onSave}
-              parentId={c.id}
-            />
-          </div>
-        </div>
-        <ul className="children">
-          {c.inverseParent && (
-            <PostList
-              loggedUser={loggedUser}
-              examTestId={examTestId}
-              data={c.inverseParent}
-              onSave={onSave}
-            />
-          )}
-        </ul>
-      </li>
-    ))
+    data && (
+      <>
+        {data?.map((c: Comments) => (
+          <li className="comment" key={c.id}>
+            <div className="vcard bio">
+              <img src="images/person_1.jpg" alt="Image placeholder"></img>
+            </div>
+            <div className="comment-body">
+              <h3>{c.createdByNavigation.userName}</h3>
+              <div className="meta mb-2">
+                {parseISO(c.createdDate).toDateString()}
+              </div>
+              <p>{c.content}</p>
+              <p>
+                <a
+                  className="reply"
+                  data-toggle="collapse"
+                  href={loggedUser ? "#_" + c.id : "#"}
+                  role="button"
+                  aria-expanded="false"
+                  aria-controls={c.id}
+                >
+                  reply
+                </a>
+              </p>
+              <div className="collapse" id={"_" + c.id}>
+                <PostCommentForm
+                  loggedUser={loggedUser}
+                  examTestId={examTestId}
+                  onSave={onSave}
+                  parentId={c.id}
+                />
+              </div>
+            </div>
+            <ul className="children">
+              {c.inverseParent && (
+                <PostList
+                  loggedUser={loggedUser}
+                  examTestId={examTestId}
+                  data={c.inverseParent}
+                  onSave={onSave}
+                />
+              )}
+            </ul>
+          </li>
+        ))}
+      </>
+    )
   );
 };
 
-export const PostComment = ({ examTestId }: any) => {
+interface PostCommentProps {
+  examTestId: string | undefined;
+}
+
+export const PostComment = ({ examTestId }: PostCommentProps) => {
   const [isView, setView] = useState(false);
   const loggedUser = useTypedSelector(selectLoggedUser);
   const isAuthenticated = useTypedSelector(selectIsAuthenticated);
@@ -158,7 +188,7 @@ export const PostComment = ({ examTestId }: any) => {
     }
   }, [isError]);
 
-  const onSave = async (comment: Comments) => {
+  const onSave = async (comment: Partial<Comments>) => {
     try {
       if (comment.content?.length! > 0) {
         await addComment(comment).unwrap();

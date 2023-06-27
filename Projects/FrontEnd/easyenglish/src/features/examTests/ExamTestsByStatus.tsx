@@ -35,7 +35,7 @@ import {
   ExamTestType,
   ExamTests,
   AssignmentStatus,
-} from "../../interfaces/interfaces";
+} from "../../models/types";
 import ViewExamScoreModal from "../../features/examResult/ViewExamScoreModal";
 import isUUID from "validator/lib/isUUID";
 
@@ -177,8 +177,13 @@ function EnhancedTableToolbar() {
 }
 
 //#endregion
+interface ExamTestsByStatusProps{
+ status: AssignmentStatus | undefined,
+ userId: string | undefined
+}
 
-const ExamTestsByStatus = ({ status, userId }: any) => {
+
+const ExamTestsByStatus = ({ status, userId }: ExamTestsByStatusProps) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(DEFAULT_ROWS_PER_PAGE);
   const [order, setOrder] = useState<Order>(DEFAULT_ORDER);
@@ -420,8 +425,8 @@ const ExamTestsByStatus = ({ status, userId }: any) => {
         </p>
       )}
       <ViewExamScoreModal
-        examTest={currRow}
-        userId={userId}
+        examTest={currRow as ExamTests}
+        userId={userId as string}
         open={openViewScore}
         onClose={() => setOpenViewScore(false)}
       ></ViewExamScoreModal>

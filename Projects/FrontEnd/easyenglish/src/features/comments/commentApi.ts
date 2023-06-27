@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { api } from "../../services/api";
-import { Comments } from "../../interfaces/interfaces";
+import { Comments } from "../../models/types";
 export type CommentsResponse = Comments[]
 
 export const commentsApi = api.injectEndpoints({
   endpoints: (build) => ({
-    getAllCommentsByExam: build.query<CommentsResponse, string>({
+    getAllCommentsByExam: build.query<CommentsResponse, string | undefined>({
       query: (examTestId) => ({
         url: `api/Comments/GetAllCommentsByExam/${examTestId}`,
       }),

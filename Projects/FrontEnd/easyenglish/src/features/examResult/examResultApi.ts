@@ -1,8 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { api } from "../../services/api";
-import { ExamResults } from "../../interfaces/interfaces";
+import { ExamResults } from "../../models/types";
 export type ExamResultsResponse = ExamResults[];
+
+interface ExamResultArgs{
+  userId: string | undefined,
+  examTestId: string | undefined
+}
 
 export const examResultsApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -24,7 +29,7 @@ export const examResultsApi = api.injectEndpoints({
         { type: "examResults" as const, id: "LIST" },
       ],
     }),
-    getTop3ResultsByUser: build.query<ExamResultsResponse, any>({
+    getTop3ResultsByUser: build.query<ExamResultsResponse, ExamResultArgs>({
       query: (args) => {
         const { userId, examTestId } = args;
         return {

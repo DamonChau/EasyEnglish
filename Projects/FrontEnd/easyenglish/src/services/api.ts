@@ -34,16 +34,16 @@ const baseQueryWithReauth: BaseQueryFn<
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
   await mutex.waitForUnlock();
-  
+
   let result = await baseQueryWithRetry(args, api, extraOptions);
-  
+
   if (result.error && result.error.status === 401) {
     if (!mutex.isLocked()) {
       const release = await mutex.acquire();
 
       try {
         const refreshResult = await baseQueryWithRetry(
-          { url: "api/Users/refreshToken", method: "POST", },
+          { url: "api/Users/refreshToken", method: "POST" },
           api,
           extraOptions
         );
@@ -70,7 +70,6 @@ const baseQueryWithReauth: BaseQueryFn<
   return result;
 };
 
-
 export const api = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithReauth,
@@ -85,7 +84,8 @@ export const api = createApi({
     "comments",
     "assignmentExams",
     "userRelationship",
-    "feedbacks"
+    "feedbacks",
+    "lessons",
   ],
   endpoints: () => ({}),
 });

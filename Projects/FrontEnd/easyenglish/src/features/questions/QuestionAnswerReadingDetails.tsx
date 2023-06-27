@@ -3,13 +3,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
-import { QuestionDetails, QuestionType } from "../../interfaces/interfaces";
+import { QuestionDetails, QuestionType, Questions, UserAnswersDisplay } from "../../models/types";
+
+interface QuestionAnswerReadingDetailsProps {
+  question: Questions;
+  questionDetails: QuestionDetails[];
+  onFieldChange: (userAnswer: any) => void;
+}
 
 const QuestionAnswerReadingDetails = ({
   question,
   questionDetails,
-  handleFieldChange,
-}: any) => {
+  onFieldChange,
+}: QuestionAnswerReadingDetailsProps) => {
   const handleChange = React.useCallback(
     (
       e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -20,7 +26,7 @@ const QuestionAnswerReadingDetails = ({
         questionDetailId: e.target.id,
         answer: e.target.value.trim(),
       };
-      handleFieldChange(updatedValue);
+      onFieldChange(updatedValue);
     },
     []
   );

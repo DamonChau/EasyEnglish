@@ -4,8 +4,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState, useEffect } from "react";
 import { useTypedSelector } from "../../services";
-import { selectLoggedUser,selectIsAuthenticated } from "../../services/slices/authSlice";
-import { Status, UserAnswers } from "../../interfaces/interfaces";
+import {
+  selectLoggedUser,
+  selectIsAuthenticated,
+} from "../../services/slices/authSlice";
+import { Status, UserAnswers } from "../../models/types";
 import isUUID from "validator/lib/isUUID";
 import Snackbar from "@mui/material/Snackbar";
 import { useGetQuestionsWithQDQuery } from "./questionsApi";
@@ -19,7 +22,11 @@ import {
 } from "../../services/helpers";
 import { useUpdateStatusByUserMutation } from "../assignments/assignmentExamsApi";
 
-const QuestionAnswerWriting = ({ testId }: any) => {
+interface QuestionAnswerWritingProps {
+  testId: string;
+}
+
+const QuestionAnswerWriting = ({ testId }: QuestionAnswerWritingProps) => {
   const [isView, setView] = React.useState(false);
   const { data, isFetching, isLoading, isSuccess, isError, error } =
     useGetQuestionsWithQDQuery(testId, { skip: !isView });

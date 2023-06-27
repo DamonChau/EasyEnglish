@@ -1,8 +1,17 @@
 ﻿/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { api } from "../../services/api";
-import { ExamTests } from "../../interfaces/interfaces";
+import {
+  ExamTestSectionType,
+  ExamTestType,
+  ExamTests,
+} from "../../models/types";
 export type ExamTestsResponse = ExamTests[];
+
+interface ExamTestArgs {
+  testType: ExamTestType | undefined;
+  sectionType: ExamTestSectionType | undefined;
+}
 
 export const examTestsApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -14,7 +23,7 @@ export const examTestsApi = api.injectEndpoints({
         { type: "examTests" as const, id: "LIST" },
       ],
     }),
-    getExamTestsBySection: build.query<ExamTestsResponse, any>({
+    getExamTestsBySection: build.query<ExamTestsResponse, ExamTestArgs>({
       query: (args) => {
         const { testType, sectionType } = args;
         return {
@@ -28,7 +37,9 @@ export const examTestsApi = api.injectEndpoints({
     }),
     getExamTest: build.query<ExamTests, string>({
       query: (id) => `api/ExamTests/Details/${id}`,
-      providesTags: (result, error, arg) => [{ type: "examTests", id: result?.id }],
+      providesTags: (result, error, arg) => [
+        { type: "examTests", id: result?.id },
+      ],
     }),
     addExamTest: build.mutation<ExamTests, Partial<ExamTests>>({
       query: (body) => ({

@@ -23,7 +23,7 @@ import Switch from "@mui/material/Switch";
 import IconButton from "@mui/material/IconButton";
 import { useTypedSelector } from "../../services";
 import { selectLoggedUser } from "../../services/slices/authSlice";
-import { Users, Status, UserRelationship } from "../../interfaces/interfaces";
+import { Users, Status, UserRelationship } from "../../models/types";
 import {
   isFetchBaseQueryError,
   isErrorWithMessage,
@@ -155,6 +155,11 @@ function EnhancedTableHead(props: EnhancedTableProps) {
       </TableRow>
     </TableHead>
   );
+}
+
+interface MyStudentProps {
+  onAssignTask: (userRelation: UserRelationshipDisplay) => void;
+  onViewStudentProgress: (userRelation: UserRelationshipDisplay) => void;
 }
 
 const MyStudent = ({ onAssignTask, onViewStudentProgress }: any) => {

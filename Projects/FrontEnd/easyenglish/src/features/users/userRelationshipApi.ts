@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { api } from "../../services/api";
-import { UserRelationship } from "../../interfaces/interfaces";
+import { UserRelationship } from "../../models/types";
 export type UserRelationshipResponse = UserRelationship[];
 
 export const userRelationshipApi = api.injectEndpoints({

@@ -16,7 +16,7 @@ import {
   isErrorWithMessage,
 } from "../../services/helpers";
 import { useAppDispatch } from "../../services/index";
-import { AssignmentExams, AssignmentStatus } from "../../interfaces/interfaces";
+import { AssignmentExams, AssignmentStatus } from "../../models/types";
 import Chip from "@mui/material/Chip";
 import ExamTestsByStatus from "../examTests/ExamTestsByStatus";
 
@@ -38,7 +38,7 @@ const MyStudentDashboard = () => {
     setSelectedUser(user);
   };
 
-  const handleAssignedTest2Student = async (selectedTests: string[]) => {
+  const handleAssignedTest2Student = async (selectedTests: readonly string[]) => {
     try {
       selectedTests.forEach(async (testId) => {
         const result = dispatch(

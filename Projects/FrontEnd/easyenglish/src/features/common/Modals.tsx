@@ -10,7 +10,7 @@ import {
   Status,
   Users,
   UserType,
-} from "../../interfaces/interfaces";
+} from "../../models/types";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -25,12 +25,19 @@ export const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
   }
 );
 
+interface QuestionModalProps {
+  open: boolean;
+  question: Partial<Questions>;
+  onClose: () => void;
+  onSubmit: (question: Partial<Questions>) => void;
+}
+
 export const CreateNewQuestionModal = ({
   open,
   question,
   onClose,
   onSubmit,
-}: any) => {
+}: QuestionModalProps) => {
   const [q, setQ] = React.useState<Partial<Questions>>(question);
 
   useEffect(() => {
@@ -171,12 +178,19 @@ export const CreateNewQuestionModal = ({
   );
 };
 
+interface QuestionDetailModalProps {
+  open: boolean;
+  questionDetail: Partial<QuestionDetails>;
+  onClose: () => void;
+  onSubmit: (questionDetail: Partial<QuestionDetails>) => void;
+}
+
 export const CreateNewQuestionDetailModal = ({
   open,
   questionDetail,
   onClose,
   onSubmit,
-}: any) => {
+}: QuestionDetailModalProps) => {
   const [q, setQ] = React.useState<Partial<QuestionDetails>>(questionDetail);
 
   useEffect(() => {
@@ -284,7 +298,19 @@ export const CreateNewQuestionDetailModal = ({
   );
 };
 
-export const EditUserStatusModal = ({ open, user, onClose, onSubmit }: any) => {
+interface UserStatusModalProps {
+  open: boolean;
+  user: Users;
+  onClose: () => void;
+  onSubmit: (user: Partial<Users>) => void;
+}
+
+export const EditUserStatusModal = ({
+  open,
+  user,
+  onClose,
+  onSubmit,
+}: UserStatusModalProps) => {
   const [u, setU] = React.useState<Partial<Users>>(user);
 
   useEffect(() => {
@@ -390,13 +416,21 @@ export const EditUserStatusModal = ({ open, user, onClose, onSubmit }: any) => {
   );
 };
 
+interface ConfirmationModalProps {
+  open: boolean;
+  headerText: string;
+  confirmationText: string;
+  onClose: () => void;
+  onSubmit: () => void;
+}
+
 export const ConfirmationModal = ({
   open,
   headerText,
   confirmationText,
   onClose,
   onSubmit,
-}: any) => {
+}: ConfirmationModalProps) => {
   const handleSubmit = () => {
     //put your validation logic here
     onSubmit();

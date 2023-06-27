@@ -13,7 +13,7 @@ import {
 import { useAppDispatch } from "../../services/index";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { LoginType, Users } from "../../interfaces/interfaces";
+import { LoginType, Users } from "../../models/types";
 import {
   isFetchBaseQueryError,
   isErrorWithMessage,

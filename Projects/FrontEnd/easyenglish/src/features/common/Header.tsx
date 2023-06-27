@@ -8,7 +8,7 @@ import {
   logout,
   selectLoggedUser,
 } from "../../services/slices/authSlice";
-import { UserType } from "../../interfaces/interfaces";
+import { UserType } from "../../models/types";
 
 const Header = () => {
   const isAuthenticated = useTypedSelector(selectIsAuthenticated);
@@ -178,6 +178,23 @@ const Header = () => {
                             to={config.url.API_URL_FOLDER + `/myStudent/`}
                           >
                             My Student
+                          </Link>
+                        </li>
+                        <li role="separator" className="dropdown-divider"></li>
+                        <li className="nav-item">
+                          <Link
+                            className="nav-link"
+                            to={config.url.API_URL_FOLDER + `/lessonManager/`}
+                          >
+                            Lesson Manager
+                          </Link>
+                        </li>
+                        <li className="nav-item">
+                          <Link
+                            className="nav-link"
+                            to={config.url.API_URL_FOLDER + `/LessonDetail/add`}
+                          >
+                            Lesson Detail
                           </Link>
                         </li>
                       </React.Fragment>

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -10,7 +11,7 @@ import {
   ExamTestSectionType,
   LoginType,
   UserType,
-} from "../../interfaces/interfaces";
+} from "../../models/types";
 import { Breakpoint } from "@mui/system";
 import { SxProps } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
@@ -48,7 +49,15 @@ const sx: SxProps = {
   },
 };
 
-const ViewUserAnswerDetail = ({ examResultId, examTest }: any) => {
+interface UserAnswerDetailProps {
+  examResultId: string;
+  examTest: ExamTests;
+}
+
+const ViewUserAnswerDetail = ({
+  examResultId,
+  examTest,
+}: UserAnswerDetailProps) => {
   const { data, isLoading, isError, error } =
     useGetAllByExamQuery(examResultId);
   const [erroMsg, setErrorMsg] = useState("");
@@ -174,7 +183,19 @@ const ViewUserAnswerDetail = ({ examResultId, examTest }: any) => {
   );
 };
 
-const ViewExamScoreModal = ({ open, userId, examTest, onClose }: any) => {
+interface ScoreModalProps {
+  open: boolean;
+  userId: string;
+  onClose: () => void;
+  examTest: ExamTests;
+}
+
+const ViewExamScoreModal = ({
+  open,
+  userId,
+  examTest,
+  onClose,
+}: ScoreModalProps) => {
   const loggedUser = useTypedSelector(selectLoggedUser);
   const [isView, setIsview] = useState(false);
   const [erroMsg, setErrorMsg] = useState("");
@@ -187,7 +208,7 @@ const ViewExamScoreModal = ({ open, userId, examTest, onClose }: any) => {
   } = useGetTop3ResultsByUserQuery(
     {
       userId: userId,
-      examTestId: id,
+      examTestId: id as string,
     },
     { skip: !isView }
   );

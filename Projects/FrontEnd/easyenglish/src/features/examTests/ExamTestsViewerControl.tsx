@@ -30,7 +30,7 @@ import {
   ExamTestSectionType,
   ExamTestType,
   ExamTests,
-} from "../../interfaces/interfaces";
+} from "../../models/types";
 import { parseISO } from "date-fns";
 import { config } from "../../helpers/contants";
 import { useNavigate } from "react-router-dom";
@@ -238,7 +238,13 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 
 //#endregion
 
-const ExamTestsViewerControl = ({onSelectedDone} : any) => {
+interface ExamTestsViewerControlProps {
+  onSelectedDone: (selected: readonly string[]) => void;
+}
+
+const ExamTestsViewerControl = ({
+  onSelectedDone,
+}: ExamTestsViewerControlProps) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(DEFAULT_ROWS_PER_PAGE);
   const [order, setOrder] = React.useState<Order>(DEFAULT_ORDER);
@@ -481,7 +487,6 @@ const ExamTestsViewerControl = ({onSelectedDone} : any) => {
                                 <PreviewIcon />
                               </IconButton>
                             </StyledTableCell>
-                            
                           </TableRow>
                         );
                       })

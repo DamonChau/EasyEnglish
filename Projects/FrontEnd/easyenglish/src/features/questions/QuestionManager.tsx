@@ -29,7 +29,7 @@ import {
   QuestionType,
   QuestionDetails,
   Status,
-} from "../../interfaces/interfaces";
+} from "../../models/types";
 import { parseISO } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { useTypedSelector } from "../../services";
@@ -132,7 +132,7 @@ const QuestionTableRow = ({
     setOpenAdd(true);
   };
 
-  const handleCreateNewQuesionDetail = async (q: QuestionDetails) => {
+  const handleCreateNewQuesionDetail = async (q: Partial<QuestionDetails>) => {
     try {
       isEditing
         ? await updateQuestionDetail(q).unwrap()
@@ -385,7 +385,7 @@ const QuestionManager = () => {
     setOpenAdd(true);
   };
 
-  const handleCreateNewQuesion = async (q: Questions) => {
+  const handleCreateNewQuesion = async (q: Partial<Questions>) => {
     try {
       isEditing
         ? await updateQuestion(q).unwrap()

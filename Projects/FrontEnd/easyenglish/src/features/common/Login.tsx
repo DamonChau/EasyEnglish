@@ -9,7 +9,7 @@ import {
   selectIsAuthenticated,
   setLoggedSession,
 } from "../../services/slices/authSlice";
-import { Users } from "../../interfaces/interfaces";
+import { Users } from "../../models/types";
 import { config } from "../../helpers/contants";
 import {
   isFetchBaseQueryError,
@@ -19,7 +19,7 @@ import { useAppDispatch } from "../../services";
 import { GoogleLogin } from "@react-oauth/google";
 import jwt_decode from "jwt-decode";
 import FacebookLogin from "@greatsumini/react-facebook-login";
-import { LoginType } from "../../interfaces/interfaces";
+import { LoginType } from "../../models/types";
 
 const Login = () => {
   const [login] = useLoginMutation();
