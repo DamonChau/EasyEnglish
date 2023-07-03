@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using EasyEnglishAPI.Models;
-using EasyEnglishAPI.DAL;
+using EasyEnglishAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 
 namespace EasyEnglishAPI.Controllers
@@ -8,11 +8,11 @@ namespace EasyEnglishAPI.Controllers
     [ApiController]
     public class UserNotesController : Controller
     {
-        private readonly UserNotesDAL _objectDAL;
+        private readonly IUserNotesService _userNoteService;
 
-        public UserNotesController(EasyEnglishContext context)
+        public UserNotesController(IUserNotesService userNoteService, EasyEnglishContext context)
         {
-            _objectDAL = new UserNotesDAL(context);
+            _userNoteService = userNoteService;
         }
 
         [Authorize]
@@ -22,7 +22,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.GetAllUserNotesByExamResult(examId));
+                return Ok(await _userNoteService.GetAllUserNotesByExamResult(examId));
             }
             catch (Exception e)
             {
@@ -38,7 +38,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.GetAllUserNotesByUser(userId));
+                return Ok(await _userNoteService.GetAllUserNotesByUser(userId));
             }
             catch (Exception e)
             {
@@ -54,7 +54,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.AddUserNote(u));
+                return Ok(await _userNoteService.AddUserNote(u));
             }
             catch (Exception e)
             {
@@ -70,7 +70,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.GetUserNote(id));
+                return Ok(await _userNoteService.GetUserNote(id));
             }
             catch (Exception e)
             {
@@ -86,7 +86,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.UpdateUserNote(u));
+                return Ok(await _userNoteService.UpdateUserNote(u));
             }
             catch (Exception e)
             {
@@ -102,7 +102,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.DeleteUserNote(id));
+                return Ok(await _userNoteService.DeleteUserNote(id));
             }
             catch (Exception e)
             {

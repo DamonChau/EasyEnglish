@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using EasyEnglishAPI.Models;
-using EasyEnglishAPI.DAL;
+using EasyEnglishAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 
 
@@ -9,11 +9,11 @@ namespace EasyEnglishAPI.Controllers
     [ApiController]
     public class AssignmentExamController : Controller
     {
-        private readonly AssignmentExamDAL _objectDAL;
+        private readonly IAssignmentExamService _assigmentService;
 
-        public AssignmentExamController(EasyEnglishContext context)
+        public AssignmentExamController(IAssignmentExamService assigmentService, EasyEnglishContext context)
         {
-            _objectDAL = new AssignmentExamDAL(context);
+            _assigmentService = assigmentService;
         }
 
         [Authorize]
@@ -23,7 +23,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                AssignmentExam? r = await _objectDAL.GetByUsers(userId, examId);
+                AssignmentExam? r = await _assigmentService.GetByUsers(userId, examId);
                 if (r == null)
                 {
                     AssignmentExam exam = new AssignmentExam();
@@ -33,7 +33,7 @@ namespace EasyEnglishAPI.Controllers
                     exam.IsBookmarked = false;
                     exam.IsDone = false;
                     exam.IsFavourite = false;
-                    r = await _objectDAL.AddAssignmentExam(exam);
+                    r = await _assigmentService.AddAssignmentExam(exam);
                 }
                 return Ok(r);
             }
@@ -54,19 +54,19 @@ namespace EasyEnglishAPI.Controllers
             {
                 if (status == 0)
                 {
-                    return Ok(await _objectDAL.GetAllByStatusWithDetailIsFav(userId));
+                    return Ok(await _assigmentService.GetAllByStatusWithDetailIsFav(userId));
                 }
                 else if (status == 1)
                 {
-                    return Ok(await _objectDAL.GetAllByStatusWithDetailIsBookmarked(userId));
+                    return Ok(await _assigmentService.GetAllByStatusWithDetailIsBookmarked(userId));
                 }
                 else if (status == 2)
                 {
-                    return Ok(await _objectDAL.GetAllByStatusWithDetailIsAssigned(userId));
+                    return Ok(await _assigmentService.GetAllByStatusWithDetailIsAssigned(userId));
                 }
                 else if (status == 3)
                 {
-                    return Ok(await _objectDAL.GetAllByStatusWithDetailIsDone(userId));
+                    return Ok(await _assigmentService.GetAllByStatusWithDetailIsDone(userId));
                 }
                 else { return BadRequest(new { error = "Can not fulfill your request" }); }
 
@@ -86,14 +86,14 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                AssignmentExam? r = await _objectDAL.GetByUsers(u.UserId, u.ExamTestId);
+                AssignmentExam? r = await _assigmentService.GetByUsers(u.UserId, u.ExamTestId);
                 if (r != null)
                 {
                     r.IsAssigned = u.IsAssigned.HasValue ? u.IsAssigned : false;
                     r.IsBookmarked = u.IsBookmarked.HasValue ? u.IsBookmarked : false;
                     r.IsDone = u.IsDone.HasValue ? u.IsDone : false;
                     r.IsFavourite = u.IsFavourite.HasValue ? u.IsFavourite : false;
-                    r = await _objectDAL.UpdateAssignmentExam(r);
+                    r = await _assigmentService.UpdateAssignmentExam(r);
                 }
                 return Ok(r);
             }
@@ -112,7 +112,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.AddAssignmentExam(u));
+                return Ok(await _assigmentService.AddAssignmentExam(u));
 
             }
             catch (Exception e)
@@ -129,7 +129,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.GetAssignmentExam(id));
+                return Ok(await _assigmentService.GetAssignmentExam(id));
             }
             catch (Exception e)
             {
@@ -145,7 +145,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.UpdateAssignmentExam(u));
+                return Ok(await _assigmentService.UpdateAssignmentExam(u));
             }
             catch (Exception e)
             {
@@ -161,7 +161,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.Delete(id));
+                return Ok(await _assigmentService.Delete(id));
             }
             catch (Exception e)
             {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using EasyEnglishAPI.Models;
-using EasyEnglishAPI.DAL;
+using EasyEnglishAPI.Services;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using EasyEnglishAPI.Common;
@@ -13,12 +13,12 @@ namespace EasyEnglishAPI.Controllers
     public class UsersController : Controller
     {
 
-        private readonly UserDAL _objectuser;
-        private readonly JwtService _jwtService;
+        private readonly IUserService _userService;
+        private readonly IJwtService _jwtService;
 
-        public UsersController(EasyEnglishContext context, JwtService jwtService)
+        public UsersController(IUserService userService, EasyEnglishContext context, IJwtService jwtService)
         {
-            _objectuser = new UserDAL(context);
+            _userService = userService;
             _jwtService = jwtService;
         }
 
@@ -28,21 +28,21 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                if (_objectuser is not null && u is not null)
+                if (u is not null)
                 {
                     //loginType = Google or Facebook
                     if (u.LoginType != 0 && u.UserName is not null)
                     {
-                        bool isUserExists = await _objectuser.IsUserNameExists(u.UserName);
+                        bool isUserExists = await _userService.IsUserNameExists(u.UserName);
                         if (!isUserExists)
                         {
-                            u = await _objectuser.AddUser(u);
+                            u = await _userService.AddUser(u);
                         }
                     }
 
                     string refreshToken = _jwtService.GenerateRefreshToken();
                     u.RefreshToken = refreshToken;
-                    User? r = await _objectuser.Login(u);
+                    User? r = await _userService.Login(u);
 
                     if (r != null)
                     {
@@ -84,7 +84,7 @@ namespace EasyEnglishAPI.Controllers
                 }
 
                 var userId = principal.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
-                var user = await _objectuser.GetUserData(new Guid(userId));
+                var user = await _userService.GetUserData(new Guid(userId));
 
                 if (user == null || user.RefreshToken != refreshToken)
                 {
@@ -114,7 +114,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectuser.IsUserNameExists(username));
+                return Ok(await _userService.IsUserNameExists(username));
             }
             catch (Exception e)
             {
@@ -130,7 +130,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectuser.GetAllUsers());
+                return Ok(await _userService.GetAllUsers());
             }
             catch (Exception e)
             {
@@ -146,7 +146,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectuser.GetAllTeachers(userId));
+                return Ok(await _userService.GetAllTeachers(userId));
             }
             catch (Exception e)
             {
@@ -162,7 +162,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectuser.AddUser(u));
+                return Ok(await _userService.AddUser(u));
             }
             catch (Exception e)
             {
@@ -177,7 +177,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectuser.GetUserData(id));
+                return Ok(await _userService.GetUserData(id));
             }
             catch (Exception e)
             {
@@ -193,7 +193,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectuser.UpdateUserProfile(u));
+                return Ok(await _userService.UpdateUserProfile(u));
             }
             catch (Exception e)
             {
@@ -209,7 +209,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectuser.UpdateUser(u));
+                return Ok(await _userService.UpdateUser(u));
             }
             catch (Exception e)
             {
@@ -225,7 +225,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectuser.DeleteUser(id));
+                return Ok(await _userService.DeleteUser(id));
             }
             catch (Exception e)
             {

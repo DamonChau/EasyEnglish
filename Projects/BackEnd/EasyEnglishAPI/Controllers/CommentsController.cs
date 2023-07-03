@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using EasyEnglishAPI.Models;
-using EasyEnglishAPI.DAL;
+using EasyEnglishAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 
 namespace EasyEnglishAPI.Controllers
@@ -8,11 +8,11 @@ namespace EasyEnglishAPI.Controllers
     [ApiController]
     public class CommentsController : Controller
     {
-        private readonly CommentDAL _objectDAL;
+        private readonly ICommentService _commentService;
 
-        public CommentsController(EasyEnglishContext context)
+        public CommentsController(ICommentService commentService, EasyEnglishContext context)
         {
-            _objectDAL = new CommentDAL(context);
+            _commentService = commentService;
         }
 
         [Authorize]
@@ -22,7 +22,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.GetAllCommentsByUser(userId));
+                return Ok(await _commentService.GetAllCommentsByUser(userId));
             }
             catch (Exception e)
             {
@@ -37,7 +37,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.GetAllCommentsByExam(examId));
+                return Ok(await _commentService.GetAllCommentsByExam(examId));
             }
             catch (Exception e)
             {
@@ -52,7 +52,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.AddComment(u));
+                return Ok(await _commentService.AddComment(u));
             }
             catch (Exception e)
             {
@@ -68,7 +68,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.GetComment(id));
+                return Ok(await _commentService.GetComment(id));
             }
             catch (Exception e)
             {
@@ -84,7 +84,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.UpdateComment(u));
+                return Ok(await _commentService.UpdateComment(u));
             }
             catch (Exception e)
             {
@@ -100,7 +100,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.DeleteComment(id));
+                return Ok(await _commentService.DeleteComment(id));
             }
             catch (Exception e)
             {

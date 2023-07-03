@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using EasyEnglishAPI.Models;
-using EasyEnglishAPI.DAL;
+using EasyEnglishAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 
 namespace EasyEnglishAPI.Controllers
@@ -8,11 +8,11 @@ namespace EasyEnglishAPI.Controllers
     [ApiController]
     public class FeedbackController : Controller
     {
-        private readonly FeedbackDAL _objectDAL;
+        private readonly IFeedbackService _feebackService;
 
-        public FeedbackController(EasyEnglishContext context)
+        public FeedbackController(IFeedbackService feebackService, EasyEnglishContext context)
         {
-            _objectDAL = new FeedbackDAL(context);
+            _feebackService = feebackService;
         }
 
         [Authorize]
@@ -22,7 +22,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.GetFeedbacksByExamResult(examResultId));
+                return Ok(await _feebackService.GetFeedbacksByExamResult(examResultId));
             }
             catch (Exception e)
             {
@@ -37,7 +37,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.AddFeedback(u));
+                return Ok(await _feebackService.AddFeedback(u));
             }
             catch (Exception e)
             {
@@ -53,7 +53,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.GetFeedback(id));
+                return Ok(await _feebackService.GetFeedback(id));
             }
             catch (Exception e)
             {
@@ -69,7 +69,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.UpdateFeedback(u));
+                return Ok(await _feebackService.UpdateFeedback(u));
             }
             catch (Exception e)
             {
@@ -85,7 +85,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.DeleteFeedback(id));
+                return Ok(await _feebackService.DeleteFeedback(id));
             }
             catch (Exception e)
             {

@@ -1,23 +1,23 @@
 ﻿using EasyEnglishAPI.Models;
+using EasyEnglishAPI.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace EasyEnglishAPI.DAL
+namespace EasyEnglishAPI.Services
 {
-    public class QuestionDAL
+    public class UserNotesService : IUserNotesService
     {
         private readonly EasyEnglishContext _context;
 
-        public QuestionDAL(EasyEnglishContext context)
+        public UserNotesService(EasyEnglishContext context)
         {
             _context = context;
         }
 
-
-        public async Task<IEnumerable<Question>> GetAllQuestionsByExamTest(Guid examTestId)
+        public async Task<IEnumerable<UserNote>> GetAllUserNotesByUser(Guid userId)
         {
             try
             {
-                return await _context.Questions.Where(q => q.ExamTestId == examTestId).OrderBy(q => q.Order).ToListAsync();
+                return await _context.UserNotes.Where(u => u.CreatedBy == userId).ToListAsync();
             }
             catch
             {
@@ -25,14 +25,15 @@ namespace EasyEnglishAPI.DAL
             }
         }
 
-        public async Task<IEnumerable<Question>> GetAllQuestionsByExamTestWithQD(Guid examTestId)
+        public async Task<IEnumerable<UserNote>> GetAllUserNotesByExamResult(Guid examResultId)
         {
             try
             {
-                return await _context.Questions
-                    .Include(q => q.QuestionDetails.OrderBy(qd => qd.Order))
-                    .Where(q => q.ExamTestId == examTestId)
-                    .OrderBy(q => q.Order).ToListAsync();
+                return await _context.UserNotes
+                    .Where(u => u.ExamResultId == examResultId)
+                    .Include(u => u.CreatedByNavigation)
+                    .OrderByDescending(u => u.CreatedDate)
+                    .ToListAsync();
             }
             catch
             {
@@ -40,25 +41,14 @@ namespace EasyEnglishAPI.DAL
             }
         }
 
-        public async Task<IEnumerable<Question>> GetAllQuestions()
-        {
-            try
-            {
-                return await _context.Questions.ToListAsync();
-            }
-            catch
-            {
-                throw;
-            }
-        }
-
-        public async Task<Question> AddQuestion(Question u)
+        
+        public async Task<UserNote> AddUserNote(UserNote u)
         {
             try
             {
                 u.Id = Guid.NewGuid();
                 u.CreatedDate = DateTime.Now;
-                _context.Questions.Add(u);
+                _context.UserNotes.Add(u);
                 await _context.SaveChangesAsync();
                 return u;
             }
@@ -68,7 +58,7 @@ namespace EasyEnglishAPI.DAL
             }
         }
 
-        public async Task<Question> UpdateQuestion(Question u)
+        public async Task<UserNote> UpdateUserNote(UserNote u)
         {
             try
             {
@@ -82,11 +72,11 @@ namespace EasyEnglishAPI.DAL
             }
         }
 
-        public async Task<Question?> GetQuestion(Guid id)
+        public async Task<UserNote?> GetUserNote(Guid id)
         {
             try
             {
-                return await _context.Questions.FindAsync(id);
+                return await _context.UserNotes.FindAsync(id);
             }
             catch
             {
@@ -94,14 +84,14 @@ namespace EasyEnglishAPI.DAL
             }
         }
 
-        public async Task<Question?> Delete(Guid id)
+        public async Task<UserNote?> DeleteUserNote(Guid id)
         {
             try
             {
-                Question? u = await _context.Questions.FindAsync(id);
+                UserNote? u = await _context.UserNotes.FindAsync(id);
                 if (u != null)
                 {
-                    _context.Questions.Remove(u);
+                    _context.UserNotes.Remove(u);
                     await _context.SaveChangesAsync();
                 }
                 return null;

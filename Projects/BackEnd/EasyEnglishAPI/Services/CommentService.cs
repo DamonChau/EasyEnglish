@@ -1,13 +1,14 @@
 ﻿using EasyEnglishAPI.Models;
+using EasyEnglishAPI.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace EasyEnglishAPI.DAL
+namespace EasyEnglishAPI.Services
 {
-    public class CommentDAL
+    public class CommentService : ICommentService
     {
         private readonly EasyEnglishContext _context;
 
-        public CommentDAL(EasyEnglishContext context)
+        public CommentService(EasyEnglishContext context)
         {
             _context = context;
         }

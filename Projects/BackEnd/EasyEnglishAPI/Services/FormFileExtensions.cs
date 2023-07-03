@@ -4,7 +4,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Drawing;
 
-namespace EasyEnglishAPI.DAL
+namespace EasyEnglishAPI.Services
 {
     public class FormFileExtensions
     {

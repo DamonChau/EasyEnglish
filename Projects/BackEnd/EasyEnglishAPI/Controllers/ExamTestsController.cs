@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using EasyEnglishAPI.Models;
-using EasyEnglishAPI.DAL;
+using EasyEnglishAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 
 namespace EasyEnglishAPI.Controllers
@@ -9,11 +9,11 @@ namespace EasyEnglishAPI.Controllers
     [ApiController]
     public class ExamTestsController : Controller
     {
-        private readonly ExamTestsDAL _object;
+        private readonly IExamTestsService _examTestService;
 
-        public ExamTestsController(EasyEnglishContext context)
+        public ExamTestsController(IExamTestsService examTestService, EasyEnglishContext context)
         {
-            _object = new ExamTestsDAL(context);
+            _examTestService = examTestService;
         }
 
         [Authorize]
@@ -23,7 +23,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _object.GetAllExamTests());
+                return Ok(await _examTestService.GetAllExamTests());
             }
             catch (Exception e)
             {
@@ -38,7 +38,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _object.GetAllExamTestsBySection(testType, sectionType));
+                return Ok(await _examTestService.GetAllExamTestsBySection(testType, sectionType));
             }
             catch (Exception e)
             {
@@ -54,7 +54,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _object.AddExamTests(u));
+                return Ok(await _examTestService.AddExamTests(u));
             }
             catch (Exception e)
             {
@@ -70,7 +70,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _object.GetExamTests(id));
+                return Ok(await _examTestService.GetExamTests(id));
             }
             catch (Exception e)
             {
@@ -86,7 +86,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _object.UpdateExamTests(u));
+                return Ok(await _examTestService.UpdateExamTests(u));
             }
             catch (Exception e)
             {
@@ -102,7 +102,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _object.Delete(id));
+                return Ok(await _examTestService.Delete(id));
             }
             catch (Exception e)
             {

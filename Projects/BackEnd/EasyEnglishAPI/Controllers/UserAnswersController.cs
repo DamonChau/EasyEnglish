@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using EasyEnglishAPI.Models;
-using EasyEnglishAPI.DAL;
+using EasyEnglishAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 
 namespace EasyEnglishAPI.Controllers
@@ -8,11 +8,11 @@ namespace EasyEnglishAPI.Controllers
     [ApiController]
     public class UserAnswersController : Controller
     {
-        private readonly UserAnswersDAL _objectDAL;
+        private readonly IUserAnswersService _userAnswerService;
 
-        public UserAnswersController(EasyEnglishContext context)
+        public UserAnswersController(IUserAnswersService userAnswerService, EasyEnglishContext context)
         {
-            _objectDAL = new UserAnswersDAL(context);
+            _userAnswerService = userAnswerService;
         }
 
         [Authorize]
@@ -22,7 +22,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.GetAllUserAnswer());
+                return Ok(await _userAnswerService.GetAllUserAnswer());
             }
             catch (Exception e)
             {
@@ -38,7 +38,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.GetAllByExam(examResultId));
+                return Ok(await _userAnswerService.GetAllByExam(examResultId));
             }
             catch (Exception e)
             {
@@ -54,7 +54,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.AddUserAnswer(u));
+                return Ok(await _userAnswerService.AddUserAnswer(u));
             }
             catch (Exception e)
             {
@@ -70,7 +70,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.GetUserAnswer(id));
+                return Ok(await _userAnswerService.GetUserAnswer(id));
             }
             catch (Exception e)
             {
@@ -86,7 +86,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.UpdateUserAnswer(u));
+                return Ok(await _userAnswerService.UpdateUserAnswer(u));
             }
             catch (Exception e)
             {
@@ -102,7 +102,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.DeleteUserAnswer(id));
+                return Ok(await _userAnswerService.DeleteUserAnswer(id));
             }
             catch (Exception e)
             {

@@ -1,26 +1,24 @@
 ﻿using EasyEnglishAPI.Models;
+using EasyEnglishAPI.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace EasyEnglishAPI.DAL
+namespace EasyEnglishAPI.Services
 {
-    public class UserAnswersDAL
+    public class QuestionDetailService : IQuestionDetailService
     {
         private readonly EasyEnglishContext _context;
 
-        public UserAnswersDAL(EasyEnglishContext context)
+        public QuestionDetailService(EasyEnglishContext context)
         {
             _context = context;
         }
 
-        public async Task<IEnumerable<UserAnswer>> GetAllByExam(Guid examResultId)
+
+        public async Task<IEnumerable<QuestionDetail>> GetAllByQuestions(Guid questionId)
         {
             try
             {
-                return await _context.UserAnswers
-                    .Where(ua => ua.ExamResultId == examResultId)
-                    .Include(ua => ua.QuestionDetail)
-                    .OrderBy(ua => ua.Description)
-                    .ToListAsync();
+                return await _context.QuestionDetails.Where(q => q.QuestionId == questionId).OrderBy(q => q.Order).ToListAsync();
             }
             catch
             {
@@ -28,11 +26,11 @@ namespace EasyEnglishAPI.DAL
             }
         }
 
-        public async Task<IEnumerable<UserAnswer>> GetAllUserAnswer()
+        public async Task<IEnumerable<QuestionDetail>> GetAllQuestionDetails()
         {
             try
             {
-                return await _context.UserAnswers.ToListAsync();
+                return await _context.QuestionDetails.ToListAsync();
             }
             catch
             {
@@ -40,13 +38,13 @@ namespace EasyEnglishAPI.DAL
             }
         }
 
-        public async Task<UserAnswer> AddUserAnswer(UserAnswer u)
+        public async Task<QuestionDetail> AddQuestionDetail(QuestionDetail u)
         {
             try
             {
                 u.Id = Guid.NewGuid();
                 u.CreatedDate = DateTime.Now;
-                _context.UserAnswers.Add(u);
+                _context.QuestionDetails.Add(u);
                 await _context.SaveChangesAsync();
                 return u;
             }
@@ -56,7 +54,7 @@ namespace EasyEnglishAPI.DAL
             }
         }
 
-        public async Task<UserAnswer> UpdateUserAnswer(UserAnswer u)
+        public async Task<QuestionDetail> UpdateQuestionDetail(QuestionDetail u)
         {
             try
             {
@@ -70,11 +68,11 @@ namespace EasyEnglishAPI.DAL
             }
         }
 
-        public async Task<UserAnswer?> GetUserAnswer(Guid id)
+        public async Task<QuestionDetail?> GetQuestionDetail(Guid id)
         {
             try
             {
-                return await _context.UserAnswers.FindAsync(id);
+                return await _context.QuestionDetails.FindAsync(id);
             }
             catch
             {
@@ -82,14 +80,14 @@ namespace EasyEnglishAPI.DAL
             }
         }
 
-        public async Task<UserAnswer?> DeleteUserAnswer(Guid id)
+        public async Task<QuestionDetail?> Delete(Guid id)
         {
             try
             {
-                UserAnswer? u = await _context.UserAnswers.FindAsync(id);
+                QuestionDetail? u = await _context.QuestionDetails.FindAsync(id);
                 if (u != null)
                 {
-                    _context.UserAnswers.Remove(u);
+                    _context.QuestionDetails.Remove(u);
                     await _context.SaveChangesAsync();
                 }
                 return null;

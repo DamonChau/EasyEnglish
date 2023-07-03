@@ -1,13 +1,14 @@
 ﻿using EasyEnglishAPI.Models;
+using EasyEnglishAPI.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace EasyEnglishAPI.DAL
+namespace EasyEnglishAPI.Services
 {
-    public class UserDAL
+    public class UserService : IUserService
     {
         private readonly EasyEnglishContext _context;
 
-        public UserDAL(EasyEnglishContext context)
+        public UserService(EasyEnglishContext context)
         {
             _context = context;
         }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using EasyEnglishAPI.Models;
-using EasyEnglishAPI.DAL;
+using EasyEnglishAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 
 namespace EasyEnglishAPI.Controllers
@@ -8,11 +8,11 @@ namespace EasyEnglishAPI.Controllers
     [ApiController]
     public class QuestionsController : Controller
     {
-        private readonly QuestionDAL _objectDAL;
+        private readonly IQuestionService _questionService;
 
-        public QuestionsController(EasyEnglishContext context)
+        public QuestionsController(IQuestionService questionService, EasyEnglishContext context)
         {
-            _objectDAL = new QuestionDAL(context);
+            _questionService = questionService;
         }
 
         [Authorize]
@@ -22,7 +22,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.GetAllQuestions());
+                return Ok(await _questionService.GetAllQuestions());
             }
             catch (Exception e)
             {
@@ -38,7 +38,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.GetAllQuestionsByExamTest(examTestId));
+                return Ok(await _questionService.GetAllQuestionsByExamTest(examTestId));
             }
             catch (Exception e)
             {
@@ -53,7 +53,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.GetAllQuestionsByExamTestWithQD(examTestId));
+                return Ok(await _questionService.GetAllQuestionsByExamTestWithQD(examTestId));
             }
             catch (Exception e)
             {
@@ -69,7 +69,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.AddQuestion(u));
+                return Ok(await _questionService.AddQuestion(u));
             }
             catch (Exception e)
             {
@@ -85,7 +85,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.GetQuestion(id));
+                return Ok(await _questionService.GetQuestion(id));
             }
             catch (Exception e)
             {
@@ -101,7 +101,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.UpdateQuestion(u));
+                return Ok(await _questionService.UpdateQuestion(u));
             }
             catch (Exception e)
             {
@@ -117,7 +117,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.Delete(id));
+                return Ok(await _questionService.Delete(id));
             }
             catch (Exception e)
             {

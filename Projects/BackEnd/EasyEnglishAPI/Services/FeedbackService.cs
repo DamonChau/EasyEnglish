@@ -1,13 +1,14 @@
 ﻿using EasyEnglishAPI.Models;
+using EasyEnglishAPI.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace EasyEnglishAPI.DAL
+namespace EasyEnglishAPI.Services
 {
-    public class FeedbackDAL
+    public class FeedbackService : IFeedbackService
     {
         private readonly EasyEnglishContext _context;
 
-        public FeedbackDAL(EasyEnglishContext context)
+        public FeedbackService(EasyEnglishContext context)
         {
             _context = context;
         }

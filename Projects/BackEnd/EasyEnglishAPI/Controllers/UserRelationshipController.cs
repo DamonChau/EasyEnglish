@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using EasyEnglishAPI.Models;
-using EasyEnglishAPI.DAL;
+using EasyEnglishAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 
 namespace EasyEnglishAPI.Controllers
@@ -8,10 +8,10 @@ namespace EasyEnglishAPI.Controllers
     [ApiController]
     public class UserRelationshipController : Controller
     {
-        private readonly UserRelationshipDAL _objectDAL;
-        public UserRelationshipController(EasyEnglishContext context)
+        private readonly IUserRelationshipService _userRelationshipService;
+        public UserRelationshipController(IUserRelationshipService userRelationshipService, EasyEnglishContext context)
         {
-            _objectDAL = new UserRelationshipDAL(context);
+            _userRelationshipService = userRelationshipService;
         }
 
         [Authorize]
@@ -21,7 +21,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.GetAllByUser(userId));
+                return Ok(await _userRelationshipService.GetAllByUser(userId));
             }
             catch (Exception e)
             {
@@ -37,7 +37,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.GetAllTeachersByUser(userId));
+                return Ok(await _userRelationshipService.GetAllTeachersByUser(userId));
             }
             catch (Exception e)
             {
@@ -53,7 +53,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.GetAllStudentsByUser(userId));
+                return Ok(await _userRelationshipService.GetAllStudentsByUser(userId));
             }
             catch (Exception e)
             {
@@ -69,7 +69,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.AddUserRelationship(u));
+                return Ok(await _userRelationshipService.AddUserRelationship(u));
             }
             catch (Exception e)
             {
@@ -85,7 +85,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.GetUserRelationship(id));
+                return Ok(await _userRelationshipService.GetUserRelationship(id));
             }
             catch (Exception e)
             {
@@ -101,7 +101,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.UpdateStatus(u));
+                return Ok(await _userRelationshipService.UpdateStatus(u));
             }
             catch (Exception e)
             {
@@ -117,7 +117,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.UpdateUserRelationship(u));
+                return Ok(await _userRelationshipService.UpdateUserRelationship(u));
             }
             catch (Exception e)
             {
@@ -133,7 +133,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.DeleteUserRelationship(id));
+                return Ok(await _userRelationshipService.DeleteUserRelationship(id));
             }
             catch (Exception e)
             {

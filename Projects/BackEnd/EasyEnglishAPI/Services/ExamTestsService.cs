@@ -1,14 +1,15 @@
 ﻿
 using EasyEnglishAPI.Models;
+using EasyEnglishAPI.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace EasyEnglishAPI.DAL
+namespace EasyEnglishAPI.Services
 {
-    public class ExamTestsDAL
+    public class ExamTestsService : IExamTestsService
     {
         private readonly EasyEnglishContext _context;
 
-        public ExamTestsDAL(EasyEnglishContext context)
+        public ExamTestsService(EasyEnglishContext context)
         {
             _context = context;
         }

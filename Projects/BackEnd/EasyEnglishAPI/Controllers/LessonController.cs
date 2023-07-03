@@ -1,7 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
 using EasyEnglishAPI.Models;
-using EasyEnglishAPI.DAL;
+using EasyEnglishAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 
 
@@ -10,11 +10,11 @@ namespace EasyEnglishAPI.Controllers
     [ApiController]
     public class LessonController : Controller
     {
-        private readonly LessonDAL _object;
+        private readonly ILessonService _lessonService;
 
-        public LessonController(EasyEnglishContext context)
+        public LessonController(ILessonService lessonService, EasyEnglishContext context)
         {
-            _object = new LessonDAL(context);
+            _lessonService = lessonService;
         }
 
         [Authorize]
@@ -24,7 +24,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _object.GetAllLessons());
+                return Ok(await _lessonService.GetAllLessons());
             }
             catch (Exception e)
             {
@@ -39,7 +39,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _object.GetAllLessonByType(lessonType));
+                return Ok(await _lessonService.GetAllLessonByType(lessonType));
             }
             catch (Exception e)
             {
@@ -55,7 +55,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _object.AddLesson(u));
+                return Ok(await _lessonService.AddLesson(u));
             }
             catch (Exception e)
             {
@@ -71,7 +71,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _object.GetLesson(id));
+                return Ok(await _lessonService.GetLesson(id));
             }
             catch (Exception e)
             {
@@ -87,7 +87,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _object.UpdateLesson(u));
+                return Ok(await _lessonService.UpdateLesson(u));
             }
             catch (Exception e)
             {
@@ -103,7 +103,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _object.Delete(id));
+                return Ok(await _lessonService.Delete(id));
             }
             catch (Exception e)
             {

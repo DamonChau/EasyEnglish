@@ -8,7 +8,7 @@ using System.Security.Cryptography;
 
 namespace EasyEnglishAPI.Common
 {
-    public class JwtService
+    public class JwtService : IJwtService
     {
         private readonly IConfiguration _configuration;
 

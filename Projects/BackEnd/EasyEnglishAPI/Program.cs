@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using EasyEnglishAPI.Common;
+using EasyEnglishAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,7 +42,19 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddScoped<JwtService>();
+builder.Services.AddScoped<IAssignmentExamService, AssignmentExamService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<IExamResultService, ExamResultService>();
+builder.Services.AddScoped<IExamTestsService, ExamTestsService>();
+builder.Services.AddScoped<IFeedbackService, FeedbackService>();
+builder.Services.AddScoped<ILessonService, LessonService>();
+builder.Services.AddScoped<IQuestionDetailService, QuestionDetailService>();
+builder.Services.AddScoped<IQuestionService, QuestionService>();
+builder.Services.AddScoped<IUserAnswersService, UserAnswersService>();
+builder.Services.AddScoped<IUserNotesService, UserNotesService>();
+builder.Services.AddScoped<IUserRelationshipService, UserRelationshipService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IJwtService, JwtService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

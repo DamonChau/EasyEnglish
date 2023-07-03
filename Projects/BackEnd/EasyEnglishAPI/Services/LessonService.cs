@@ -1,14 +1,15 @@
 ﻿
 using EasyEnglishAPI.Models;
+using EasyEnglishAPI.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace EasyEnglishAPI.DAL
+namespace EasyEnglishAPI.Services
 {
-    public class LessonDAL
+    public class LessonService: ILessonService
     {
         private readonly EasyEnglishContext _context;
 
-        public LessonDAL(EasyEnglishContext context)
+        public LessonService(EasyEnglishContext context)
         {
             _context = context;
         }

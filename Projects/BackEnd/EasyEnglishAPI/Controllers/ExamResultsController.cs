@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using EasyEnglishAPI.Models;
-using EasyEnglishAPI.DAL;
+using EasyEnglishAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 
 namespace EasyEnglishAPI.Controllers
@@ -8,11 +8,11 @@ namespace EasyEnglishAPI.Controllers
     [ApiController]
     public class ExamResultsController : Controller
     {
-        private readonly ExamResultDAL _objectDAL;
+        private readonly IExamResultService _examResultService;
 
-        public ExamResultsController(EasyEnglishContext context)
+        public ExamResultsController(IExamResultService examResultService, EasyEnglishContext context)
         {
-            _objectDAL = new ExamResultDAL(context);
+            _examResultService = examResultService;
         }
 
         [Authorize]
@@ -22,7 +22,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.GetAllResultsByExamTest(examTestId));
+                return Ok(await _examResultService.GetAllResultsByExamTest(examTestId));
             }
             catch (Exception e)
             {
@@ -38,7 +38,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.GetAllResultsByExamTestDetail(examTestId));
+                return Ok(await _examResultService.GetAllResultsByExamTestDetail(examTestId));
             }
             catch (Exception e)
             {
@@ -54,7 +54,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.GetAllResultByUser(userId));
+                return Ok(await _examResultService.GetAllResultByUser(userId));
             }
             catch (Exception e)
             {
@@ -70,7 +70,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.GetTop3ResultsByUser(userId, examTestId));
+                return Ok(await _examResultService.GetTop3ResultsByUser(userId, examTestId));
             }
             catch (Exception e)
             {
@@ -86,7 +86,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.AddExamResult(u));
+                return Ok(await _examResultService.AddExamResult(u));
             }
             catch (Exception e)
             {
@@ -102,7 +102,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.GetExamResult(id));
+                return Ok(await _examResultService.GetExamResult(id));
             }
             catch (Exception e)
             {
@@ -118,7 +118,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.UpdateExamResult(u));
+                return Ok(await _examResultService.UpdateExamResult(u));
             }
             catch (Exception e)
             {
@@ -134,7 +134,7 @@ namespace EasyEnglishAPI.Controllers
         {
             try
             {
-                return Ok(await _objectDAL.Delete(id));
+                return Ok(await _examResultService.Delete(id));
             }
             catch (Exception e)
             {
