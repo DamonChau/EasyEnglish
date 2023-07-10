@@ -10,7 +10,7 @@ namespace EasyEnglishAPI.Controllers
     {
         private readonly ICommentService _commentService;
 
-        public CommentsController(ICommentService commentService, EasyEnglishContext context)
+        public CommentsController(ICommentService commentService)
         {
             _commentService = commentService;
         }

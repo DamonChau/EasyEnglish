@@ -10,7 +10,7 @@ namespace EasyEnglishAPI.Controllers
     {
         private readonly IQuestionDetailService _questionDetailService;
 
-        public QuestionDetailsController(IQuestionDetailService questionDetailService, EasyEnglishContext context)
+        public QuestionDetailsController(IQuestionDetailService questionDetailService)
         {
             _questionDetailService = questionDetailService;
         }

@@ -9,7 +9,7 @@ namespace EasyEnglishAPI.Controllers
     public class UserRelationshipController : Controller
     {
         private readonly IUserRelationshipService _userRelationshipService;
-        public UserRelationshipController(IUserRelationshipService userRelationshipService, EasyEnglishContext context)
+        public UserRelationshipController(IUserRelationshipService userRelationshipService)
         {
             _userRelationshipService = userRelationshipService;
         }

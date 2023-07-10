@@ -12,7 +12,7 @@ namespace EasyEnglishAPI.Controllers
     {
         private readonly ILessonService _lessonService;
 
-        public LessonController(ILessonService lessonService, EasyEnglishContext context)
+        public LessonController(ILessonService lessonService)
         {
             _lessonService = lessonService;
         }

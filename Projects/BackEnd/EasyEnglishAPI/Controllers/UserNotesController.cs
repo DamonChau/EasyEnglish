@@ -10,7 +10,7 @@ namespace EasyEnglishAPI.Controllers
     {
         private readonly IUserNotesService _userNoteService;
 
-        public UserNotesController(IUserNotesService userNoteService, EasyEnglishContext context)
+        public UserNotesController(IUserNotesService userNoteService)
         {
             _userNoteService = userNoteService;
         }

@@ -11,7 +11,7 @@ namespace EasyEnglishAPI.Controllers
     {
         private readonly IExamTestsService _examTestService;
 
-        public ExamTestsController(IExamTestsService examTestService, EasyEnglishContext context)
+        public ExamTestsController(IExamTestsService examTestService)
         {
             _examTestService = examTestService;
         }

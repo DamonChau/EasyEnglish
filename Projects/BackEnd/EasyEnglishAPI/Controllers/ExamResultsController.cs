@@ -10,7 +10,7 @@ namespace EasyEnglishAPI.Controllers
     {
         private readonly IExamResultService _examResultService;
 
-        public ExamResultsController(IExamResultService examResultService, EasyEnglishContext context)
+        public ExamResultsController(IExamResultService examResultService)
         {
             _examResultService = examResultService;
         }

@@ -10,7 +10,7 @@ namespace EasyEnglishAPI.Controllers
     {
         private readonly IFeedbackService _feebackService;
 
-        public FeedbackController(IFeedbackService feebackService, EasyEnglishContext context)
+        public FeedbackController(IFeedbackService feebackService)
         {
             _feebackService = feebackService;
         }

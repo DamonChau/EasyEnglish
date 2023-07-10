@@ -10,13 +10,20 @@ using System.Security.Claims;
 
 namespace EasyEnglishAPI.Controllers
 {
+    public class LoginResponse
+    {
+        public string? Token { get; set; }
+        public string? RefreshToken { get; set; }
+        public User? User { get; set; }
+    }
+
     public class UsersController : Controller
     {
 
         private readonly IUserService _userService;
         private readonly IJwtService _jwtService;
 
-        public UsersController(IUserService userService, EasyEnglishContext context, IJwtService jwtService)
+        public UsersController(IUserService userService, IJwtService jwtService)
         {
             _userService = userService;
             _jwtService = jwtService;
@@ -48,12 +55,13 @@ namespace EasyEnglishAPI.Controllers
                     {
                         //hide password from client side
                         r.Password = null;
-                        return Ok(new
+                        var response = new LoginResponse
                         {
-                            token = _jwtService.CreateToken(r),
-                            refreshToken = refreshToken,
-                            user = r,
-                        });
+                            Token = _jwtService.CreateToken(r),
+                            RefreshToken = refreshToken,
+                            User = r
+                        };
+                        return Ok(response);
                     }
                     return BadRequest(new { error = "The username or password provided were incorrect!" });
                 }
@@ -80,7 +88,7 @@ namespace EasyEnglishAPI.Controllers
                 var principal = _jwtService.GetPrincipalFromExpiredToken(authorization.Split(' ')[1]);
                 if (principal == null)
                 {
-                    return BadRequest(new { error = "Invalid access token or refresh toke" });
+                    return BadRequest(new { error = "Invalid access token or refresh token" });
                 }
 
                 var userId = principal.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
@@ -88,19 +96,20 @@ namespace EasyEnglishAPI.Controllers
 
                 if (user == null || user.RefreshToken != refreshToken)
                 {
-                    return BadRequest(new { error = "Invalid access token or refresh toke" });
+                    return BadRequest(new { error = "Invalid access token or refresh token" });
                 }
 
                 var newAccessToken = _jwtService.CreateToken(user);
                 var newRefreshToken = _jwtService.GenerateRefreshToken();
                 //hide password from client side
                 user.Password = null;
-                return Ok(new
+                var response = new LoginResponse
                 {
-                    token = newAccessToken,
-                    refreshToken = refreshToken,
-                    user = user
-                }); ;
+                    Token = _jwtService.CreateToken(user),
+                    RefreshToken = refreshToken,
+                    User = user
+                };
+                return Ok(response);
             }
             catch (Exception e)
             {
