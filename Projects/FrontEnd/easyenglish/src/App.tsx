@@ -21,7 +21,6 @@ import UserManager from "./features/users/UserManager";
 import MyTeacherDashboard from "./features/users/MyTeacherDashboard";
 import MyStudentDashboard from "./features/users/MyStudentDashboard";
 import MyStudyManager from "./features/assignments/MyStudyManager";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
 import "./App.css";
 import { UserType } from "./models/types";
 import LessonList from "./features/lessons/LessonList";
@@ -29,24 +28,13 @@ import LessonView from "./features/lessons/LessonView";
 import LessonManager from "./features/lessons/LessonManager";
 import LessonDetail from "./features/lessons/LessonDetail";
 
-function withRouter(Component: any) {
-  function ComponentWithRouterProp(props: any) {
-    const location = useLocation();
-    const navigate = useNavigate();
-    const params = useParams();
-    return <Component {...props} router={{ location, navigate, params }} />;
-  }
-
-  return ComponentWithRouterProp;
-}
-
 const theme = createTheme({
   palette: {
     mode: "light",
   },
 });
 
-const App = (props: any) => {
+const App = () => {
   return (
     <div>
       <ThemeProvider theme={theme}>

@@ -119,7 +119,6 @@ export interface Lessons {
   status: Status;
   createdDate: string;
   createdBy: string;
-  lessonCategory: string;
 }
 
 export interface Improvements {

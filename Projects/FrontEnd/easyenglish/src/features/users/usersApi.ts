@@ -6,15 +6,22 @@ export type UsersResponse = Users[];
 
 export const usersApi = api.injectEndpoints({
   endpoints: (build) => ({
-    login: build.mutation<{ token: string; refreshToken: string; user: Users }, any>({
-      query: (credentials: any) => ({
-        url: "api/Users/login",
-        method: "POST",
-        body: credentials,
-      }),
+    login: build.mutation<
+      { token: string; refreshToken: string; user: Users },
+      any
+    >({
+      query: (credentials: any) => {
+        return {
+          url: "api/Users/login",
+          method: "POST",
+          body: credentials,
+        };
+      },
     }),
     isUserNameExists: build.query<boolean, string>({
-      query: (username) => `api/Users/IsUserNameExists/${username}`,
+      query: (username) => {
+        return `/api/Users/IsUserNameExists/${username}`;
+      },
     }),
     getUsers: build.query<UsersResponse, void>({
       query: () => ({ url: "api/Users/GetAll" }),

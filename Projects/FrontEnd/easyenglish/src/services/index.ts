@@ -27,7 +27,6 @@ export const createStore = (
 ) =>
   configureStore({
     reducer: pReducer,
-
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         serializableCheck: false,
@@ -39,6 +38,7 @@ export const store = createStore();
 export const persistor = persistStore(store);
 
 export type AppDispatch = typeof store.dispatch;
+export type AppStore = ReturnType<typeof createStore>
 export const useAppDispatch: () => AppDispatch = useDispatch;
 export type RootState = ReturnType<typeof store.getState>;
 export const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;

@@ -10,8 +10,6 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Stack from "@mui/material/Stack";
-import MuiAlert, { AlertProps } from "@mui/material/Alert";
-import Typography from "@mui/material/Typography";
 import {
   isFetchBaseQueryError,
   isErrorWithMessage,

@@ -5,7 +5,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useGetExamTestQuery } from "./examTestsApi";
-import isUUID from "validator/lib/isUUID";
 import draftToHtml from "draftjs-to-html";
 import QuestionAnswerReading from "../questions/QuestionAnswerReading";
 import QuestionAnswerWriting from "../questions/QuestionAnswerWriting";
@@ -19,7 +18,6 @@ import { PostComment } from "../comments/PostComment";
 import { PostNotes } from "../userNotes/PostNotes";
 import { useTypedSelector } from "../../services";
 import {
-  selectLoggedUser,
   selectIsAuthenticated,
 } from "../../services/slices/authSlice";
 import { ExamResults, ExamTestSectionType } from "../../models/types";
@@ -27,6 +25,7 @@ import {
   isFetchBaseQueryError,
   isErrorWithMessage,
 } from "../../services/helpers";
+import isUUID from "validator/lib/isUUID";
 
 const ExamTestsView = () => {
   const { id } = useParams();
@@ -39,7 +38,6 @@ const ExamTestsView = () => {
     { isLoading: isAddDFLoading, isError: isAddDFError, error: errorDFAdd },
   ] = useDownloadFilesMutation();
   const [audio, setAudio] = useState("");
-  const loggedUser = useTypedSelector(selectLoggedUser);
   const isAuthenticated = useTypedSelector(selectIsAuthenticated);
   const [erroMsg, setErrorMsg] = useState("");
   const [testResult, setTestResult] = useState<ExamResults>();

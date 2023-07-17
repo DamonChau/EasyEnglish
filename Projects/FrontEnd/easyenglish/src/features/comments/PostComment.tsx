@@ -9,9 +9,9 @@ import SendIcon from "@mui/icons-material/Send";
 import IconButton from "@mui/material/IconButton";
 import { Comments, Users } from "../../models/types";
 import { v4 as uuidv4 } from "uuid";
+import isUUID from "validator/lib/isUUID";
 import {
   selectLoggedUser,
-  selectIsAuthenticated,
 } from "../../services/slices/authSlice";
 import { useTypedSelector } from "../../services";
 import {
@@ -20,7 +20,6 @@ import {
   useGetAllCommentsByExamQuery,
 } from "../comments/commentApi";
 import { parseISO } from "date-fns";
-import isUUID from "validator/es/lib/isUUID";
 import {
   isFetchBaseQueryError,
   isErrorWithMessage,
@@ -162,7 +161,6 @@ interface PostCommentProps {
 export const PostComment = ({ examTestId }: PostCommentProps) => {
   const [isView, setView] = useState(false);
   const loggedUser = useTypedSelector(selectLoggedUser);
-  const isAuthenticated = useTypedSelector(selectIsAuthenticated);
   const { data, isFetching, isLoading, isSuccess, isError, error } =
     useGetAllCommentsByExamQuery(examTestId, { skip: !isView });
   const [erroMsg, setErrorMsg] = useState("");

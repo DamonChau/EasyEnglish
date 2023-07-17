@@ -287,7 +287,6 @@ const AvailableTeacher = () => {
   };
 
   const handleRefreshData = () => {
-    console.log("queryStarted", isSuccess, isFetching);
     if (queryStarted) {
       refetch();
     }

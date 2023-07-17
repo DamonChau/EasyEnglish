@@ -45,6 +45,7 @@ const ExamTestsDetail = () => {
   );
 
   const loggedUser = useTypedSelector(selectLoggedUser);
+  
   const initialValue = {
     id: id,
     testName: "",
