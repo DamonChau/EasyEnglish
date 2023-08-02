@@ -4,6 +4,10 @@ import { api } from "../../services/api";
 import { Users } from "../../models/types";
 export type UsersResponse = Users[];
 
+export interface FileDownload {
+  filename: string;
+}
+
 export const usersApi = api.injectEndpoints({
   endpoints: (build) => ({
     login: build.mutation<
@@ -78,6 +82,29 @@ export const usersApi = api.injectEndpoints({
       },
       invalidatesTags: (users) => [{ type: "users", id: users?.id }],
     }),
+    uploadFiles: build.mutation({
+      query: (body) => ({
+        url: "api/FilesUpload/upload",
+        method: "POST",
+        body,
+      }),
+    }),
+    downloadFiles: build.mutation<any, FileDownload>({
+      query(body) {
+        return {
+          url: `api/FilesUpload/download`,
+          method: "POST",
+          body,
+          responseHandler: async (response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok.");
+            }
+            return await response.blob();
+          },
+          cache: "no-cache",
+        };
+      },
+    }),
   }),
 });
 
@@ -91,4 +118,6 @@ export const {
   useDeleteUserMutation,
   useIsUserNameExistsQuery,
   useGetAllTeachersQuery,
+  useUploadFilesMutation,
+  useDownloadFilesMutation,
 } = usersApi;

@@ -71,7 +71,8 @@ import {
     baseQuery: baseQueryWithReauth,
     tagTypes: [
       "users",
-      "examTests"
+      "examTests",
+      "assignmentExams"
     ],
     endpoints: () => ({}),
   });

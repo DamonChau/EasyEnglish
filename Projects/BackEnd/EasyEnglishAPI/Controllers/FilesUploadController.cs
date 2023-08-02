@@ -53,7 +53,6 @@ namespace EasyEnglishAPI.Controllers
             }
         }
 
-        [Authorize]
         [HttpPost]
         [Route("api/FilesUpload/download")]
         public async Task<IActionResult> Download([FromBody] FileUpload file)

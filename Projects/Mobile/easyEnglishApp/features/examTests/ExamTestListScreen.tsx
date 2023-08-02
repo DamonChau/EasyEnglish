@@ -6,14 +6,18 @@ import {
   VStack,
   Heading,
   HStack,
-  Avatar,
+  Pressable,
   Spacer,
   Text,
 } from "native-base";
 import { useGetExamTestsBySectionQuery } from "./examTestsApi";
 import { parseISO } from "date-fns";
 
-export const ExamTestListScreen = ({ nagivation, route }: any) => {
+interface IProps {
+  id: string;
+}
+
+export const ExamTestListScreen = ({ navigation, route }: any) => {
   const { testType, sectionType } = route.params;
   const [erroMsg, setErrorMsg] = useState("");
   const { data, isFetching, isLoading, isSuccess, isError, error } =
@@ -21,6 +25,10 @@ export const ExamTestListScreen = ({ nagivation, route }: any) => {
       testType: testType,
       sectionType: sectionType,
     });
+
+  const viewDetail = ({ id }: IProps) => {
+    navigation.navigate("ExamTestView", { id: id });
+  };
 
   useEffect(() => {
     if (error) {
@@ -45,53 +53,55 @@ export const ExamTestListScreen = ({ nagivation, route }: any) => {
         <FlatList
           data={data}
           renderItem={({ item }) => (
-            <Box
-              borderBottomWidth="1"
-              _dark={{
-                borderColor: "muted.50",
-              }}
-              borderColor="muted.800"
-              pl={["2", "4"]}
-              pr={["2", "5"]}
-              py="2"
-            >
-              <HStack space={[2, 3]} justifyContent="space-between">
-                <Image
-                  source={require("../../assets/IELTSbg.jpg")}
-                  style={styles.image}
-                />
-                <VStack>
+            <Pressable onPress={() => viewDetail({ id: item.id })}>
+              <Box
+                borderBottomWidth="1"
+                _dark={{
+                  borderColor: "muted.50",
+                }}
+                borderColor="muted.800"
+                pl={["2", "4"]}
+                pr={["2", "5"]}
+                py="2"
+              >
+                <HStack space={[2, 3]} justifyContent="space-between">
+                  <Image
+                    source={require("../../assets/IELTSbg.jpg")}
+                    style={styles.image}
+                  />
+                  <VStack>
+                    <Text
+                      _dark={{
+                        color: "warmGray.50",
+                      }}
+                      color="coolGray.800"
+                      bold
+                    >
+                      {item.testname}
+                    </Text>
+                    <Text
+                      color="coolGray.600"
+                      _dark={{
+                        color: "warmGray.200",
+                      }}
+                    >
+                      {item.title}
+                    </Text>
+                  </VStack>
+                  <Spacer />
                   <Text
+                    fontSize="xs"
                     _dark={{
                       color: "warmGray.50",
                     }}
                     color="coolGray.800"
-                    bold
+                    alignSelf="flex-start"
                   >
-                    {item.testname}
+                    {parseISO(item.createdDate).toDateString()}
                   </Text>
-                  <Text
-                    color="coolGray.600"
-                    _dark={{
-                      color: "warmGray.200",
-                    }}
-                  >
-                    {item.title}
-                  </Text>
-                </VStack>
-                <Spacer />
-                <Text
-                  fontSize="xs"
-                  _dark={{
-                    color: "warmGray.50",
-                  }}
-                  color="coolGray.800"
-                  alignSelf="flex-start"
-                >
-                  {parseISO(item.createdDate).toDateString()}
-                </Text>
-              </HStack>
-            </Box>
+                </HStack>
+              </Box>
+            </Pressable>
           )}
           keyExtractor={(item) => item.id}
         />

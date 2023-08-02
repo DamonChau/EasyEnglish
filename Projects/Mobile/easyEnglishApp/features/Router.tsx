@@ -5,16 +5,20 @@ import { LoginScreen } from "./users/LoginScreen";
 import { ExamTestHomeScreen } from "./examTests/ExamTestHomeScreen";
 import { ExamTestViewScreen } from "./examTests/ExamTestViewScreen";
 import { ExamTestListScreen } from "./examTests/ExamTestListScreen";
+import { SettingsScreen } from "./common/SettingsScreen";
 import { MyStudyScreen } from "./users/MyStudyScreen";
 import { UnAuthorizeScreen } from "./users/UnAuthorizeScreen";
 import { NavigationContainer } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet } from "react-native";
 import { useTypedSelector } from "../services";
 import { selectIsAuthenticated } from "../services/slices/authSlice";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import { AssignmentStatus } from "../models/types";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+const TopTab = createMaterialTopTabNavigator();
 
 const UserNavigator = () => {
   const isAuthenticated = useTypedSelector(selectIsAuthenticated);
@@ -47,7 +51,7 @@ const MyStudyNavigator = () => {
     >
       {isAuthenticated ? (
         <>
-          <Stack.Screen name="MyStudy" component={MyStudyScreen} />
+          <Stack.Screen name="MyStudy" component={MyStudyTabNavigator} />
           <Stack.Screen name="ExamTestView" component={ExamTestViewScreen} />
         </>
       ) : (
@@ -56,6 +60,44 @@ const MyStudyNavigator = () => {
         </>
       )}
     </Stack.Navigator>
+  );
+};
+
+const MyStudyTabNavigator = () => {
+  return (
+    <TopTab.Navigator
+      initialRouteName="Favourite"
+      screenOptions={{
+        tabBarActiveTintColor: "#fafafa",
+        tabBarLabelStyle: { fontSize: 12 },
+        tabBarStyle: { backgroundColor: "#a3a3a3" },
+      }}
+    >
+      <TopTab.Screen
+        name="Favourite"
+        component={MyStudyScreen}
+        initialParams={{ status: AssignmentStatus.Favourite }}
+        options={{ tabBarLabel: "Favourite" }}
+      />
+      <TopTab.Screen
+        name="Bookmarked"
+        component={MyStudyScreen}
+        initialParams={{ status: AssignmentStatus.Bookmarked }}
+        options={{ tabBarLabel: "Bookmarked" }}
+      />
+      <TopTab.Screen
+        name="Assigned"
+        component={MyStudyScreen}
+        initialParams={{ status: AssignmentStatus.Assigned }}
+        options={{ tabBarLabel: "Assigned" }}
+      />
+      <TopTab.Screen
+        name="Done"
+        component={MyStudyScreen}
+        initialParams={{ status: AssignmentStatus.Done }}
+        options={{ tabBarLabel: "Done" }}
+      />
+    </TopTab.Navigator>
   );
 };
 
@@ -79,6 +121,20 @@ const ExamTestNavigator = () => {
   );
 };
 
+const SettingNavigator = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: styles.header,
+        headerTintColor: headerTintColor,
+        headerTitleStyle: styles.headerTitle,
+      }}
+    >
+      <Stack.Screen name="Settings" component={SettingsScreen} />
+    </Stack.Navigator>
+  );
+};
+
 export const Router = () => {
   return (
     <NavigationContainer>
@@ -94,6 +150,8 @@ export const Router = () => {
               iconName = focused ? "person-circle" : "person-circle-outline";
             } else if (route.name === "MyStudyTab") {
               iconName = focused ? "document-text" : "document-text-outline";
+            } else if (route.name === "SettingsTab") {
+              iconName = focused ? "settings" : "settings-outline";
             } else {
               iconName = "ios-information-circle";
             }
@@ -122,6 +180,11 @@ export const Router = () => {
         <Tab.Screen
           name="AccountTab"
           component={UserNavigator}
+          options={{ headerShown: false }}
+        />
+        <Tab.Screen
+          name="SettingsTab"
+          component={SettingNavigator}
           options={{ headerShown: false }}
         />
       </Tab.Navigator>

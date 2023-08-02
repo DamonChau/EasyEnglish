@@ -11,6 +11,7 @@ import {
   Button,
   HStack,
   Text,
+  Container,
 } from "native-base";
 import { useLoginMutation } from "../users/usersApi";
 import {
@@ -92,7 +93,7 @@ export const LoginScreen = ({ navigation }: any) => {
             Sign in to continue!
           </Heading>
           {errMsg ? (
-            <Text mt="1" color="red.600" fontWeight="medium" size="sm">
+            <Text mt="1" color="red.600" noOfLines={2}>
               {errMsg}
             </Text>
           ) : null}

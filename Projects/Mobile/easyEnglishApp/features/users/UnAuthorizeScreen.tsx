@@ -1,9 +1,11 @@
-import { StyleSheet, Text, View } from "react-native";
-
+import { StyleSheet, View } from "react-native";
+import { Text } from "native-base";
 export const UnAuthorizeScreen = () => {
   return (
     <View style={styles.container}>
-      <Text>You are not authorized to access this screen. Please login.</Text>
+      <Text color="red.600" noOfLines={2}>
+        You are not authorized to access this screen. Please login.
+      </Text>
     </View>
   );
 };
