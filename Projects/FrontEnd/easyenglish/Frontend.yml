@@ -1,0 +1,32 @@
+pool:
+  name: Azure Pipelines
+  demands: yarn
+
+steps:
+- task: NodeTool@0
+  displayName: 'Use Node 19.'
+  inputs:
+    versionSpec: 19.x
+
+- task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@3
+  displayName: 'Yarn install'
+  inputs:
+    projectDirectory: Projects/FrontEnd/easyenglish
+
+- task: geeklearningio.gl-vsts-tasks-yarn.yarn-task.Yarn@3
+  displayName: 'Yarn build'
+  inputs:
+    projectDirectory: Projects/FrontEnd/easyenglish
+    arguments: 'run build'
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)/Projects/FrontEnd/easyenglish/build'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish Pipeline Artifact FrontEnd'
+  inputs:
+    targetPath: '$(Build.ArtifactStagingDirectory)'
+    artifact: drop

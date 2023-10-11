@@ -13,12 +13,12 @@ export const messageDuplication = "Duplicate date!!!";
 
 const prod = {
   url: {
-    API_URL: "https://easyenglishapi.azurewebsites.net/",
+    API_URL: "https://bcbb-117-20-69-131.ngrok-free.app",
   },
 };
 const dev = {
   url: {
-    API_URL: "http://192.168.20.107:5097",
+    API_URL: "https://bcbb-117-20-69-131.ngrok-free.app",
   },
 };
 export const config = process.env.NODE_ENV === "development" ? dev : prod;

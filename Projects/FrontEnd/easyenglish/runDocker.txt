@@ -1,0 +1,2 @@
+docker build -t easy-english .
+docker run -p 3000:3000 easy-english

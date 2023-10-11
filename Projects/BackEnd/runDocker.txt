@@ -1,0 +1,2 @@
+docker build -t easy-english-api .
+docker run -p 5097:5097 easy-english-api

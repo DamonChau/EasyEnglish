@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet } from "react-native";
 import { Provider } from "react-redux";
 import { persistor, store } from "./services";
 import { PersistGate } from "redux-persist/integration/react";
@@ -11,6 +11,7 @@ export default function App() {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <NativeBaseProvider>
+          <StatusBar style="light"></StatusBar>
           <Router />
         </NativeBaseProvider>
       </PersistGate>
