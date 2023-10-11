@@ -67,13 +67,13 @@ builder.Services.AddCors(p => p.AddPolicy("corsappDev", builder =>
 
 builder.Services.AddCors(p => p.AddPolicy("corsappPrd", builder =>
 {
-    builder.WithOrigins("https://easyenglish.azurewebsites.net").AllowAnyMethod().AllowAnyHeader();
+    builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+    //builder.WithOrigins("https://easyenglish.azurewebsites.net").AllowAnyMethod().AllowAnyHeader();
 }));
 
 
 var app = builder.Build();
 app.UseSwagger();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

@@ -45,7 +45,7 @@ namespace EasyEnglishAPI.Controllers
         }
 
 
-        [Authorize]
+        //[Authorize]
         [HttpGet]
         [Route("api/AssignmentExams/GetAllByStatusWithDetail/{userId}/{status}")]
         public async Task<ActionResult<IEnumerable<AssignmentExam>>> GetAllByStatusWithDetail(Guid userId, int status)
